@@ -9,6 +9,8 @@ class AddSubject extends React.Component {
     }
 
     render() {
+        const blockInvalidChar = e => ['+', '-'].includes(e.key) && e.preventDefault();
+
         return (
             <div>
                 <div className="page-header">
@@ -35,20 +37,38 @@ class AddSubject extends React.Component {
 
                                         <Col xs={12} sm={6}>
                                             <Form.Group>
-                                                <Form.Label>Subject ID</Form.Label>
-                                                <Form.Control type="text" />
-                                            </Form.Group>
-                                        </Col>
-                                        <Col xs={12} sm={6}>
-                                            <Form.Group>
                                                 <Form.Label>Subject Name</Form.Label>
                                                 <Form.Control type="text" />
                                             </Form.Group>
                                         </Col>
                                         <Col xs={12} sm={6}>
                                             <Form.Group>
-                                                <Form.Label>Class</Form.Label>
-                                                <Form.Control type="text" />
+                                                <Form.Label>Niveau</Form.Label>
+                                                <Form.Control as="select">
+                                                    <option>Choisir un niveau</option>	
+                                                    <option>1ére</option>
+                                                    <option>2éme</option>
+                                                    <option>3éme</option>
+                                                </Form.Control>
+                                            </Form.Group>
+                                        </Col>
+                                        <Col xs={12} sm={6}>
+                                            <Form.Group>
+                                                <Form.Label>Coefficient</Form.Label>
+                                                <Form.Control type="number" min="0" onKeyDown={blockInvalidChar}
+                                                 onChange={({ target: { } }) => {
+                                                            this.setState(0);
+                                                            }} />
+                                            </Form.Group>
+                                        </Col>
+                                            
+                                        <Col xs={12} sm={6}>
+                                            <Form.Group>
+                                                <Form.Label>Nombre d'heure</Form.Label>
+                                                <Form.Control type="number" min="0" onKeyDown={blockInvalidChar}
+                                                 onChange={({ target: { } }) => {
+                                                            this.setState(0);
+                                                            }}/>
                                             </Form.Group>
                                         </Col>
 

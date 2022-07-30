@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router-dom'
 // Import Components
 import { Row, Col, Card, Media } from "react-bootstrap";
 //Import Data Table
@@ -13,63 +14,74 @@ const data = [
     { 
         id: 'PRE2209',
         name: 'Mathematics',
-        class: '5',
-        action: ''
+        niveau: '5',
+        coefficient: '3',
+        nbHeure :'42'
     },
     {
-        id: 'PRE2213',
-        name: 'History',
-        class: '6',
-        action: ''
+        id: 'PRE2209',
+        name: 'Machine Learning',
+        niveau: '5',
+        coefficient: '7',
+        nbHeure :'42'
     },
     {
-        id: 'PRE2143',
-        name: 'Science',
-        class: '3',
-        action: ''
+        id: 'PRE2209',
+        name: 'TLA',
+        niveau: '5',
+        coefficient: '3',
+        nbHeure :'42'
     },
     {
-        id: 'PRE2431',
-        name: 'Geography',
-        class: '8',
-        action: ''
+        id: 'PRE2209',
+        name: 'Francais',
+        niveau: '5',
+        coefficient: '1',
+        nbHeure :'21'
     },
     {
-        id: 'PRE1534',
-        name: 'Botony',
-        class: '9',
-        action: ''
+        id: 'PRE2209',
+        name: 'ReactJS',
+        niveau: '5',
+        coefficient: '3',
+        nbHeure :'21'
     },
     {
-        id: 'PRE2153',
-        name: 'English',
-        class: '4',
-        action: ''
+        id: 'PRE2209',
+        name: 'Big Data',
+        niveau: '5',
+        coefficient: '5',
+        nbHeure :'42'
     },
 ];
 
 const columns = [
-    {
-        name: 'ID',
-        selector: row=>row.id,
-        sortable: true,
-    },
     {
         name: 'Name',
         sortable: true,
         selector: row=>row.name
     },
     {
-        name: 'Class',
-        selector: row=>row.class,
+        name: 'Niveau',
+        selector: row=>row.niveau,
+        sortable: true,
+    },
+    {
+        name: 'Coefficient',
+        selector: row=>row.coefficient,
+        sortable: true,
+    },
+    {
+        name: 'Nombre Dheure',
+        selector: row=>row.nbHeure,
         sortable: true,
     },
     {
         name: 'Action',
         selector: row=>row.action,
         sortable: true,
-        cell: () => <div><a href="/edit-subject" className="btn btn-sm bg-success-light me-2">
-        <FontAwesomeIcon icon={faPencilAlt} /> </a> <a href="#" className="btn btn-sm bg-danger-light"> <FontAwesomeIcon icon={faTrash} /> </a></div>
+        cell: (subject) => <div><Link to={`/edit-subject/${subject.id}`} className="btn btn-sm bg-success-light me-2">
+        <FontAwesomeIcon icon={faPencilAlt} /> </Link> <a href="#" className="btn btn-sm bg-danger-light"> <FontAwesomeIcon icon={faTrash} /> </a></div>
     },
 ];
 

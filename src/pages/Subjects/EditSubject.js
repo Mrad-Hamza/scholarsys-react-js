@@ -1,6 +1,8 @@
 import React from 'react';
+
 // Import Components
 import { Row, Col, Card, Form, Button } from "react-bootstrap";
+
 
 class EditSubject extends React.Component {
     constructor(props) {
@@ -9,6 +11,8 @@ class EditSubject extends React.Component {
     }
 
     render() {
+        const { id } = this.props.match;
+        const blockInvalidChar = e => ['+', '-'].includes(e.key) && e.preventDefault();
         return (
             <div>
                 <div className="page-header">
@@ -35,28 +39,48 @@ class EditSubject extends React.Component {
 
                                         <Col xs={12} sm={6}>
                                             <Form.Group>
-                                                <Form.Label>Subject ID</Form.Label>
-                                                <Form.Control type="text" defaultValue="PRE1534" />
-                                            </Form.Group>
-                                        </Col>
-                                        <Col xs={12} sm={6}>
-                                            <Form.Group>
                                                 <Form.Label>Subject Name</Form.Label>
-                                                <Form.Control type="text" defaultValue="Botony" />
+                                                <Form.Control type="text" defaultValue={id} />
                                             </Form.Group>
                                         </Col>
+
                                         <Col xs={12} sm={6}>
                                             <Form.Group>
-                                                <Form.Label>Class</Form.Label>
-                                                <Form.Control type="text" defaultValue="9" />
+                                                <Form.Label>Niveau</Form.Label>
+                                                <Form.Control as="select" defaultValue="1ére">
+                                                    <option>Choisir un niveau</option>	
+                                                    <option>1ére</option>
+                                                    <option>2éme</option>
+                                                    <option>3éme</option>
+                                                </Form.Control>
+                                            </Form.Group>
+                                        </Col>
+
+                                        <Col xs={12} sm={6}>
+                                            <Form.Group>
+                                                <Form.Label>Coefficient</Form.Label>
+                                                <Form.Control type="number" min="0" onKeyDown={blockInvalidChar}
+                                                 onChange={({ target: { } }) => {
+                                                            this.setState(0);
+                                                            }} defaultValue="3" />
+                                            </Form.Group>
+                                        </Col>
+
+                                        <Col xs={12} sm={6}>
+                                            <Form.Group>
+                                                <Form.Label>Nombre d'heure</Form.Label>
+                                                <Form.Control type="number" min="0" onKeyDown={blockInvalidChar}
+                                                 onChange={({ target: { } }) => {
+                                                            this.setState(0);
+                                                            }} defaultValue="24" />
                                             </Form.Group>
                                         </Col>
 
                                         <Col xs={12}>
                                             <Button variant="primary" type="submit">
-                                                Submit
+                                                Edit
                                             </Button>
-                                        </Col>                                        
+                                        </Col>   
                                     </Row>                                    
                                 </Form>                                
                             </Card.Body>

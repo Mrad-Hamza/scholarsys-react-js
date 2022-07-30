@@ -168,7 +168,7 @@ class RouterComponent extends React.Component {
 
                                     {/* Subject Module */}
                                     <Route path="/add-subject" component={AddSubject} />
-                                    <Route path="/edit-subject" component={EditSubject} />
+                                    <Route path="/edit-subject/:id" component={EditSubject} />
                                     <Route path="/subjects" component={SubjectsList} />
 
                                     {/* Accounts Module */}
