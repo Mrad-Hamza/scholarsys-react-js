@@ -3,11 +3,35 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { Provider } from "react-redux";
+import { BrowserRouter } from 'react-router-dom';
+import store from "./store";
+
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
+// CSS Files
+// Bootstrap CSS
+import './assets/plugins/bootstrap/css/bootstrap.min.css';
+
+import './assets/plugins/fontawesome/css/fontawesome.min.css';
+import './assets/plugins/fontawesome/css/all.min.css';
+
+import './assets/plugins/simple-calendar/simple-calendar.css';
+import './assets/plugins/simple-calendar/jquery.simple-calendar.js';
+
+
+// Custom CSS
+import './assets/css/style.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </Provider>
   </React.StrictMode>
 );
 
