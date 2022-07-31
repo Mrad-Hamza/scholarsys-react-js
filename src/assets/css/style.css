@@ -3452,6 +3452,10 @@ a.btn .btn-block {
     position: relative;
 }
 
+.subject-error{
+	color : red;
+}
+
 /*-----------------
 	20. Responsive
 -----------------------*/

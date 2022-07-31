@@ -14,6 +14,7 @@ const data = [
     { 
         id: 'PRE2209',
         name: 'Mathematics',
+        formation: 'Data Science',
         niveau: '5',
         coefficient: '3',
         nbHeure :'42'
@@ -21,6 +22,7 @@ const data = [
     {
         id: 'PRE2209',
         name: 'Machine Learning',
+        formation: 'Data Science',
         niveau: '5',
         coefficient: '7',
         nbHeure :'42'
@@ -28,6 +30,7 @@ const data = [
     {
         id: 'PRE2209',
         name: 'TLA',
+        formation: 'Cloud',
         niveau: '5',
         coefficient: '3',
         nbHeure :'42'
@@ -35,6 +38,7 @@ const data = [
     {
         id: 'PRE2209',
         name: 'Francais',
+        formation: 'BI',
         niveau: '5',
         coefficient: '1',
         nbHeure :'21'
@@ -42,6 +46,7 @@ const data = [
     {
         id: 'PRE2209',
         name: 'ReactJS',
+        formation: 'Twin',
         niveau: '5',
         coefficient: '3',
         nbHeure :'21'
@@ -49,6 +54,7 @@ const data = [
     {
         id: 'PRE2209',
         name: 'Big Data',
+        formation: 'Data Science',
         niveau: '5',
         coefficient: '5',
         nbHeure :'42'
@@ -60,6 +66,11 @@ const columns = [
         name: 'Name',
         sortable: true,
         selector: row=>row.name
+    },
+    {
+        name: 'Formation',
+        sortable: true,
+        selector: row=>row.formation
     },
     {
         name: 'Niveau',
