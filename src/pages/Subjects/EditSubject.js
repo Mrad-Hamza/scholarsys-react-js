@@ -9,6 +9,8 @@ class EditSubject extends React.Component {
         super(props);
         this.state = {fields : {} , errors : {}}
         this.state.fields["name"] = "ahla";
+        this.state.fields["formation"] = "Data Science";
+        this.state.fields["niveau"] = "1ere"
         this.state.fields["coefficient"] = "3";
         this.state.fields["nbHeure"] = "21";
     }
@@ -39,16 +41,38 @@ class EditSubject extends React.Component {
             }
         }
 
+        //Niveau
+        if(!fields["niveau"]){
+            formIsValid = false;
+            errors["niveau"] = "You must choose a level";
+        }
+
+        //formation
+        if(!fields["formation"]){
+            formIsValid = false;
+            errors["formation"] = "You must choose a formation";
+        }
+
         //coefficient
         if(!fields["coefficient"]){
             formIsValid = false;
             errors["coefficient"] = "Cannot be Empty";
         }
 
+        if(fields["coefficient"] === 0){
+            formIsValid = false;
+            errors["coefficient"] = "Cannot be 0";
+        }
+
         //nbHeure
         if(!fields["nbHeure"]){
             formIsValid = false;
             errors["nbHeure"] = "Cannot be Empty";
+        }
+
+        if(fields["nbHeure"] < 10){
+            formIsValid = false;
+            errors["nbHeure"] = "Cannot be 0";
         }
 
         this.setState({ errors: errors });
@@ -61,15 +85,19 @@ class EditSubject extends React.Component {
         this.setState({fields});
       }
 
-    contactSubmit(e){
-    e.preventDefault();
-    if(this.handleValidation()){
-        alert("Form submitted");
-    }else{
-        alert("Form has errors.")
-    }
-
-    }
+      contactSubmit(e){
+        e.preventDefault();
+        if(this.handleValidation()){
+            let confirm = window.confirm('Do you really want to submit the form?');
+            if(confirm === true){
+                alert("Form has been submitted");
+            }
+        }else{
+            alert("Form has errors.")
+            return false;
+        }
+    
+        }
 
     render() {
         const blockInvalidChar = e => ['+', '-'].includes(e.key) && e.preventDefault();
@@ -108,25 +136,29 @@ class EditSubject extends React.Component {
 
                                         <Col xs={12} sm={6}>
                                             <Form.Group>
-                                                <Form.Label>Niveau</Form.Label>
-                                                <Form.Control as="select">
-                                                    <option disabled selected value>Choisir un niveau</option>	
-                                                    <option>1ére</option>
-                                                    <option>2éme</option>
-                                                    <option>3éme</option>
-                                                </Form.Control>
-                                            </Form.Group>
-                                        </Col>
-
-                                        <Col xs={12} sm={6}>
-                                            <Form.Group>
                                                 <Form.Label>Formation</Form.Label>
-                                                <Form.Control as="select">
+                                                <Form.Control as="select" onChange={this.handleChange.bind(this, "formation")}
+                                                value={this.state.fields["formation"]}>
                                                     <option disabled selected value>Choisir une formation</option>	
                                                     <option>Data Science</option>
                                                     <option>Business Inteligence</option>
                                                     <option>Cloud</option>
                                                 </Form.Control>
+                                                <span className="subject-error">{this.state.errors["formation"]}</span>
+                                            </Form.Group>
+                                        </Col>
+
+                                        <Col xs={12} sm={6}>
+                                            <Form.Group>
+                                                <Form.Label>Niveau</Form.Label>
+                                                <Form.Control as="select" onChange={this.handleChange.bind(this, "niveau")}
+                                                value={this.state.fields["niveau"]}>
+                                                    <option disabled selected value>Choisir un niveau</option>	
+                                                    <option>1ére</option>
+                                                    <option>2éme</option>
+                                                    <option>3éme</option>
+                                                </Form.Control>
+                                                <span className="subject-error">{this.state.errors["niveau"]}</span>
                                             </Form.Group>
                                         </Col>
 

@@ -13,51 +13,51 @@ import { faDownload, faPencilAlt, faPlus, faTrash } from '@fortawesome/fontaweso
 const data = [
     { 
         id: 'PRE2209',
-        name: 'Mathematics',
-        formation: 'Data Science',
-        niveau: '5',
-        coefficient: '3',
-        nbHeure :'42'
+        name: 'Computer Science Engg',
+        acronyme: 'Aaliyah',
+        matiere: '1995',
+        formation: '180',
+        action: ''
     },
     {
         id: 'PRE2209',
-        name: 'Machine Learning',
-        formation: 'Data Science',
-        niveau: '5',
-        coefficient: '7',
-        nbHeure :'42'
+        name: 'Computer Science Engg',
+        acronyme: 'Aaliyah',
+        matiere: '1995',
+        formation: '180',
+        action: ''
     },
     {
         id: 'PRE2209',
-        name: 'TLA',
-        formation: 'Cloud',
-        niveau: '5',
-        coefficient: '3',
-        nbHeure :'42'
+        name: 'Computer Science Engg',
+        acronyme: 'Aaliyah',
+        matiere: '1995',
+        formation: '180',
+        action: ''
     },
     {
         id: 'PRE2209',
-        name: 'Francais',
-        formation: 'BI',
-        niveau: '5',
-        coefficient: '1',
-        nbHeure :'21'
+        name: 'Computer Science Engg',
+        acronyme: 'Aaliyah',
+        matiere: '1995',
+        formation: '180',
+        action: ''
     },
     {
         id: 'PRE2209',
-        name: 'ReactJS',
-        formation: 'Twin',
-        niveau: '5',
-        coefficient: '3',
-        nbHeure :'21'
+        name: 'Computer Science Engg',
+        acronyme: 'Aaliyah',
+        matiere: '1995',
+        formation: '180',
+        action: ''
     },
     {
         id: 'PRE2209',
-        name: 'Big Data',
-        formation: 'Data Science',
-        niveau: '5',
-        coefficient: '5',
-        nbHeure :'42'
+        name: 'Computer Science Engg',
+        acronyme: 'Aaliyah',
+        matiere: '1995',
+        formation: '180',
+        action: ''
     },
 ];
 
@@ -68,38 +68,31 @@ const columns = [
         selector: row=>row.name
     },
     {
+        name: 'Acronyme',
+        selector: row=>row.acronyme,
+        sortable: true,
+    },
+    {
+        name: 'Matiere',
+        selector: row=>row.matiere,
+        sortable: true,
+    },
+    {
         name: 'Formation',
-        sortable: true,
-        selector: row=>row.formation
-    },
-    {
-        name: 'Niveau',
-        selector: row=>row.niveau,
-        sortable: true,
-    },
-    {
-        name: 'Coefficient',
-        selector: row=>row.coefficient,
-        sortable: true,
-    },
-    {
-        name: 'Nombre Dheure',
-        selector: row=>row.nbHeure,
+        selector: row=>row.formation,
         sortable: true,
     },
     {
         name: 'Action',
         selector: row=>row.action,
         sortable: true,
-        cell: (subject) => <div>
-                            <Link to={`/edit-subject/${subject.id}`} className="btn btn-sm bg-success-light me-2">
-                            <FontAwesomeIcon icon={faPencilAlt} /> </Link> 
-                            <a href="#" className="btn btn-sm bg-danger-light"> <FontAwesomeIcon icon={faTrash} /> </a>
-                        </div>
+        cell: (level) => <div><Link to={`/edit-level/${level.id}`} className="btn btn-sm bg-success-light me-2">
+        <FontAwesomeIcon icon={faPencilAlt} /> </Link>  <a href="#" className="btn btn-sm bg-danger-light "> <FontAwesomeIcon icon={faTrash} /> </a></div>
     },
 ];
 
-class SubjectsList extends React.Component {
+
+class LevelsList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {}
@@ -116,15 +109,15 @@ class SubjectsList extends React.Component {
                     <div className="page-header">
                         <Row>
                             <Col className="col">
-                                <h3 className="page-title">Subjects</h3>
+                                <h3 className="page-title">Levels</h3>
                                 <ul className="breadcrumb">
                                     <li className="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
-                                    <li className="breadcrumb-item active">Subjects</li>
+                                    <li className="breadcrumb-item active">Levels</li>
                                 </ul>
                             </Col>
-                            <Col className="col-auto text-end float-right ms-auto">
+                            <Col className="col-auto text-end float-end ms-auto">
                                 <a href="#" className="btn btn-outline-primary me-2"><FontAwesomeIcon icon={faDownload} /> Download</a>
-                                <a href="/add-subject" className="btn btn-primary"><FontAwesomeIcon icon={faPlus} /></a>
+                                <a href="/add-department" className="btn btn-primary"><FontAwesomeIcon icon={faPlus} /></a>
                             </Col>
                         </Row>
                     </div>
@@ -147,4 +140,4 @@ class SubjectsList extends React.Component {
         )
     }
 }
-export { SubjectsList };
+export { LevelsList };

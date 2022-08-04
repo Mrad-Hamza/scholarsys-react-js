@@ -2,7 +2,7 @@ import React from 'react';
 // Import Components
 import { Row, Col, Card, Form, Button } from "react-bootstrap";
 
-class AddSubject extends React.Component {
+class AddClass extends React.Component {
     constructor(props) {
         super(props);
         this.state = {fields : {} , errors : {}}
@@ -34,10 +34,22 @@ class AddSubject extends React.Component {
             }
         }
 
-        //Niveau
-        if(!fields["niveau"]){
+        //Class desgniation 
+        if(!fields["desgniation"]){
             formIsValid = false;
-            errors["niveau"] = "You must choose a level";
+            errors["desgniation"] = "You must choose a level";
+        }
+
+        if(typeof fields["desgniation"] !== "undefined"){
+            if(fields["desgniation"] > 10){
+                formIsValid = false;
+                errors["desgniation"] = "Desgniation too long";
+            }
+
+            if(fields["desgniation"] < 5){
+                formIsValid = false;
+                errors["desgniation"] = "Desgniation too short";
+            }
         }
 
         //formation
@@ -46,26 +58,10 @@ class AddSubject extends React.Component {
             errors["formation"] = "You must choose a formation";
         }
 
-        //coefficient
-        if(!fields["coefficient"]){
+        //niveau
+        if(!fields["niveau"]){
             formIsValid = false;
-            errors["coefficient"] = "Cannot be Empty";
-        }
-
-        if(fields["coefficient"] === 0){
-            formIsValid = false;
-            errors["coefficient"] = "Cannot be 0";
-        }
-
-        //nbHeure
-        if(!fields["nbHeure"]){
-            formIsValid = false;
-            errors["nbHeure"] = "Cannot be Empty";
-        }
-
-        if(fields["nbHeure"] < 10){
-            formIsValid = false;
-            errors["nbHeure"] = "Cannot be 0";
+            errors["niveau"] = "Cannot be Empty";
         }
 
         this.setState({ errors: errors });
@@ -93,17 +89,15 @@ class AddSubject extends React.Component {
     }
 
     render() {
-        const blockInvalidChar = e => ['+', '-'].includes(e.key) && e.preventDefault();
-
         return (
             <div>
                 <div className="page-header">
                     <Row>
                         <Col sm={12}>
-                            <h3 className="page-title">Add Subject</h3>
+                            <h3 className="page-title">Add Classes</h3>
                             <ul className="breadcrumb">
-                                <li className="breadcrumb-item"><a href="/subjects">Subject</a></li>
-                                <li className="breadcrumb-item active">Add Subject</li>
+                                <li className="breadcrumb-item"><a href="/classes">Classes</a></li>
+                                <li className="breadcrumb-item active">Add Class</li>
                             </ul>
                         </Col>
                     </Row>
@@ -114,34 +108,41 @@ class AddSubject extends React.Component {
                         <Card>
                             <Card.Body>
                                 <Form onSubmit= {this.contactSubmit.bind(this)}>
-                                    <Row className="add-subject">
+                                    <Row>
                                         <Col sm={12}>
-                                            <h5 className="form-title"><span>Subject Information</span></h5>
+                                            <h5 className="form-title"><span>Class Details</span></h5>
                                         </Col>
 
-                                        <Col xs={12} sm={12} className="mt-5">
+                                        <Col xs={12} sm={6}>
                                             <Form.Group>
-                                                <Form.Label>Subject Name</Form.Label>
-                                                <Form.Control type="text" onChange={this.handleChange.bind(this, "name")}
-                                                value={this.state.fields["name"]} />          
+                                                <Form.Label>Class Name</Form.Label>
+                                                <Form.Control type="" onChange={this.handleChange.bind(this, "name")}
+                                                value={this.state.fields["name"]} />
                                                 <span className="subject-error">{this.state.errors["name"]}</span>
                                             </Form.Group>
                                         </Col>
-
+                                        <Col xs={12} sm={6}>
+                                            <Form.Group>
+                                                <Form.Label>Class desgniation</Form.Label>
+                                                <Form.Control type="text" placeholder="Please enter a number" prefix="$"
+                                                onChange={this.handleChange.bind(this, "desgniation")}
+                                                value={this.state.fields["desgniation"]} />
+                                                <span className="subject-error">{this.state.errors["desgniation"]}</span>
+                                            </Form.Group>
+                                        </Col>
                                         <Col xs={12} sm={6}>
                                             <Form.Group>
                                                 <Form.Label>Formation</Form.Label>
                                                 <Form.Control as="select" onChange={this.handleChange.bind(this, "formation")}
                                                 value={this.state.fields["formation"]}>
-                                                    <option disabled selected value>Choisir une formation</option>	
-                                                    <option>Data Science</option>
-                                                    <option>Business Inteligence</option>
+                                                    <option disabled selected value>Choisir une Formation</option>	
+                                                    <option>DS</option>
+                                                    <option>TWIN</option>
                                                     <option>Cloud</option>
                                                 </Form.Control>
                                                 <span className="subject-error">{this.state.errors["formation"]}</span>
                                             </Form.Group>
                                         </Col>
-
                                         <Col xs={12} sm={6}>
                                             <Form.Group>
                                                 <Form.Label>Niveau</Form.Label>
@@ -156,26 +157,8 @@ class AddSubject extends React.Component {
                                             </Form.Group>
                                         </Col>
 
-                                        <Col xs={12} sm={6}>
-                                            <Form.Group>
-                                                <Form.Label>Coefficient</Form.Label>
-                                                <Form.Control type="number" min="0" onKeyDown={blockInvalidChar}
-                                                 onChange={this.handleChange.bind(this, "coefficient")} value={this.state.fields["coefficient"]} />          
-                                                            <span className="subject-error">{this.state.errors["coefficient"]}</span>
-                                            </Form.Group>
-                                        </Col>
-                                            
-                                        <Col xs={12} sm={6} className="mb-4">
-                                            <Form.Group>
-                                                <Form.Label>Nombre d'heure</Form.Label>
-                                                <Form.Control type="number" min="0" onKeyDown={blockInvalidChar}
-                                                 onChange={this.handleChange.bind(this, "nbHeure")} value={this.state.fields["nbHeure"]} /> 
-                                                    <span className="subject-error">{this.state.errors["nbHeure"]}</span>
-                                            </Form.Group>
-                                        </Col>
-
                                         <Col xs={12}>
-                                            <Button variant="outline-success" type="submit">
+                                            <Button variant="primary" type="submit">
                                                 Submit
                                             </Button>
                                         </Col>                                        
@@ -189,4 +172,4 @@ class AddSubject extends React.Component {
         )
     }
 }
-export { AddSubject };
+export { AddClass };
