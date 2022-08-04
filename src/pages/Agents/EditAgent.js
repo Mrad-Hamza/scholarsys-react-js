@@ -1,15 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import userService from '../../services/user.service';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 // Import Components
 import { Row, Col, Card, Form, Button } from "react-bootstrap";
+import userService from '../../services/user.service';
 
 
-function AddTeacher() {
+
+function EditAgent() {
+
     const [firstNameClassName, setFirstNameClassName] = useState("form-control is-invalid")
     const [lastNameClassName, setLastNameClassName] = useState("form-control is-invalid")
     const [birthDateClassName, setBirthDateClassName] = useState("form-control is-invalid")
     const [emailClassName, setEmailClassName] = useState("form-control is-invalid")
     const [passwordClassName, setPasswordClassName] = useState("form-control is-invalid")
+
+    const userId = useParams()
 
     const [firstname, setFirstName] = useState("")
     const [lastname, setLastName] = useState("")
@@ -18,6 +23,7 @@ function AddTeacher() {
     const [birthDate, setBirthDate] = useState(Date())
 
     useEffect(() => {
+        getUser(userId.id)
     }, [])
 
     useEffect(() => {
@@ -39,7 +45,7 @@ function AddTeacher() {
         }
         console.log(lastname)
     }, [lastname])
-
+    
     useEffect(() => {
         if (birthDate === "" || birthDate === null || birthDate === undefined) {
             setBirthDateClassName("form-control is-invalid")
@@ -49,7 +55,7 @@ function AddTeacher() {
         }
         console.log(birthDate)
     }, [birthDate])
-
+    
     useEffect(() => {
         if (!isValidEmail(email)) {
             setEmailClassName("form-control is-invalid")
@@ -59,9 +65,9 @@ function AddTeacher() {
         }
         console.log(email)
     }, [email])
+    
 
-
-    useEffect(() => {
+    useEffect(() => {    
         if (!isValidPassword(password)) {
             setPasswordClassName("form-control is-invalid")
         }
@@ -99,20 +105,31 @@ function AddTeacher() {
         return /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/.test(password)
     }
 
+
+    async function getUser(id) {
+        let user = await userService.getUser(id)
+        setFirstName(user.data.firstname)
+        setLastName(user.data.lastname)
+        setEmail(user.data.email)
+        setPassword(user.data.password)
+        setBirthDate(user.data.birthDate)
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault()
-        //userService.editUser(firstname, lastname, email, password, birthDate)
+        userService.editUser(userId.id,firstname,lastname,email,password,birthDate)
         console.log("normalement user updated haha")
     }
+
     return (
         <div>
             <div className="page-header">
                 <Row>
                     <Col sm={12}>
-                        <h3 className="page-title">Add Teacher</h3>
+                        <h3 className="page-title">Edit Agent</h3>
                         <ul className="breadcrumb">
-                            <li className="breadcrumb-item"><a href="">Teachers</a></li>
-                            <li className="breadcrumb-item active">Edit Teachers</li>
+                            <li className="breadcrumb-item"><a href="">Agents</a></li>
+                            <li className="breadcrumb-item active">Edit Agents</li>
                         </ul>
                     </Col>
                 </Row>
@@ -125,7 +142,7 @@ function AddTeacher() {
                             <Form>
                                 <Row>
                                     <Col sm={12}>
-                                        <h5 className="form-title"><span>Teachers Information</span></h5>
+                                        <h5 className="form-title"><span>Agent Information</span></h5>
                                     </Col>
 
                                     <Col xs={12} sm={6}>
@@ -140,28 +157,33 @@ function AddTeacher() {
                                             <Form.Control type="text" className={lastNameClassName} defaultValue={lastname} onChange={handleLastNameChange} />
                                         </Form.Group>
                                     </Col>
-
+                                    <Col xs={12} sm={6}>
+                                        <Form.Group>
+                                            <Form.Label>User Id</Form.Label>
+                                            <Form.Control disabled   type="text" defaultValue={userId.id} />
+                                        </Form.Group>
+                                    </Col>
                                     <Col xs={12} sm={6}>
                                         <Form.Group>
                                             <Form.Label>Date of Birth</Form.Label>
-                                            <Form.Control type="date" className={birthDateClassName} defaultValue={birthDate} onChange={handleBirthDateChange} />
+                                            <Form.Control type="date" className={birthDateClassName} defaultValue={birthDate} onChange={handleBirthDateChange}/>
                                         </Form.Group>
                                     </Col>
                                     <Col xs={12} sm={6}>
                                         <Form.Group>
                                             <Form.Label>Email</Form.Label>
-                                            <Form.Control type="text" className={emailClassName} defaultValue={email} onChange={handleEmailChange} required />
+                                            <Form.Control type="text" className={emailClassName} defaultValue={email} onChange={handleEmailChange} required/>
                                         </Form.Group>
                                     </Col>
                                     <Col xs={12} sm={6}>
                                         <Form.Group>
                                             <Form.Label>Password</Form.Label>
-                                            <Form.Control type="text" className={passwordClassName} defaultValue={password} onChange={handlePasswordChange} required />
+                                            <Form.Control type="text" className={passwordClassName} defaultValue={password} onChange={handlePasswordChange} required/>
                                         </Form.Group>
                                     </Col>
                                     <Col xs={12} sm={6}>
                                         <Form.Group>
-                                            <Form.Label>Teacher Image</Form.Label>
+                                            <Form.Label>Agent Image</Form.Label>
                                             <Form.File className="form-control" />
                                         </Form.Group>
                                     </Col>
@@ -180,4 +202,4 @@ function AddTeacher() {
     )
 }
 
-export default AddTeacher
+export default EditAgent

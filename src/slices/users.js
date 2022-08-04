@@ -7,17 +7,17 @@ export const allUsers = createAsyncThunk(
     "users/allUsers",
     async (thunkAPI) => {
         try {
-          /*   const response = await userService.getAllUsers()
-            return {users : response.data}; */
+             const response = await userService.getAllUsers()
+            return {users : response.data}; 
         } catch (error) {
-           /*  const message =
+             const message =
                 (error.response &&
                     error.response.data &&
                     error.response.data.message) ||
                 error.message ||
                 error.toString();
             thunkAPI.dispatch(setMessage(message));
-            return thunkAPI.rejectWithValue(); */
+            return thunkAPI.rejectWithValue(); 
         }
     }
 );
@@ -29,6 +29,7 @@ const usersSlice = createSlice({
     initialState,
     extraReducers: {
         [allUsers.fulfilled]: (state, action) => {
+            console.log(action)
             state.users = action.payload.users;
         },
         [allUsers.rejected]: (state, action) => {

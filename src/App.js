@@ -1,12 +1,36 @@
 import logo from './logo.svg';
 import './App.css';
-import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
+import { Route, BrowserRouter as Router, Switch, Link } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
+import Register from './pages/Register/Register';
+import ForgotPassword from './pages/ForgotPassword/ForgotPassword';
+import Login from './pages/Login/Login';
+import Header from './_components/header/Header';
+import { allUsers } from './slices/users';
+
+import PrivateAgentRoute from './_components/_helpers/PrivateAgentRoute';
+import PrivateStudentRoute from './_components/_helpers/PrivateStudentRoute';
+import PrivateTeacherRoute from './_components/_helpers/PrivateTeacherRoute';
+import RouteAuthenticated from './_components/_helpers/RouteAuthenticated';
+import RouteUnauthenticated from './_components/_helpers/RouteUnauthenticated';
+
+import Home from './pages/Home/Home';
+
+import AddAgent from './pages/Agents/AddAgent';
+import EditAgent from './pages/Agents/EditAgent';
+import AgentsList from './pages/Agents/AgentsList';
+
+import AddTeacher from './pages/Teachers/AddTeacher';
+import EditTeacher from './pages/Teachers/EditTeacher';
+import TeachersList from './pages/Teachers/TeachersList';
+
+import AddStudent from './pages/Students/AddStudent';
+import EditStudent from './pages/Students/EditStudent';
+import StudentsList from './pages/Students/StudentsList';
+
 
 import {
   // Authentication Modules
-  Login,
-  Register,
-  ForgotPassword,
   Error,
 
   // Dashboard Module
@@ -15,15 +39,10 @@ import {
   TeacherDashboard,
 
   // Students Module
-  StudentsList,
-  AddStudent,
-  EditStudent,
+
   StudentDetails,
 
   // Teachers Module
-  TeachersList,
-  AddTeacher,
-  EditTeacher,
   TeacherDetails,
 
   // Department Module
@@ -49,7 +68,6 @@ import {
   AddHoliday,
 
   // Fees Module
-  Fees,
   AddFees,
   EditFees,
 
@@ -106,28 +124,42 @@ import {
   AddEvent,
 
   // Profile Module
-  Profile,
+
 
   // Inbox Module
   Inbox,
   Compose
 } from './pages';
-import { Sidebar, Header, Footer } from './_components';
+import Profile from './pages/Profile/Profile';
+import { Footer } from './_components';
+import Fees from './pages/Fees/Fees';
+import { useEffect } from 'react';
+import Sidebar from './_components/sidebar/Sidebar';
+import Unauthorized from './pages/UnauthorizedPage/Unauthorized';
 
 
 function App() {
-  return (
-    <div className="App">
-      <Router>
-        <Switch>
+  const { isLoggedIn } = useSelector((state) => state.auth);
+  const { user: currentUser } = useSelector((state) => state.auth);
 
-          {/* Login Layout */}
-          <Route exact path="/" component={Login} />
-          <Route path="/register" component={Register} />
-          <Route path="/forgot-password" component={ForgotPassword} />
-          <Route path="/error" component={Error} />
+  useEffect(() => {
+  }, [])
 
-        </Switch>
+
+  if (!isLoggedIn) {
+    return (
+      <div>
+        <RouteUnauthenticated exact path="/login" component={Login} />
+        <RouteUnauthenticated exact path="/" component={Login} />
+        <RouteUnauthenticated path="/register" component={Register} />
+        <RouteUnauthenticated path="/forgot-password" component={ForgotPassword} />
+        <RouteUnauthenticated path="/error" component={Error} />
+        <Login />
+      </div>
+    )
+  } else {
+    return (
+      <div className="App">
 
         <div className="main-wrapper">
           {/* <Sidebar/> */}
@@ -137,119 +169,135 @@ function App() {
 
             <div className="page-wrapper">
               <div className="content container-fluid">
-                <Switch>
-                  <Route path="/dashboard" component={Dashboard} />
-                  <Route path="/student-dashboard" component={StudentDashboard} />
-                  <Route path="/teacher-dashboard" component={TeacherDashboard} />
-
-                  {/* Student Module */}
-                  <Route path="/students" component={StudentsList} />
-                  <Route path="/add-student" component={AddStudent} />
-                  <Route path="/edit-student" component={EditStudent} />
-                  <Route path="/student-details" component={StudentDetails} />
-
-                  {/* Blank Page Module */}
-                  <Route path="/blank-page" component={BlankPage} />
-
-                  {/* Teacher Module */}
-                  <Route path="/teachers" component={TeachersList} />
-                  <Route path="/add-teacher" component={AddTeacher} />
-                  <Route path="/edit-teacher" component={EditTeacher} />
-                  <Route path="/teacher-details" component={TeacherDetails} />
-
-                  {/* Department Module */}
-                  <Route path="/add-department" component={AddDepartment} />
-                  <Route path="/edit-department" component={EditDepartment} />
-                  <Route path="/departments" component={DepartmentsList} />
-
-                  {/* Subject Module */}
-                  <Route path="/add-subject" component={AddSubject} />
-                  <Route path="/edit-subject" component={EditSubject} />
-                  <Route path="/subjects" component={SubjectsList} />
-
-                  {/* Accounts Module */}
-                  <Route path="/fees-collections" component={FeesCollections} />
-                  <Route path="/expenses" component={Expenses} />
-                  <Route path="/salary" component={Salary} />
-                  <Route path="/add-fees-collections" component={AddFeesCollections} />
-                  <Route path="/add-expenses" component={AddExpenses} />
-                  <Route path="/add-salary" component={AddSalary} />
-
-                  {/* Holiday Module */}
-                  <Route path="/holiday" component={Holiday} />
-                  <Route path="/add-holiday" component={AddHoliday} />
-
-                  {/* Fees Module */}
-                  <Route path="/fees" component={Fees} />
-                  <Route path="/add-fees" component={AddFees} />
-                  <Route path="/edit-fees" component={EditFees} />
-
-                  {/* Exam Module */}
-                  <Route path="/exam" component={Exam} />
-                  <Route path="/add-exam" component={AddExam} />
-                  <Route path="/edit-exam" component={EditExam} />
-
-                  {/* Time Table Module */}
-                  <Route path="/time-table" component={TimeTable} />
-                  <Route path="/add-time-table" component={AddTimeTable} />
-                  <Route path="/edit-time-table" component={EditTimeTable} />
-
-                  {/* Library Module */}
-                  <Route path="/library" component={Library} />
-                  <Route path="/add-book" component={AddBook} />
-                  <Route path="/edit-book" component={EditBook} />
 
 
-                  {/* Sports Module */}
-                  <Route path="/sports" component={SportsList} />
-                  <Route path="/add-sport" component={AddSport} />
-                  <Route path="/edit-sport" component={EditSport} />
+                <PrivateAgentRoute path="/dashboard" component={Dashboard} />
+                <PrivateAgentRoute path="/student-dashboard" component={StudentDashboard} />
+                <PrivateAgentRoute path="/teacher-dashboard" component={TeacherDashboard} />
 
-                  {/* Hostel Module */}
-                  <Route path="/hostel" component={HostelList} />
-                  <Route path="/add-room" component={AddRoom} />
-                  <Route path="/edit-room" component={EditRoom} />
+                {/* Student Module */}
+                <PrivateAgentRoute path="/students" component={StudentsList} />
+                <PrivateAgentRoute path="/add-student" component={AddStudent} />
+                <PrivateAgentRoute path="/edit-student" component={EditStudent} />
+                <PrivateAgentRoute path="/student-details" component={StudentDetails} />
 
-                  {/* Transport Module */}
-                  <Route path="/transport" component={TransportsList} />
-                  <Route path="/add-transport" component={AddTransport} />
-                  <Route path="/edit-transport" component={EditTransport} />
+                {/* Blank Page Module */}
+                <PrivateAgentRoute path="/blank-page" component={BlankPage} />
 
-                  {/* Components Module */}
-                  <Route path="/components" component={Components} />
+                {/* Teacher Module */}
+                <PrivateAgentRoute path="/teachers" component={TeachersList} />
+                <PrivateAgentRoute path="/add-teacher" component={AddTeacher} />
+                <PrivateAgentRoute path="/edit-teacher" component={EditTeacher} />
+                <PrivateAgentRoute path="/teacher-details" component={TeacherDetails} />
 
-                  {/* Forms Module */}
-                  <Route path="/form-basic-inputs" component={FormBasicInput} />
-                  <Route path="/form-horizontal" component={FormHorizontal} />
-                  <Route path="/form-input-groups" component={FormInputGroups} />
-                  <Route path="/form-mask" component={FormMask} />
-                  <Route path="/form-validation" component={FormValidation} />
-                  <Route path="/form-vertical" component={FormVertical} />
+                {/* Users Module */}
+                <PrivateAgentRoute path="/add-agent" component={AddAgent} />
+                <PrivateAgentRoute path="/edit-agent/:id" component={EditAgent} />
+                <PrivateAgentRoute path="/agents" component={AgentsList} />
 
-                  {/* Tables Module */}
-                  <Route path="/tables-basic" component={TablesBasic} />
-                  <Route path="/data-tables" component={DataTables} />
+                {/* Department Module */}
+                <PrivateAgentRoute path="/add-department" component={AddDepartment} />
+                <PrivateAgentRoute path="/edit-department" component={EditDepartment} />
+                <PrivateAgentRoute path="/departments" component={DepartmentsList} />
 
-                  {/* Events Module */}
-                  <Route path="/event" component={Event} />
-                  <Route path="/add-event" component={AddEvent} />
+                {/* Subject Module */}
+                <PrivateAgentRoute path="/add-subject" component={AddSubject} />
+                <PrivateAgentRoute path="/edit-subject" component={EditSubject} />
+                <PrivateAgentRoute path="/subjects" component={SubjectsList} />
 
-                  {/* Profile Module */}
-                  <Route path="/profile" component={Profile} />
+                {/* Accounts Module */}
+                <RouteAuthenticated path="/fees-collections" component={FeesCollections} />
+                <RouteAuthenticated path="/expenses" component={Expenses} />
+                <RouteAuthenticated path="/salary" component={Salary} />
+                <RouteAuthenticated path="/add-fees-collections" component={AddFeesCollections} />
+                <RouteAuthenticated path="/add-expenses" component={AddExpenses} />
+                <RouteAuthenticated path="/add-salary" component={AddSalary} />
 
-                  {/* Inbox Module */}
-                  <Route path="/inbox" component={Inbox} />
-                  <Route path="/compose" component={Compose} />
-                </Switch>
+                {/* Users Module */}
+
+                {/* Holiday Module */}
+                <RouteAuthenticated path="/holiday" component={Holiday} />
+                <RouteAuthenticated path="/add-holiday" component={AddHoliday} />
+
+                {/* Fees Module */}
+                <RouteAuthenticated path="/fees" component={Fees} />
+                <RouteAuthenticated path="/add-fees" component={AddFees} />
+                <RouteAuthenticated path="/edit-fees" component={EditFees} />
+
+                {/* Exam Module */}
+                <RouteAuthenticated path="/exam" component={Exam} />
+                <RouteAuthenticated path="/add-exam" component={AddExam} />
+                <RouteAuthenticated path="/edit-exam" component={EditExam} />
+
+                {/* Time Table Module */}
+                <RouteAuthenticated path="/time-table" component={TimeTable} />
+                <RouteAuthenticated path="/add-time-table" component={AddTimeTable} />
+                <RouteAuthenticated path="/edit-time-table" component={EditTimeTable} />
+
+                {/* Library Module */}
+                <RouteAuthenticated path="/library" component={Library} />
+                <RouteAuthenticated path="/add-book" component={AddBook} />
+                <RouteAuthenticated path="/edit-book" component={EditBook} />
+
+
+                {/* Sports Module */}
+                <RouteAuthenticated path="/sports" component={SportsList} />
+                <RouteAuthenticated path="/add-sport" component={AddSport} />
+                <RouteAuthenticated path="/edit-sport" component={EditSport} />
+
+                {/* Hostel Module */}
+                <RouteAuthenticated path="/hostel" component={HostelList} />
+                <RouteAuthenticated path="/add-room" component={AddRoom} />
+                <RouteAuthenticated path="/edit-room" component={EditRoom} />
+
+                {/* Transport Module */}
+                <RouteAuthenticated path="/transport" component={TransportsList} />
+                <RouteAuthenticated path="/add-transport" component={AddTransport} />
+                <RouteAuthenticated path="/edit-transport" component={EditTransport} />
+
+                {/* Components Module */}
+                <PrivateAgentRoute path="/components" component={Components} />
+
+                {/* Forms Module */}
+                <PrivateAgentRoute path="/form-basic-inputs" component={FormBasicInput} />
+                <PrivateAgentRoute path="/form-horizontal" component={FormHorizontal} />
+                <PrivateAgentRoute path="/form-input-groups" component={FormInputGroups} />
+                <PrivateAgentRoute path="/form-mask" component={FormMask} />
+                <PrivateAgentRoute path="/form-validation" component={FormValidation} />
+                <PrivateAgentRoute path="/form-vertical" component={FormVertical} />
+
+                {/* Tables Module */}
+                <PrivateAgentRoute path="/tables-basic" component={TablesBasic} />
+                <PrivateAgentRoute path="/data-tables" component={DataTables} />
+
+                {/* Events Module */}
+                <PrivateAgentRoute path="/event" component={Event} />
+                <PrivateAgentRoute path="/add-event" component={AddEvent} />
+
+                {/* Profile Module */}
+                <RouteAuthenticated path="/profile" component={Profile} />
+
+                {/* Inbox Module */}
+                <PrivateAgentRoute path="/inbox" component={Inbox} />
+                <PrivateAgentRoute path="/compose" component={Compose} />
+
+                <RouteAuthenticated path="/unauthorized" component={Unauthorized} />
+
+
+                <RouteAuthenticated exact path="/home" component={Home} />
+
+          {/*  <RouteAuthenticated exact path="/" component={Home} />  */}
+
+
               </div>
               <Route render={(props) => <Footer {...props} />} />
             </div>
           </div>
         </div>
+      </div>
+    );
+  }
 
-      </Router>   
-    </div>
-  );
 }
 
 export default App;

@@ -3,8 +3,8 @@ import userService from '../../services/user.service';
 // Import Components
 import { Row, Col, Card, Form, Button } from "react-bootstrap";
 
+function AddAgent() {
 
-function AddTeacher() {
     const [firstNameClassName, setFirstNameClassName] = useState("form-control is-invalid")
     const [lastNameClassName, setLastNameClassName] = useState("form-control is-invalid")
     const [birthDateClassName, setBirthDateClassName] = useState("form-control is-invalid")
@@ -109,10 +109,10 @@ function AddTeacher() {
             <div className="page-header">
                 <Row>
                     <Col sm={12}>
-                        <h3 className="page-title">Add Teacher</h3>
+                        <h3 className="page-title">Add Agent</h3>
                         <ul className="breadcrumb">
-                            <li className="breadcrumb-item"><a href="">Teachers</a></li>
-                            <li className="breadcrumb-item active">Edit Teachers</li>
+                            <li className="breadcrumb-item"><a href="">Agents</a></li>
+                            <li className="breadcrumb-item active">Edit Agents</li>
                         </ul>
                     </Col>
                 </Row>
@@ -125,7 +125,7 @@ function AddTeacher() {
                             <Form>
                                 <Row>
                                     <Col sm={12}>
-                                        <h5 className="form-title"><span>Teachers Information</span></h5>
+                                        <h5 className="form-title"><span>Agent Information</span></h5>
                                     </Col>
 
                                     <Col xs={12} sm={6}>
@@ -161,7 +161,7 @@ function AddTeacher() {
                                     </Col>
                                     <Col xs={12} sm={6}>
                                         <Form.Group>
-                                            <Form.Label>Teacher Image</Form.Label>
+                                            <Form.Label>Agent Image</Form.Label>
                                             <Form.File className="form-control" />
                                         </Form.Group>
                                     </Col>
@@ -180,4 +180,4 @@ function AddTeacher() {
     )
 }
 
-export default AddTeacher
+export default AddAgent

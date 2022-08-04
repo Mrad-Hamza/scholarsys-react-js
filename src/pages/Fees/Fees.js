@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDownload, faPencilAlt, faPlus, faTrash } from '@fortawesome/fontawesome-free-solid';
 
 const data = [
-    { 
+    {
         id: 'PRE2209',
         feesName: 'Exam Fees',
         class: '10',
@@ -19,7 +19,7 @@ const data = [
         endDate: '28 Apr 2020',
         action: ''
     },
-    { 
+    {
         id: 'PRE2213',
         feesName: 'Exam Fees',
         class: '1',
@@ -28,7 +28,7 @@ const data = [
         endDate: '28 Apr 2020',
         action: ''
     },
-    { 
+    {
         id: 'PRE2143',
         feesName: 'Exam Fees',
         class: '9',
@@ -37,7 +37,7 @@ const data = [
         endDate: '28 Apr 2020',
         action: ''
     },
-    { 
+    {
         id: 'PRE2431',
         feesName: 'Sports Day Fees',
         class: '8',
@@ -46,7 +46,7 @@ const data = [
         endDate: '28 Apr 2020',
         action: ''
     },
-    { 
+    {
         id: 'PRE1534',
         feesName: 'Exam Fees',
         class: '7',
@@ -55,7 +55,7 @@ const data = [
         endDate: '28 Apr 2020',
         action: ''
     },
-    { 
+    {
         id: 'PRE2153',
         feesName: 'Sports Day Fees',
         class: '2',
@@ -64,7 +64,7 @@ const data = [
         endDate: '28 Apr 2020',
         action: ''
     },
-    { 
+    {
         id: 'PRE1434',
         feesName: 'Sports Day Fees',
         class: '6',
@@ -73,7 +73,7 @@ const data = [
         endDate: '28 Apr 2020',
         action: ''
     },
-    { 
+    {
         id: 'PRE2345',
         feesName: 'Exam Fees',
         class: '12',
@@ -82,7 +82,7 @@ const data = [
         endDate: '28 Apr 2020',
         action: ''
     },
-    { 
+    {
         id: 'PRE2365',
         feesName: 'Annual Day Fees',
         class: '11',
@@ -91,7 +91,7 @@ const data = [
         endDate: '28 Apr 2020',
         action: ''
     },
-    { 
+    {
         id: 'PRE1234',
         feesName: 'Class Test Fees',
         class: '5',
@@ -105,90 +105,83 @@ const data = [
 const columns = [
     {
         name: 'ID',
-        selector:  row=>row.id,
+        selector: row => row.id,
         sortable: true,
     },
     {
         name: 'Fees Name',
         sortable: true,
-        selector: row=>row.feesName
+        selector: row => row.feesName
     },
     {
         name: 'Class',
-        selector: row=>row.class,
+        selector: row => row.class,
         sortable: true,
     },
     {
         name: 'Amount',
-        selector: row=>row.amount,
+        selector: row => row.amount,
         sortable: true,
     },
     {
         name: 'Start Date',
-        selector: row=>row.startDate,
+        selector: row => row.startDate,
         sortable: true,
     },
     {
         name: 'End Date',
-        selector: row=>row.endDate,
+        selector: row => row.endDate,
         sortable: true,
     },
     {
         name: 'Action',
-        selector:  row=>row.action,
+        selector: row => row.action,
         sortable: true,
         cell: () => <div><a href="/edit-fees" className="btn btn-sm bg-success-light me-2">
-        <FontAwesomeIcon icon={faPencilAlt} /> </a> <a href="#" className="btn btn-sm bg-danger-light"> <FontAwesomeIcon icon={faTrash} /> </a></div>
+            <FontAwesomeIcon icon={faPencilAlt} /> </a> <a href="#" className="btn btn-sm bg-danger-light"> <FontAwesomeIcon icon={faTrash} /> </a></div>
     },
 ];
 
-
-class Fees extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
-
-    render() {        
-        const tableData = {
-            columns,
-            data,
-        };
-        return (
-            <div>
+function Fees() {
+    const tableData = {
+        columns,
+        data,
+    };
+    return (
+        <div>
+            <div className="page-header">
                 <div className="page-header">
-                    <div className="page-header">
-                        <Row>
-                            <Col className="col">
-                                <h3 className="page-title">Fees</h3>
-                                <ul className="breadcrumb">
-                                    <li className="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
-                                    <li className="breadcrumb-item active">Fees</li>
-                                </ul>
-                            </Col>
-                            <Col className="col-auto text-end float-right ms-auto">
-                                <a href="#" className="btn btn-outline-primary me-2"><FontAwesomeIcon icon={faDownload} /> Download</a>
-                                <a href="/add-fees" className="btn btn-primary"><FontAwesomeIcon icon={faPlus} /></a>
-                            </Col>
-                        </Row>
-                    </div>
+                    <Row>
+                        <Col className="col">
+                            <h3 className="page-title">Fees</h3>
+                            <ul className="breadcrumb">
+                                <li className="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
+                                <li className="breadcrumb-item active">Fees</li>
+                            </ul>
+                        </Col>
+                        <Col className="col-auto text-end float-right ms-auto">
+                            <a href="#" className="btn btn-outline-primary me-2"><FontAwesomeIcon icon={faDownload} /> Download</a>
+                            <a href="/add-fees" className="btn btn-primary"><FontAwesomeIcon icon={faPlus} /></a>
+                        </Col>
+                    </Row>
                 </div>
-
-                <Card>
-                    <DataTableExtensions
-                        {...tableData}
-                    >
-                        <DataTable
-                            noHeader
-                            defaultSortField="id"
-                            defaultSortAsc={false}
-                            pagination
-                            highlightOnHover
-                        />
-                    </DataTableExtensions>
-                </Card>
             </div>
-        )
-    }
+
+            <Card>
+                <DataTableExtensions
+                    {...tableData}
+                >
+                    <DataTable
+                        noHeader
+                        defaultSortField="id"
+                        defaultSortAsc={false}
+                        pagination
+                        highlightOnHover
+                    />
+                </DataTableExtensions>
+            </Card>
+        </div>
+    )
 }
-export { Fees };
+
+export default Fees

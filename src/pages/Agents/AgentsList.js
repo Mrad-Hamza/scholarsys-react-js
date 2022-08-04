@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { allUsers } from '../../slices/users';
 import userService from '../../services/user.service';
 import { useHistory } from 'react-router-dom'
+
 // Import Components
 import { Row, Col, Card, Media, ProgressBar } from "react-bootstrap";
 //Import Data Table
@@ -13,7 +14,6 @@ import 'react-data-table-component-extensions/dist/index.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDownload, faPencilAlt, faPlus, faTrash } from '@fortawesome/fontawesome-free-solid';
 import { useSelector } from 'react-redux';
-
 import Img1 from '../../assets/img/profiles/avatar-01.jpg';
 import Img2 from '../../assets/img/profiles/avatar-02.jpg';
 import Img3 from '../../assets/img/profiles/avatar-03.jpg';
@@ -28,9 +28,11 @@ import Img10 from '../../assets/img/profiles/avatar-10.jpg';
 let data = [
 ];
 
+let data2 = []
 
 
-function StudentsList() {
+
+function AgentsList() {
     const dispatch = useDispatch()
     const [isDisplayed, setIsDisplayed] = useState(false);
     const [progresBarValue, setProgresBarValue] = useState(0)
@@ -65,7 +67,7 @@ function StudentsList() {
             name: 'Action',
             selector: row => row.id,
             sortable: true,
-            cell: (row) => <div><button className="btn btn-sm bg-success-light me-2" onClick={() => history.push('/edit-teacher/' + row.id)}>
+            cell: (row) => <div><button className="btn btn-sm bg-success-light me-2" onClick={() => history.push('/edit-agent/' + row.id)}>
                 <FontAwesomeIcon icon={faPencilAlt} /> </button> <button className="btn btn-sm bg-danger-light" onClick={() => deleteUser(row)}> <FontAwesomeIcon icon={faTrash} /> </button></div>
         }
     ];
@@ -107,7 +109,7 @@ function StudentsList() {
     }
 
     const addUser = () => {
-        history.push('/add-teacher')
+        history.push('/add-agent')
     }
 
 
@@ -126,16 +128,17 @@ function StudentsList() {
             </DataTableExtensions>
         )
     }
+
     return (
         <div>
             <div className="page-header">
                 <div className="page-header">
                     <Row>
                         <Col className="col">
-                            <h3 className="page-title">Teachers</h3>
+                            <h3 className="page-title">Agents</h3>
                             <ul className="breadcrumb">
                                 <li className="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
-                                <li className="breadcrumb-item active">Teachers</li>
+                                <li className="breadcrumb-item active">Agents</li>
                             </ul>
                         </Col>
                         <Col className="col-auto text-end float-right ms-auto">
@@ -155,4 +158,22 @@ function StudentsList() {
     )
 }
 
-export default StudentsList
+export default AgentsList
+
+/* class UsersList extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {}
+    } */
+
+/*     render() {
+        const tableData = {
+            columns,
+            data,
+        };
+        return (
+       
+        )
+    }
+}
+export { UsersList }; */
