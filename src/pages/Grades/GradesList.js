@@ -136,17 +136,13 @@ const columns = [
 ];
 
 
-class GradesList extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
-
-    render() {        
-        const tableData = {
+function GradesList () {
+   
+    const tableData = {
             columns,
             data,
         };
+
         return (
             <div>
                 <div className="page-header">
@@ -182,6 +178,5 @@ class GradesList extends React.Component {
                 </Card>
             </div>
         )
-    }
 }
 export { GradesList };

@@ -99,17 +99,13 @@ const columns = [
     },
 ];
 
-class SubjectsList extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
+function SubjectsList () {      
 
-    render() {        
         const tableData = {
             columns,
             data,
         };
+
         return (
             <div>
                 <div className="page-header">
@@ -145,6 +141,5 @@ class SubjectsList extends React.Component {
                 </Card>
             </div>
         )
-    }
 }
 export { SubjectsList };

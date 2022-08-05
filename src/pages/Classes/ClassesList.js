@@ -92,17 +92,13 @@ const columns = [
 ];
 
 
-class ClassesList extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
-
-    render() {        
+function ClassesList() {
+    
         const tableData = {
             columns,
             data,
         };
+
         return (
             <div>
                 <div className="page-header">
@@ -138,6 +134,5 @@ class ClassesList extends React.Component {
                 </Card>
             </div>
         )
-    }
 }
-export { ClassesList };
+export {ClassesList};

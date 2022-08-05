@@ -102,23 +102,18 @@ const columns = [
         name: 'Action',
         selector: row=>row.action,
         sortable: true,
-        cell: (formation) => <div><Link to={`/edit-formation/${formation.id}`} className="btn btn-sm bg-success-light me-2">
+        cell: (formation) => <div><Link to={{pathname: `/edit-formation/${formation.id}`, state:{id : formation.id} }} className="btn btn-sm bg-success-light me-2">
         <FontAwesomeIcon icon={faPencilAlt} /> </Link>  <a href="#" className="btn btn-sm bg-danger-light "> <FontAwesomeIcon icon={faTrash} /> </a></div>
     },
 ];
 
 
-class FormationsList extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
-
-    render() {        
+function FormationsList (){       
         const tableData = {
             columns,
             data,
         };
+
         return (
             <div>
                 <div className="page-header">
@@ -154,6 +149,5 @@ class FormationsList extends React.Component {
                 </Card>
             </div>
         )
-    }
 }
 export { FormationsList };

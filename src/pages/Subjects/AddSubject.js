@@ -1,192 +1,130 @@
-import React from 'react';
-// Import Components
-import { Row, Col, Card, Form, Button } from "react-bootstrap";
+    import React, {useState} from 'react';
+    // Import Components
+    import { Row, Col, Card, Form, Button } from "react-bootstrap";
+    
+    function AddSubject () {
 
-class AddSubject extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {fields : {} , errors : {}}
-    }
+        const [name, setName] = useState();
+        const [nameIsValid, setNameIsValid] = useState(false);
 
-    handleValidation(){
-        let fields = this.state.fields;
-        let errors = {};
-        let formIsValid = true;
-        
-        //subjectName
-        if(!fields["name"]){
-            formIsValid = false;
-            errors["name"] = "Cannot be empty";
-        }
-        
-        if(typeof fields["name"] !== "undefined"){
-            if(!fields["name"].match(/^[a-zA-Z1-9]+$/)){
-                formIsValid = false;
-                errors["name"] = "Only Letters";
-            }
-            if(fields["name"].length < 3){
-                formIsValid = false;
-                errors["name"] = "Subject name too short";
-            }
-            if(fields["name"].length > 20){
-                formIsValid = false;
-                errors["name"] = "Subject name too long";
-            }
-        }
+        const [level, setLevel] = useState();
+        const [levelIsValid, setlLevelIsValid] = useState(false);
 
-        //Niveau
-        if(!fields["niveau"]){
-            formIsValid = false;
-            errors["niveau"] = "You must choose a level";
-        }
+        const [coef, setCoef] = useState();
+        const [coefIsValid, setCoefIsValid] = useState(false);
 
-        //formation
-        if(!fields["formation"]){
-            formIsValid = false;
-            errors["formation"] = "You must choose a formation";
-        }
+        const [nbHeure, setNbHeure] = useState();
+        const [nbHeureIsValid, setNbHeureIsValid] = useState(false);
 
-        //coefficient
-        if(!fields["coefficient"]){
-            formIsValid = false;
-            errors["coefficient"] = "Cannot be Empty";
-        }
-
-        if(fields["coefficient"] === 0){
-            formIsValid = false;
-            errors["coefficient"] = "Cannot be 0";
-        }
-
-        //nbHeure
-        if(!fields["nbHeure"]){
-            formIsValid = false;
-            errors["nbHeure"] = "Cannot be Empty";
-        }
-
-        if(fields["nbHeure"] < 10){
-            formIsValid = false;
-            errors["nbHeure"] = "Cannot be 0";
-        }
-
-        this.setState({ errors: errors });
-        return formIsValid;
-    }
-
-    handleChange(field, e){    		
-        let fields = this.state.fields;
-        fields[field] = e.target.value;        
-        this.setState({fields});
-      }
-
-    contactSubmit(e){
-    e.preventDefault();
-    if(this.handleValidation()){
-        let confirm = window.confirm('Do you really want to submit the form?');
-        if(confirm === true){
-            alert("Form has been submitted");
-        }
-    }else{
-        alert("Form has errors.")
-        return false;
-    }
-
-    }
-
-    render() {
         const blockInvalidChar = e => ['+', '-'].includes(e.key) && e.preventDefault();
+    
+        const handleChange = () =>{
+    
+        }
 
-        return (
-            <div>
-                <div className="page-header">
+        const handleSubmit = (subject) => {
+            subject.preventDefault();
+            if((nameIsValid === false) || (levelIsValid === false) || (coefIsValid === false) 
+            || (nbHeureIsValid === false) ){
+                alert('Form contain errors');
+                return false;
+            }
+            else{
+                let confirm = window.confirm('Do you really want to submit the form?');
+                if(confirm === true){
+                    alert("Form has been submitted");
+                    return true
+                }
+                else{
+                    return false;
+                }
+            }
+        }
+
+            return (
+                <div>
+                    <div className="page-header">
+                        <Row>
+                            <Col sm={12}>
+                                <h3 className="page-title">Add Subject</h3>
+                                <ul className="breadcrumb">
+                                    <li className="breadcrumb-item"><a href="/subjects">Subject</a></li>
+                                    <li className="breadcrumb-item active">Add Subject</li>
+                                </ul>
+                            </Col>
+                        </Row>
+                    </div>
+    
                     <Row>
                         <Col sm={12}>
-                            <h3 className="page-title">Add Subject</h3>
-                            <ul className="breadcrumb">
-                                <li className="breadcrumb-item"><a href="/subjects">Subject</a></li>
-                                <li className="breadcrumb-item active">Add Subject</li>
-                            </ul>
+                            <Card>
+                                <Card.Body>
+                                    <Form   >
+                                        <Row className="add-subject">
+                                            <Col sm={12}>
+                                                <h5 className="form-title"><span>Subject Information</span></h5>
+                                            </Col>
+    
+                                            <Col xs={12} sm={12} className="mt-5">
+                                                <Form.Group>
+                                                    <Form.Label>Subject Name</Form.Label>
+                                                    <Form.Control type="text" onChange={handleChange}/>          
+                                                </Form.Group>
+                                            </Col>
+    
+                                            <Col xs={12} sm={6}>
+                                                <Form.Group>
+                                                    <Form.Label>Formation</Form.Label>
+                                                    <Form.Control as="select" onChange={handleChange}>
+                                                        <option disabled selected value>Choisir une formation</option>	
+                                                        <option>Data Science</option>
+                                                        <option>Business Inteligence</option>
+                                                        <option>Cloud</option>
+                                                    </Form.Control>
+                                                </Form.Group>
+                                            </Col>
+    
+                                            <Col xs={12} sm={6}>
+                                                <Form.Group>
+                                                    <Form.Label>Niveau</Form.Label>
+                                                    <Form.Control as="select" onChange={handleChange}>
+                                                        <option disabled selected value>Choisir un niveau</option>	
+                                                        <option>1ére</option>
+                                                        <option>2éme</option>
+                                                        <option>3éme</option>
+                                                    </Form.Control>
+                                                </Form.Group>
+                                            </Col>
+    
+                                            <Col xs={12} sm={6}>
+                                                <Form.Group>
+                                                    <Form.Label>Coefficient</Form.Label>
+                                                    <Form.Control type="number" min="0" onKeyDown={blockInvalidChar}
+                                                        onChange={handleChange}/>          
+                                                </Form.Group>
+                                            </Col>
+                                                
+                                            <Col xs={12} sm={6} className="mb-4">
+                                                <Form.Group>
+                                                    <Form.Label>Nombre d'heure</Form.Label>
+                                                    <Form.Control type="number" min="0" onKeyDown={blockInvalidChar}
+                                                        onChange={handleChange} /> 
+                                                </Form.Group>
+                                            </Col>
+    
+                                            <Col xs={12}>
+                                                <Button variant="outline-success" type="submit" onClick={handleSubmit}>
+                                                    Submit
+                                                </Button>
+                                            </Col>                                        
+                                        </Row>                                    
+                                    </Form>                                
+                                </Card.Body>
+                            </Card>
                         </Col>
                     </Row>
                 </div>
-
-                <Row>
-                    <Col sm={12}>
-                        <Card>
-                            <Card.Body>
-                                <Form onSubmit= {this.contactSubmit.bind(this)}>
-                                    <Row className="add-subject">
-                                        <Col sm={12}>
-                                            <h5 className="form-title"><span>Subject Information</span></h5>
-                                        </Col>
-
-                                        <Col xs={12} sm={12} className="mt-5">
-                                            <Form.Group>
-                                                <Form.Label>Subject Name</Form.Label>
-                                                <Form.Control type="text" onChange={this.handleChange.bind(this, "name")}
-                                                value={this.state.fields["name"]} />          
-                                                <span className="subject-error">{this.state.errors["name"]}</span>
-                                            </Form.Group>
-                                        </Col>
-
-                                        <Col xs={12} sm={6}>
-                                            <Form.Group>
-                                                <Form.Label>Formation</Form.Label>
-                                                <Form.Control as="select" onChange={this.handleChange.bind(this, "formation")}
-                                                value={this.state.fields["formation"]}>
-                                                    <option disabled selected value>Choisir une formation</option>	
-                                                    <option>Data Science</option>
-                                                    <option>Business Inteligence</option>
-                                                    <option>Cloud</option>
-                                                </Form.Control>
-                                                <span className="subject-error">{this.state.errors["formation"]}</span>
-                                            </Form.Group>
-                                        </Col>
-
-                                        <Col xs={12} sm={6}>
-                                            <Form.Group>
-                                                <Form.Label>Niveau</Form.Label>
-                                                <Form.Control as="select" onChange={this.handleChange.bind(this, "niveau")}
-                                                value={this.state.fields["niveau"]}>
-                                                    <option disabled selected value>Choisir un niveau</option>	
-                                                    <option>1ére</option>
-                                                    <option>2éme</option>
-                                                    <option>3éme</option>
-                                                </Form.Control>
-                                                <span className="subject-error">{this.state.errors["niveau"]}</span>
-                                            </Form.Group>
-                                        </Col>
-
-                                        <Col xs={12} sm={6}>
-                                            <Form.Group>
-                                                <Form.Label>Coefficient</Form.Label>
-                                                <Form.Control type="number" min="0" onKeyDown={blockInvalidChar}
-                                                 onChange={this.handleChange.bind(this, "coefficient")} value={this.state.fields["coefficient"]} />          
-                                                            <span className="subject-error">{this.state.errors["coefficient"]}</span>
-                                            </Form.Group>
-                                        </Col>
-                                            
-                                        <Col xs={12} sm={6} className="mb-4">
-                                            <Form.Group>
-                                                <Form.Label>Nombre d'heure</Form.Label>
-                                                <Form.Control type="number" min="0" onKeyDown={blockInvalidChar}
-                                                 onChange={this.handleChange.bind(this, "nbHeure")} value={this.state.fields["nbHeure"]} /> 
-                                                    <span className="subject-error">{this.state.errors["nbHeure"]}</span>
-                                            </Form.Group>
-                                        </Col>
-
-                                        <Col xs={12}>
-                                            <Button variant="outline-success" type="submit">
-                                                Submit
-                                            </Button>
-                                        </Col>                                        
-                                    </Row>                                    
-                                </Form>                                
-                            </Card.Body>
-                        </Card>
-                    </Col>
-                </Row>
-            </div>
-        )
+            )
     }
-}
-export { AddSubject };
+    
+    export { AddSubject };

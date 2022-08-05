@@ -92,13 +92,8 @@ const columns = [
 ];
 
 
-class LevelsList extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
-
-    render() {        
+function LevelsList () {
+         
         const tableData = {
             columns,
             data,
@@ -139,5 +134,5 @@ class LevelsList extends React.Component {
             </div>
         )
     }
-}
+    
 export { LevelsList };
