@@ -1,22 +1,24 @@
 import React, {useState} from 'react';
 // Import Components
 import { Row, Col, Card, Form, Button } from "react-bootstrap";
+import { useLocation } from 'react-router-dom';
 
 function EditFormation() {
+    const formation = useLocation().state.formation;
 
-    const [name , setName] = useState('Louay');
+    const [name , setName] = useState(formation.name);
     const [nameIsValid , setNameIsValid] = useState(false);
 
-    const [mtAnn, setMtAnn] = useState(2000);
+    const [mtAnn, setMtAnn] = useState(formation.mtAnn);
     const [mtAnnIsValid , setMtAnnIsValid] = useState(false);
 
-    const [durAnn, setDurAnn] = useState(3);
+    const [durAnn, setDurAnn] = useState(formation.dureeAnn);
     const [durAnnIsValid , setDurAnnIsValid] = useState(false);
 
-    const [durMens, setDurMens] = useState(9);
+    const [durMens, setDurMens] = useState(formation.dureeMens);
     const [durMensIsValid , setDurMensIsValid] = useState(false);
 
-    const [dtEch, setDtEch] = useState('1998-03-26');
+    const [dtEch, setDtEch] = useState(formation.dateEcheance);
     const [dtEchIsValid , setDtEchIsValid] = useState(false);
 
     const handleName = (name) =>{

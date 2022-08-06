@@ -1,22 +1,24 @@
 import React, {useState} from 'react';
 // Import Components
 import { Row, Col, Card, Form, Button } from "react-bootstrap";
+import { useLocation } from 'react-router-dom';
 
 function EditGrade () {
+    const grade = useLocation().state.grade;
     
-    const [type, setType] = useState('HALFTIME');
+    const [type, setType] = useState(grade.type);
     const [typeIsValid, setTypeIsValid] = useState(false);
 
-    const [matiere, setMatiere] = useState('Math');
+    const [matiere, setMatiere] = useState(grade.matiere);
     const [matiereIsValid, setlMatiereIsValid] = useState(false);
 
-    const [etudiant, setEtudiant] = useState('Louay');
+    const [etudiant, setEtudiant] = useState(grade.etudiant);
     const [etudiantIsValid, setEtudiantIsValid] = useState(false);
 
-    const [prof, setProf] = useState('Sirine');
+    const [prof, setProf] = useState(grade.prof);
     const [profIsValid, setProfIsValid] = useState(false);
     
-    const [dtPass, setDtPass] = useState('1998-03-26');
+    const [dtPass, setDtPass] = useState(grade.date);
     const [dtPassIsValid, setDtPassIsValid] = useState(false);
 
     const handleType = (type) => {

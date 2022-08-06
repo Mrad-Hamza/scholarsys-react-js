@@ -81,7 +81,7 @@
             }
         }
 
-        const handleSubmit = (subject) => {
+        const handleSubmit = async (subject) => {
             subject.preventDefault();
             if((nameIsValid === false) || (levelIsValid === false) || (coefIsValid === false) 
             || (nbHeureIsValid === false) ){
@@ -91,6 +91,20 @@
             else{
                 let confirm = window.confirm('Do you really want to submit the form?');
                 if(confirm === true){
+                    subject.preventDefault();
+                    const response = await fetch('http://localhost:8000/createMatiere', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                            designation: name,
+                            coef: coef,
+                            nbr_heure: nbHeure
+                        }),
+                        headers: {
+                            'Content-type': 'application/json; charset=UTF-8'
+                        }
+                    });
+                    const data = await response.json();
+                    console.log(data);
                     alert("Form has been submitted");
                     return true
                 }

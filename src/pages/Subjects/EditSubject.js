@@ -1,23 +1,26 @@
 import React, {useState} from 'react';
+import { useLocation } from 'react-router-dom';
 
 // Import Components
 import { Row, Col, Card, Form, Button } from "react-bootstrap";
 
 
 function EditSubject () {
-    const [name, setName] = useState('Louay');
-        const [nameIsValid, setNameIsValid] = useState(false);
+    const subject = useLocation().state.subject;
 
-        const [level, setLevel] = useState('1ére');
-        const [levelIsValid, setlLevelIsValid] = useState(false);
+    const [name, setName] = useState(subject.name);
+    const [nameIsValid, setNameIsValid] = useState(false);
 
-        const [coef, setCoef] = useState(2);
-        const [coefIsValid, setCoefIsValid] = useState(false);
+    const [level, setLevel] = useState(subject.niveau);
+    const [levelIsValid, setlLevelIsValid] = useState(false);
 
-        const [nbHeure, setNbHeure] = useState(20);
-        const [nbHeureIsValid, setNbHeureIsValid] = useState(false);
+    const [coef, setCoef] = useState(subject.coefficient);
+    const [coefIsValid, setCoefIsValid] = useState(false);
 
-        const blockInvalidChar = e => ['+', '-'].includes(e.key) && e.preventDefault();
+    const [nbHeure, setNbHeure] = useState(subject.nbHeure);
+    const [nbHeureIsValid, setNbHeureIsValid] = useState(false);
+
+    const blockInvalidChar = e => ['+', '-'].includes(e.key) && e.preventDefault();
 
         const handleName = (name) =>{
             if (name.target.value !== undefined){

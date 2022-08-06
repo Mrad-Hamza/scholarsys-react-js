@@ -1,19 +1,21 @@
 import React, {useState,useEffect} from 'react';
 // Import Components
 import { Row, Col, Card, Form, Button } from "react-bootstrap";
+import { useLocation } from 'react-router-dom';
 
 function EditClass(){
+    const classes = useLocation().state.classes;
 
-    const [name, setName] = useState('4éme année DS 2');
+    const [name, setName] = useState(classes.name);
     const [nameIsValid, setNameIsValid]= useState(false);
 
-    const [desgniation, setDesignation] = useState('4DS2');
+    const [desgniation, setDesignation] = useState(classes.desgniation);
     const [desgniationIsValid, setDesignationIsValid] = useState(false);
 
-    const [niveau, setNiveau] = useState('1ére');
+    const [niveau, setNiveau] = useState(classes.niveau);
     const[niveauIsValid, setNiveauIsValid] = useState(false);
 
-    const [formation, setFormation] = useState('DS');
+    const [formation, setFormation] = useState(classes.formation);
     const [formationIsValid, setFormationIsValid] = useState(false);
 
     const handleName = (name) =>{

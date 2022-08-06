@@ -13,42 +13,42 @@ import { faDownload, faPencilAlt, faPlus, faTrash } from '@fortawesome/fontaweso
 const data = [
     { 
         id: 'level1',
-        name: 'Computer Science Engg',
+        desgniation: 'Computer Science Engg',
         acronyme: 'Aaliyah',
         formation: '180',
         action: ''
     },
     {
         id: 'level2',
-        name: 'Computer Science Engg',
+        desgniation: 'Computer Science Engg',
         acronyme: 'Aaliyah',
         formation: '180',
         action: ''
     },
     {
         id: 'level3',
-        name: 'Computer Science Engg',
+        desgniation: 'Computer Science Engg',
         acronyme: 'Aaliyah',
         formation: '180',
         action: ''
     },
     {
         id: 'level4',
-        name: 'Computer Science Engg',
+        desgniation: 'Computer Science Engg',
         acronyme: 'Aaliyah',
         formation: '180',
         action: ''
     },
     {
         id: 'level5',
-        name: 'Computer Science Engg',
+        desgniation: 'Computer Science Engg',
         acronyme: 'Aaliyah',
         formation: '180',
         action: ''
     },
     {
         id: 'level6',
-        name: 'Computer Science Engg',
+        desgniation: 'Computer Science Engg',
         acronyme: 'Aaliyah',
         formation: '180',
         action: ''
@@ -57,9 +57,9 @@ const data = [
 
 const columns = [
     {
-        name: 'Name',
+        name: 'Desgniation',
         sortable: true,
-        selector: row=>row.name
+        selector: row=>row.desgniation
     },
     {
         name: 'Acronyme',
@@ -75,7 +75,8 @@ const columns = [
         name: 'Action',
         selector: row=>row.action,
         sortable: true,
-        cell: (level) => <div><Link to={`/edit-level/${level.id}`} className="btn btn-sm bg-success-light me-2">
+        cell: (level) => <div><Link to={{pathname :`/edit-level/${level.id}` , state: {level} }}
+        className="btn btn-sm bg-success-light me-2">
         <FontAwesomeIcon icon={faPencilAlt} /> </Link>  <a href="#" className="btn btn-sm bg-danger-light "> <FontAwesomeIcon icon={faTrash} /> </a></div>
     },
 ];

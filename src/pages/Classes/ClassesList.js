@@ -86,7 +86,8 @@ const columns = [
         name: 'Action',
         selector: row=>row.action,
         sortable: true,
-        cell: (classes) => <div><Link to={`/edit-class/${classes.id}`} className="btn btn-sm bg-success-light me-2">
+        cell: (classes) => <div><Link to={{pathname:`/edit-class/${classes.id}` ,state: {classes} }}
+         className="btn btn-sm bg-success-light me-2">
         <FontAwesomeIcon icon={faPencilAlt} /> </Link>  <a href="#" className="btn btn-sm bg-danger-light "> <FontAwesomeIcon icon={faTrash} /> </a></div>
     },
 ];

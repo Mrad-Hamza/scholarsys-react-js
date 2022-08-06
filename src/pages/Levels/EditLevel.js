@@ -1,16 +1,19 @@
 import React, {useState} from 'react';
 // Import Components
 import { Row, Col, Card, Form, Button } from "react-bootstrap";
+import { useLocation } from 'react-router-dom';
 
 function EditLevel () {
 
-    const [desgniation,setdesgniation] = useState('hello');
+    const level = useLocation().state.level;
+
+    const [desgniation,setdesgniation] = useState(level.desgniation);
     const[desgniationIsValid, setdesgniationIsValid] = useState(false);
 
-    const [acronyme, setAcronyme] = useState('hell');
+    const [acronyme, setAcronyme] = useState(level.acronyme);
     const [acronymeIsValid, setAcronymeIsValid] = useState(false);
 
-    const [formation, setFormation] = useState('ds');
+    const [formation, setFormation] = useState(level.formation);
     const [formationIsValid, setFormationIsValid] = useState(false);
 
 

@@ -14,7 +14,7 @@ const data = [
     { 
         id: 'formation1',
         name: 'Data Science',
-        mtAnn: '7700DT',
+        mtAnn: '7700',
         dureeAnn: '1995',
         dureeMens: '180',
         dateEcheance:'20/20/2020',
@@ -23,7 +23,7 @@ const data = [
     {
         id: 'formation2',
         name: 'Data Science',
-        mtAnn: '7700DT',
+        mtAnn: '7700',
         dureeAnn: '1995',
         dureeMens: '180',
         dateEcheance:'20/20/2020',
@@ -32,7 +32,7 @@ const data = [
     {
         id: 'formation3',
         name: 'Data Science',
-        mtAnn: '7700DT',
+        mtAnn: '7700',
         dureeAnn: '1995',
         dureeMens: '180',
         dateEcheance:'20/20/2020',
@@ -41,7 +41,7 @@ const data = [
     {
         id: 'formation4',
         name: 'Data Science',
-        mtAnn: '7700DT',
+        mtAnn: '7700',
         dureeAnn: '1995',
         dureeMens: '180',
         dateEcheance:'20/20/2020',
@@ -50,7 +50,7 @@ const data = [
     {
         id: 'formation5',
         name: 'Data Science',
-        mtAnn: '7700DT',
+        mtAnn: '7700',
         dureeAnn: '1995',
         dureeMens: '180',
         dateEcheance:'20/20/2020',
@@ -59,7 +59,7 @@ const data = [
     {
         id: 'formation6',
         name: 'Data Science',
-        mtAnn: '7700DT',
+        mtAnn: '7700',
         dureeAnn: '1995',
         dureeMens: '180',
         dateEcheance:'20/20/2020',
@@ -97,8 +97,11 @@ const columns = [
         name: 'Action',
         selector: row=>row.action,
         sortable: true,
-        cell: (formation) => <div><Link to={{pathname: `/edit-formation/${formation.id}`, state:{id : formation.id} }} className="btn btn-sm bg-success-light me-2">
-        <FontAwesomeIcon icon={faPencilAlt} /> </Link>  <a href="#" className="btn btn-sm bg-danger-light "> <FontAwesomeIcon icon={faTrash} /> </a></div>
+        cell: (formation) => <div><Link to={{pathname: `/edit-formation/${formation.id}`, state:{formation} }} 
+         className="btn btn-sm bg-success-light me-2">
+        <FontAwesomeIcon icon={faPencilAlt} />
+        </Link>
+        <a href="#" className="btn btn-sm bg-danger-light "> <FontAwesomeIcon icon={faTrash} /> </a></div>
     },
 ];
 

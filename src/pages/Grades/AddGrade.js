@@ -87,7 +87,7 @@ function AddGrade () {
         }
     }
 
-    const handleSubmit = (grade) => {
+    const handleSubmit = async (grade) => {
         grade.preventDefault();
         if((typeIsValid === false) || (matiereIsValid === false) || (etudiantIsValid === false) 
         || (profIsValid === false) || (dtPassIsValid === false) ){
@@ -97,6 +97,19 @@ function AddGrade () {
         else{
             let confirm = window.confirm('Do you really want to submit the form?');
             if(confirm === true){
+                grade.preventDefault();
+                    const response = await fetch('http://localhost:8000/createNote', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                            type: type,
+                            date_passage_examen: dtPass
+                        }),
+                        headers: {
+                            'Content-type': 'application/json; charset=UTF-8'
+                        }
+                    });
+                    const data = await response.json();
+                    console.log(data);
                 alert("Form has been submitted");
                 return true
             }

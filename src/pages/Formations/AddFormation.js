@@ -51,7 +51,7 @@ function AddFormation(){
         }
 
         if(mtAnnIsValid===true){
-            setMtAnn(mtAnn.target.value)
+            setMtAnn(mtAnn.target.value);
         }
     }
 
@@ -67,7 +67,7 @@ function AddFormation(){
         }
 
         if(durAnnIsValid===true){
-            setDurAnn(durAnn.target.value)
+            setDurAnn(durAnn.target.value);
         }
     }
 
@@ -96,11 +96,11 @@ function AddFormation(){
         }
 
         if(dtEchIsValid===true){
-            setDtEch(dtEch.target.value)
+            setDtEch(dtEch.target.value);
         }
     }
 
-    const handleSubmit = (formation) => {
+    const handleSubmit = async (formation) => {
         formation.preventDefault();
         if((nameIsValid === false) || (mtAnnIsValid === false) || (durAnnIsValid === false)
          || (durMensIsValid === false) || (dtEchIsValid === false)){
@@ -110,6 +110,22 @@ function AddFormation(){
         else{
             let confirm = window.confirm('Do you really want to submit the form?');
             if(confirm === true){
+                formation.preventDefault();
+                const response = await fetch('http://localhost:8000/createFormation', {
+                method: 'POST',
+                body: JSON.stringify({
+                        nom: name,
+                        montant_anuelle: mtAnn,
+                        duree_anuelle: durAnn,
+                        duree_mensuelle: durMens,
+                        date_echeance: dtEch
+                    }),
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8'
+                    }
+                });
+                const data = await response.json();
+                console.log(data);
                 alert("Form has been submitted");
                 return true
             }

@@ -49,7 +49,7 @@ const data = [
     {
         id: 'PRE2209',
         name: 'Big Data',
-        niveau: '5',
+        niveau: '1ére',
         coefficient: '5',
         nbHeure :'42'
     },
@@ -80,8 +80,8 @@ const columns = [
         name: 'Action',
         selector: row=>row.action,
         sortable: true,
-        cell: (subject) => <div>
-                            <Link to={`/edit-subject/${subject.id}`} className="btn btn-sm bg-success-light me-2">
+        cell: (subject) => <div> <Link to={{ pathname: `/edit-subject/${subject.id}` , state: {subject} }} 
+                            className="btn btn-sm bg-success-light me-2">
                             <FontAwesomeIcon icon={faPencilAlt} /> </Link> 
                             <a href="#" className="btn btn-sm bg-danger-light"> <FontAwesomeIcon icon={faTrash} /> </a>
                         </div>

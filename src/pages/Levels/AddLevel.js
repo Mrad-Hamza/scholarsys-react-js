@@ -64,7 +64,7 @@ function AddLevel() {
         setFormation(formation.target.value)
     }
 
-    const handleSubmit = (level) => {
+    const handleSubmit = async (level) => {
         level.preventDefault();
         if((desgniationIsValid === false) || (acronymeIsValid === false) || (formationIsValid === false)){
             alert('Form contain errors');
@@ -73,6 +73,19 @@ function AddLevel() {
         else{
             let confirm = window.confirm('Do you really want to submit the form?');
             if(confirm === true){
+                level.preventDefault();
+                const response = await fetch('http://localhost:8000/createNiveau', {
+                method: 'POST',
+                body: JSON.stringify({
+                        designation: desgniation,
+                        acronyme: acronyme
+                    }),
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8'
+                    }
+                });
+                const data = await response.json();
+                console.log(data);
                 alert("Form has been submitted");
                 return true
             }
