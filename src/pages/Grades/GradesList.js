@@ -12,12 +12,45 @@ import { faDownload, faPencilAlt, faPlus, faTrash } from '@fortawesome/fontaweso
 
 const data = [
     {
-        id: 'PRE2209',
+        id: 'grade1',
         type: 'EXAM1',
-        formation: 'Data Science',
-        niveau: '4éme',
         matiere: 'TLA',
-        class: '4DS1',
+        etudiant: 'Louay',
+        prof:'Foulen',
+        date: '12/10/2022',
+        action: ''
+    },
+    {
+        id: 'grade2',
+        type: 'EXAM1',
+        matiere: 'TLA',
+        etudiant: 'Louay',
+        prof:'Foulen',
+        date: '12/10/2022',
+        action: ''
+    },
+    {
+        id: 'grade4',
+        type: 'EXAM1',
+        matiere: 'TLA',
+        etudiant: 'Louay',
+        prof:'Foulen',
+        date: '12/10/2022',
+        action: ''
+    },
+    {
+        id: 'grade5',
+        type: 'EXAM1',
+        matiere: 'TLA',
+        etudiant: 'Louay',
+        prof:'Foulen',
+        date: '12/10/2022',
+        action: ''
+    },
+    {
+        id: 'grade6',
+        type: 'EXAM1',
+        matiere: 'TLA',
         etudiant: 'Louay',
         prof:'Foulen',
         date: '12/10/2022',
@@ -26,58 +59,7 @@ const data = [
     {
         id: 'PRE2209',
         type: 'EXAM1',
-        formation: 'Data Science',
-        niveau: '4éme',
         matiere: 'TLA',
-        class: '4DS1',
-        etudiant: 'Louay',
-        prof:'Foulen',
-        date: '12/10/2022',
-        action: ''
-    },
-    {
-        id: 'PRE2209',
-        type: 'EXAM1',
-        formation: 'Data Science',
-        niveau: '4éme',
-        matiere: 'TLA',
-        class: '4DS1',
-        etudiant: 'Louay',
-        prof:'Foulen',
-        date: '12/10/2022',
-        action: ''
-    },
-    {
-        id: 'PRE2209',
-        type: 'EXAM1',
-        formation: 'Data Science',
-        niveau: '4éme',
-        matiere: 'TLA',
-        class: '4DS1',
-        etudiant: 'Louay',
-        prof:'Foulen',
-        date: '12/10/2022',
-        action: ''
-    },
-    {
-        id: 'PRE2209',
-        type: 'EXAM1',
-        formation: 'Data Science',
-        niveau: '4éme',
-        matiere: 'TLA',
-        class: '4DS1',
-        etudiant: 'Louay',
-        prof:'Foulen',
-        date: '12/10/2022',
-        action: ''
-    },
-    {
-        id: 'PRE2209',
-        type: 'EXAM1',
-        formation: 'Data Science',
-        niveau: '4éme',
-        matiere: 'TLA',
-        class: '4DS1',
         etudiant: 'Louay',
         prof:'Foulen',
         date: '12/10/2022',
@@ -92,23 +74,8 @@ const columns = [
         selector: row=>row.type
     },
     {
-        name: 'Formation',
-        selector: row=>row.formation,
-        sortable: true,
-    },
-    {
-        name: 'Level',
-        selector: row=>row.niveau,
-        sortable: true,
-    },
-    {
         name: 'Subject',
         selector: row=>row.matiere,
-        sortable: true,
-    },
-    {
-        name: 'Class',
-        selector: row=>row.class,
         sortable: true,
     },
     {

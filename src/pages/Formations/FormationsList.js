@@ -12,7 +12,7 @@ import { faDownload, faPencilAlt, faPlus, faTrash } from '@fortawesome/fontaweso
 
 const data = [
     { 
-        id: 'PRE2209',
+        id: 'formation1',
         name: 'Data Science',
         mtAnn: '7700DT',
         dureeAnn: '1995',
@@ -21,7 +21,7 @@ const data = [
         action: ''
     },
     {
-        id: 'PRE2209',
+        id: 'formation2',
         name: 'Data Science',
         mtAnn: '7700DT',
         dureeAnn: '1995',
@@ -30,7 +30,7 @@ const data = [
         action: ''
     },
     {
-        id: 'PRE2209',
+        id: 'formation3',
         name: 'Data Science',
         mtAnn: '7700DT',
         dureeAnn: '1995',
@@ -39,7 +39,7 @@ const data = [
         action: ''
     },
     {
-        id: 'PRE2209',
+        id: 'formation4',
         name: 'Data Science',
         mtAnn: '7700DT',
         dureeAnn: '1995',
@@ -48,7 +48,7 @@ const data = [
         action: ''
     },
     {
-        id: 'PRE2209',
+        id: 'formation5',
         name: 'Data Science',
         mtAnn: '7700DT',
         dureeAnn: '1995',
@@ -57,7 +57,7 @@ const data = [
         action: ''
     },
     {
-        id: 'PRE2209',
+        id: 'formation6',
         name: 'Data Science',
         mtAnn: '7700DT',
         dureeAnn: '1995',
@@ -68,11 +68,6 @@ const data = [
 ];
 
 const columns = [
-    {
-        name: 'ID',
-        selector: row=>row.id,
-        sortable: true,
-    },
     {
         name: 'Name',
         sortable: true,

@@ -12,7 +12,7 @@ import { faDownload, faPencilAlt, faPlus, faTrash } from '@fortawesome/fontaweso
 
 const data = [
     { 
-        id: 'PRE2209',
+        id: 'class1',
         name: 'Data Science',
         desgniation: 'DS',
         formation: 'Data Science',
@@ -20,7 +20,7 @@ const data = [
         action: ''
     },
     {
-        id: 'PRE2209',
+        id: 'class2',
         name: 'Data Science',
         desgniation: 'DS',
         formation: 'Data Science',
@@ -28,7 +28,7 @@ const data = [
         action: ''
     },
     {
-        id: 'PRE2209',
+        id: 'class3',
         name: 'Data Science',
         desgniation: 'DS',
         formation: 'Data Science',
@@ -36,7 +36,7 @@ const data = [
         action: ''
     },
     {
-        id: 'PRE2209',
+        id: 'class4',
         name: 'Data Science',
         desgniation: 'DS',
         formation: 'Data Science',
@@ -44,7 +44,7 @@ const data = [
         action: ''
     },
     {
-        id: 'PRE2209',
+        id: 'class5',
         name: 'Data Science',
         desgniation: 'DS',
         formation: 'Data Science',
@@ -52,7 +52,7 @@ const data = [
         action: ''
     },
     {
-        id: 'PRE2209',
+        id: 'class6',
         name: 'Data Science',
         desgniation: 'DS',
         formation: 'Data Science',

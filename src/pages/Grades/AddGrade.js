@@ -19,8 +19,72 @@ function AddGrade () {
     const [dtPass, setDtPass] = useState();
     const [dtPassIsValid, setDtPassIsValid] = useState(false);
 
-    const handleChange = () => {
+    const handleType = (type) => {
+        setTypeIsValid(true);
+        if (type.target.value !== undefined){
+            if(type.target.value.length < 3){
+                setTypeIsValid(false)
+            }
 
+            if(type.target.value.length > 20){
+                setTypeIsValid(false)
+            }
+            
+        }else{
+            setTypeIsValid(false);
+        }
+
+        if(typeIsValid === true){
+            setType(type.target.value);
+        }
+    }
+
+    const handleMatiere = (matiere) => {
+        if(matiere.target.value !== undefined){
+            setlMatiereIsValid(true);
+        }else{
+            setlMatiereIsValid(false)
+        }
+
+        if(matiereIsValid === true){
+            setMatiere(matiere.target.value)
+        }
+    }
+
+    const handleEtudiant = (etudiant) => {
+        if(etudiant.target.value !== undefined){
+            setEtudiantIsValid(true)
+        }else{
+            setEtudiantIsValid(false)
+        }
+
+        if(etudiantIsValid === true){
+            setEtudiant(etudiant.target.value)
+        }
+    }
+
+    const handleProf = (prof) => {
+        if(prof.target.value !== undefined){
+            setProfIsValid(true)
+        }else{
+            setProfIsValid(false)
+        }
+
+        if(profIsValid === true){
+            setProf(prof.target.value)
+        }
+    }
+    
+    const handleDtPass = (dtPass) => {
+        if(dtPass.target.value !== undefined){
+            setDtPassIsValid(true)
+        }else{
+            setDtPassIsValid(false)
+        }
+
+        if(dtPassIsValid === true){
+            setDtPass(dtPass.target.value)
+        }
     }
 
     const handleSubmit = (grade) => {
@@ -66,40 +130,17 @@ function AddGrade () {
                                             <h5 className="form-title"><span>Grade Details</span></h5>
                                         </Col>
 
-                                        <Col xs={12} sm={6}>
+                                        <Col xs={12} sm={12}>
                                             <Form.Group>
                                                 <Form.Label>Grade type</Form.Label>
-                                                <Form.Control type="" onChange={handleChange}/>
+                                                <Form.Control type="" onChange={handleType}/>
                                             </Form.Group>
                                         </Col>
-                                        <Col xs={12} sm={6}>
-                                            <Form.Group>
-                                                <Form.Label>Formation</Form.Label>
-                                                <Form.Control as="select" onChange={handleChange}>
-                                                    <option disabled selected value>Choisir une formation</option>	
-                                                    <option>DS</option>
-                                                    <option>BI</option>
-                                                    <option>TWIN</option>
-                                                </Form.Control>
-                                            </Form.Group>
-                                        </Col>
-                                        <Col xs={12} sm={6}>
-                                            <Form.Group>
-                                                <Form.Label>Niveau</Form.Label>
-                                                <Form.Control as="select" onChange={handleChange}>
-                                                    <option disabled selected value>Choisir un niveau</option>	
-                                                    <option>1</option>
-                                                    <option>2</option>
-                                                    <option>3</option>
-                                                    <option>4</option>
-                                                    <option>5</option>
-                                                </Form.Control>
-                                            </Form.Group>
-                                        </Col>
+
                                         <Col xs={12} sm={6}>
                                             <Form.Group>
                                                 <Form.Label>Matiere</Form.Label>
-                                                <Form.Control as="select" onChange={handleChange}>
+                                                <Form.Control as="select" onChange={handleMatiere}>
                                                     <option disabled selected value>Choisir une matiere</option>	
                                                     <option>Math</option>
                                                     <option>TLA</option>
@@ -107,22 +148,11 @@ function AddGrade () {
                                                 </Form.Control>
                                             </Form.Group>
                                         </Col>
-                                        <Col xs={12} sm={6}>
-                                            <Form.Group>
-                                                <Form.Label>Class</Form.Label>
-                                                <Form.Control as="select" onChange={handleChange}>
-                                                    <option disabled selected value>Choisir une class</option>	
-                                                    <option>1</option>
-                                                    <option>2</option>
-                                                    <option>3</option>
-                                                </Form.Control>
-                                            </Form.Group>
-                                        </Col>
                                         
                                         <Col xs={12} sm={6}>
                                             <Form.Group>
                                                 <Form.Label>Etudiant</Form.Label>
-                                                <Form.Control as="select" onChange={handleChange}>
+                                                <Form.Control as="select" onChange={handleEtudiant}>
                                                     <option disabled selected value>Choisir un etudiant</option>	
                                                     <option>Louay</option>
                                                     <option>Hamza</option>
@@ -134,7 +164,7 @@ function AddGrade () {
                                         <Col xs={12} sm={6}>
                                             <Form.Group>    
                                                 <Form.Label>Proffeseur</Form.Label>
-                                                <Form.Control as="select" onChange={handleChange}>
+                                                <Form.Control as="select" onChange={handleProf}>
                                                     <option disabled selected value>Choisir un prof</option>	
                                                     <option>Achref</option>
                                                     <option>Amine</option>
@@ -146,7 +176,7 @@ function AddGrade () {
                                         <Col xs={12} sm={6}>
                                             <Form.Group>
                                                 <Form.Label>Date passage examen</Form.Label>
-                                                <Form.Control type="date" onChange={handleChange}/>
+                                                <Form.Control type="date" onChange={handleDtPass}/>
                                             </Form.Group>
                                         </Col>
 

@@ -12,50 +12,44 @@ import { faDownload, faPencilAlt, faPlus, faTrash } from '@fortawesome/fontaweso
 
 const data = [
     { 
-        id: 'PRE2209',
+        id: 'level1',
         name: 'Computer Science Engg',
         acronyme: 'Aaliyah',
-        matiere: '1995',
         formation: '180',
         action: ''
     },
     {
-        id: 'PRE2209',
+        id: 'level2',
         name: 'Computer Science Engg',
         acronyme: 'Aaliyah',
-        matiere: '1995',
         formation: '180',
         action: ''
     },
     {
-        id: 'PRE2209',
+        id: 'level3',
         name: 'Computer Science Engg',
         acronyme: 'Aaliyah',
-        matiere: '1995',
         formation: '180',
         action: ''
     },
     {
-        id: 'PRE2209',
+        id: 'level4',
         name: 'Computer Science Engg',
         acronyme: 'Aaliyah',
-        matiere: '1995',
         formation: '180',
         action: ''
     },
     {
-        id: 'PRE2209',
+        id: 'level5',
         name: 'Computer Science Engg',
         acronyme: 'Aaliyah',
-        matiere: '1995',
         formation: '180',
         action: ''
     },
     {
-        id: 'PRE2209',
+        id: 'level6',
         name: 'Computer Science Engg',
         acronyme: 'Aaliyah',
-        matiere: '1995',
         formation: '180',
         action: ''
     },
@@ -70,11 +64,6 @@ const columns = [
     {
         name: 'Acronyme',
         selector: row=>row.acronyme,
-        sortable: true,
-    },
-    {
-        name: 'Matiere',
-        selector: row=>row.matiere,
         sortable: true,
     },
     {

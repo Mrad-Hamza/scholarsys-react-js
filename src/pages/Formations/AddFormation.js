@@ -16,12 +16,12 @@ function AddFormation(){
     const [durMens, setDurMens] = useState('');
     const [durMensIsValid , setDurMensIsValid] = useState(false);
 
-    const [dtEch, setDrEch] = useState('');
+    const [dtEch, setDtEch] = useState('');
     const [dtEchIsValid , setDtEchIsValid] = useState(false);
 
     const handleName = (name) =>{
-        setNameIsValid(true);
         if (name.target.value !== undefined){
+            setNameIsValid(true);
             if(name.target.value.length < 3){
                 setNameIsValid(false)
             }
@@ -39,8 +39,65 @@ function AddFormation(){
         }
     }
 
-    const handleChange = () =>{
+    const handleMtAnnuelle = (mtAnn) => {
+        if(mtAnn.target.value !== undefined){
+            setMtAnnIsValid(true);
+            if(mtAnn.target.value == 0){
+                setMtAnnIsValid(false)
+            }
+        }
+        else{
+            setMtAnnIsValid(false);
+        }
 
+        if(mtAnnIsValid===true){
+            setMtAnn(mtAnn.target.value)
+        }
+    }
+
+    const handleDurAnn = (durAnn) =>{
+        if(durAnn.target.value !== undefined){
+            setDurAnnIsValid(true)
+            if(durAnn.target.value == 0){
+                setDurAnnIsValid(false)
+            }
+        }
+        else{
+            setDurAnnIsValid(false)
+        }
+
+        if(durAnnIsValid===true){
+            setDurAnn(durAnn.target.value)
+        }
+    }
+
+    const handleDurMens = (durMens)=>{
+        if(durMens.target.value !== undefined ){
+            setDurMensIsValid(true)
+            if(durMens.target.value == 0){
+                setDurMensIsValid(false);
+            }
+        }
+        else{
+            setDurMensIsValid(false)
+        }
+
+        if(durMensIsValid===true){
+            setDurMens(durMens.target.value)
+        }
+    }
+
+    const handleDtEch = (dtEch) =>{
+        if(dtEch.target.value !== undefined){
+            setDtEchIsValid(true);
+        }
+        else{
+            setDtEchIsValid(false);
+        }
+
+        if(dtEchIsValid===true){
+            setDtEch(dtEch.target.value)
+        }
     }
 
     const handleSubmit = (formation) => {
@@ -96,27 +153,27 @@ function AddFormation(){
                                         <Col xs={12} sm={6}>
                                             <Form.Group>
                                                 <Form.Label>Montant Annuelle</Form.Label>
-                                                <Form.Control type="text" onChange={handleChange} />
+                                                <Form.Control type="number" min={0} onChange={handleMtAnnuelle} />
                                             </Form.Group>
                                         </Col>
                                         <Col xs={12} sm={6}>
                                             <Form.Group>
                                                 <Form.Label>Duree Annuelle</Form.Label>
-                                                <Form.Control type="number" min="0" onChange={handleChange} />
+                                                <Form.Control type="number" min="0" onChange={handleDurAnn} />
                                             </Form.Group>
                                         </Col>
 
                                         <Col xs={12} sm={6}>
                                             <Form.Group>    
                                                 <Form.Label>Duree Mensuelle</Form.Label>
-                                                <Form.Control type="number" min="0" onChange={handleChange} />
+                                                <Form.Control type="number" min="0" onChange={handleDurMens} />
                                             </Form.Group>
                                         </Col>
 
                                         <Col xs={12} sm={12}>
                                             <Form.Group>
                                                 <Form.Label>Date d'écheance</Form.Label>
-                                                <Form.Control type="date" onChange={handleChange} />
+                                                <Form.Control type="date" onChange={handleDtEch} />
                                             </Form.Group>
                                         </Col>
 

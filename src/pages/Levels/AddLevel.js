@@ -13,10 +13,6 @@ function AddLevel() {
     const [formation, setFormation] = useState('');
     const [formationIsValid, setFormationIsValid] = useState(false);
 
-    const [matiere, setMatiere] = useState('');
-    const [matiereIsValid, setMatiereIsValid] = useState(false);
-
-
 
     const handleDesgniation = (desgniation) =>{
         setdesgniationIsValid(true);
@@ -36,16 +32,41 @@ function AddLevel() {
         if(desgniationIsValid === true){
             setdesgniation(desgniation.target.value);
         }
+
+        setdesgniation(desgniation.target.value)
     }
 
-    const handleChange = ()=>{
+    const handleAcronyme = (acronyme) => {
+        if(acronyme.target.value !== undefined){
+            setAcronymeIsValid(true);
 
+            if(acronyme.target.value.length > 6){
+                setAcronymeIsValid(false);
+            }
+            if(acronyme.target.value.length < 2){
+                setAcronymeIsValid(false);
+            }
+        }
+        else{
+            setAcronymeIsValid(false);
+        }
+
+        setAcronyme(acronyme.target.value)
+    }
+
+    const handleFormation = (formation)=>{
+        if(formation.target.value !== undefined){
+            setFormationIsValid(true);
+        }else{
+            setFormationIsValid(false);
+        }
+
+        setFormation(formation.target.value)
     }
 
     const handleSubmit = (level) => {
         level.preventDefault();
-        if((desgniationIsValid === false) || (acronymeIsValid === false) || (formationIsValid === false)
-         || (matiereIsValid === false) ){
+        if((desgniationIsValid === false) || (acronymeIsValid === false) || (formationIsValid === false)){
             alert('Form contain errors');
             return false;
         }
@@ -87,20 +108,20 @@ function AddLevel() {
 
                                         <Col xs={12} sm={6}>
                                             <Form.Group>
-                                                <Form.Label>Level Name</Form.Label>
-                                                <Form.Control type="text" onChange={handleChange} />
+                                                <Form.Label>Level desgniation</Form.Label>
+                                                <Form.Control type="text" onChange={handleDesgniation} />
                                             </Form.Group>
                                         </Col>
                                         <Col xs={12} sm={6}>
                                             <Form.Group>
                                                 <Form.Label>Level Acronyme</Form.Label>
-                                                <Form.Control type="text"  onChange={handleChange} />
+                                                <Form.Control type="text"  onChange={handleAcronyme} />
                                             </Form.Group>
                                         </Col>
                                         <Col xs={12} sm={12}>
                                             <Form.Group>
                                                 <Form.Label>Formation</Form.Label>
-                                                <Form.Control as="select" onChange={handleChange}>
+                                                <Form.Control as="select" onChange={handleFormation}>
                                                     <option disabled selected value>Choisir une formation</option>	
                                                     <option>DS</option>
                                                     <option>BI</option>

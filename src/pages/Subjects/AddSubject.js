@@ -17,9 +17,68 @@
         const [nbHeureIsValid, setNbHeureIsValid] = useState(false);
 
         const blockInvalidChar = e => ['+', '-'].includes(e.key) && e.preventDefault();
+
+        const handleName = (name) =>{
+            if (name.target.value !== undefined){
+                setNameIsValid(true);
+                if(name.target.value.length < 3){
+                    setNameIsValid(false)
+                }
     
-        const handleChange = () =>{
-    
+                if(name.target.value.length > 20){
+                    setNameIsValid(false)
+                }
+                
+            }
+            else{
+                setNameIsValid(false);
+            }
+            if(nameIsValid === true){
+                setName(name.target.value);
+            }
+        }
+
+        const handleLevel = (level) => {
+            if(level.target.value !== undefined){
+                setlLevelIsValid(true);
+            }
+            else{
+                setlLevelIsValid(false);
+            }
+
+            if(levelIsValid === true){
+                setLevel(level.target.value)
+            }
+        }
+
+        const handleCoef = (coef) => {
+            if(coef.target.value !== undefined){
+                setCoefIsValid(true);
+                if(coef.target.value == 0){
+                    setCoefIsValid(false)
+                }
+            }else{
+                setCoefIsValid(false)
+            }
+
+            if(coefIsValid === true){
+                setCoef(coef.target.value)
+            }
+        }
+
+        const handleNbHeure = (nbHeure)=> {
+            if(nbHeure.target.value !== undefined){
+                setNbHeureIsValid(true);
+                if(nbHeure.target.value == 0){
+                    setNbHeureIsValid(false)
+                }
+            }else{
+                setNbHeureIsValid(false)
+            }
+
+            if(nbHeureIsValid === true){
+                setNbHeure(nbHeure.target.value)
+            }
         }
 
         const handleSubmit = (subject) => {
@@ -65,29 +124,17 @@
                                                 <h5 className="form-title"><span>Subject Information</span></h5>
                                             </Col>
     
-                                            <Col xs={12} sm={12} className="mt-5">
-                                                <Form.Group>
-                                                    <Form.Label>Subject Name</Form.Label>
-                                                    <Form.Control type="text" onChange={handleChange}/>          
-                                                </Form.Group>
-                                            </Col>
-    
                                             <Col xs={12} sm={6}>
                                                 <Form.Group>
-                                                    <Form.Label>Formation</Form.Label>
-                                                    <Form.Control as="select" onChange={handleChange}>
-                                                        <option disabled selected value>Choisir une formation</option>	
-                                                        <option>Data Science</option>
-                                                        <option>Business Inteligence</option>
-                                                        <option>Cloud</option>
-                                                    </Form.Control>
+                                                    <Form.Label>Subject Name</Form.Label>
+                                                    <Form.Control type="text" onChange={handleName}/>          
                                                 </Form.Group>
                                             </Col>
     
                                             <Col xs={12} sm={6}>
                                                 <Form.Group>
                                                     <Form.Label>Niveau</Form.Label>
-                                                    <Form.Control as="select" onChange={handleChange}>
+                                                    <Form.Control as="select" onChange={handleLevel}>
                                                         <option disabled selected value>Choisir un niveau</option>	
                                                         <option>1ére</option>
                                                         <option>2éme</option>
@@ -100,7 +147,7 @@
                                                 <Form.Group>
                                                     <Form.Label>Coefficient</Form.Label>
                                                     <Form.Control type="number" min="0" onKeyDown={blockInvalidChar}
-                                                        onChange={handleChange}/>          
+                                                        onChange={handleCoef}/>          
                                                 </Form.Group>
                                             </Col>
                                                 
@@ -108,7 +155,7 @@
                                                 <Form.Group>
                                                     <Form.Label>Nombre d'heure</Form.Label>
                                                     <Form.Control type="number" min="0" onKeyDown={blockInvalidChar}
-                                                        onChange={handleChange} /> 
+                                                        onChange={handleNbHeure} /> 
                                                 </Form.Group>
                                             </Col>
     
