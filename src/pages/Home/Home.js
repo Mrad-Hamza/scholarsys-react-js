@@ -1,9 +1,28 @@
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import { Row, Col } from "react-bootstrap";
 import { useSelector } from 'react-redux/es/exports';
 
 function Home() {
     const { user: currentUser } = useSelector((state) => state.auth);
+    const [userRole, setUserRole] = useState("")
+
+
+    useEffect(() => {
+        switch (currentUser.role) {
+            case "1":
+                setUserRole("Student")
+                break;
+            case "666":
+                setUserRole("Teacher")
+                break;
+            case "987":
+                setUserRole("Agent")
+                break;
+            default:
+                break;
+        }
+    }, [])
+
 
     return (
         <div className="main-wrapper login-body">
@@ -19,10 +38,10 @@ function Home() {
 
             <Row>
                 <Col sm={12} className="mb-5">
-                    Welcome {currentUser.email} to our school management website.
+                    Welcome {currentUser.firstname} to our school management website.
                     <br/>
                     <br/>
-                    Your are logged in as a {currentUser.role}.
+                    Your are logged in as a {userRole}.
                 </Col>
             </Row>
         </div>

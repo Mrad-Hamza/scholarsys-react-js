@@ -6,7 +6,10 @@ import { useHistory } from 'react-router-dom';
 import Logo from '../../assets/img/logo-white.png';
 
 // import service
-import userService from '../../services/user.service';
+import authService from '../../services/auth.service';
+
+import toast, { Toaster } from 'react-hot-toast';
+
 
 function ForgotPassword() {
 
@@ -19,14 +22,17 @@ function ForgotPassword() {
 
     const recoverPassword = (e) => {
         e.preventDefault()
-        userService.forgotPassword(email)
+        authService.forgotPassword(email)
+        toast.success("Success. Please Check your e-mail to reset your password")
         setTimeout(() => {
             history.push('/login')
-        }, 3000);
+        }, 6000);
     }
 
     return (
         <div className="main-wrapper login-body">
+            <Toaster position="top-right"
+                reverseOrder={false} />
             <div className="login-wrapper">
                 <div className="container">
                     <div className="loginbox">
@@ -41,14 +47,14 @@ function ForgotPassword() {
 
                                 <form action="login.html">
                                     <div className="form-group">
-                                        <input className="form-control" type="text" placeholder="Email" value={email} onChange={handleEmailChange} required/>
+                                        <input className="form-control" type="text" placeholder="Email" value={email} onChange={handleEmailChange} required />
                                     </div>
                                     <div className="form-group mb-0">
                                         <button className="btn btn-primary btn-block" onClick={recoverPassword}>Reset Password</button>
                                     </div>
                                 </form>
 
-                                <div className="text-center dont-have">Remember your password? <a href="/">Login</a></div>
+                                <div className="text-center dont-have">Remember your password? <button onClick={() => history.push('/login')}>Login</button></div>
                             </div>
                         </div>
                     </div>

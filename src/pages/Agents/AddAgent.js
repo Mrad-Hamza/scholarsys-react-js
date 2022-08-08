@@ -3,19 +3,31 @@ import userService from '../../services/user.service';
 // Import Components
 import { Row, Col, Card, Form, Button } from "react-bootstrap";
 
+import { useHistory } from 'react-router-dom';
+
+import toast, { Toaster } from 'react-hot-toast';
+
+
 function AddAgent() {
+
+    const history= useHistory()
 
     const [firstNameClassName, setFirstNameClassName] = useState("form-control is-invalid")
     const [lastNameClassName, setLastNameClassName] = useState("form-control is-invalid")
     const [birthDateClassName, setBirthDateClassName] = useState("form-control is-invalid")
     const [emailClassName, setEmailClassName] = useState("form-control is-invalid")
     const [passwordClassName, setPasswordClassName] = useState("form-control is-invalid")
+    const [phoneNumberClass, setPhoneNumberClass] = useState("form-control is-invalid")
+    const [imageClass, setImageClass] = useState("form-control is-invalid")
 
     const [firstname, setFirstName] = useState("")
     const [lastname, setLastName] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [birthDate, setBirthDate] = useState(Date())
+    const [phoneNumber, setPhoneNumber] = useState(0)
+    const [image, setImage] = useState()
+    const [role, setRole] = useState(987)
 
     useEffect(() => {
     }, [])
@@ -57,7 +69,6 @@ function AddAgent() {
         else {
             setEmailClassName("form-control is-valid")
         }
-        console.log(email)
     }, [email])
 
 
@@ -70,6 +81,22 @@ function AddAgent() {
         }
         console.log(password)
     }, [password])
+
+    useEffect(() => {
+        if (image != null) {
+            setImageClass("form-control is-valid")
+        } else {
+            setImageClass("form-control is-invalid")
+        }
+    }, [image])
+
+    useEffect(() => {
+        if (isValidNumber(phoneNumber)) {
+            setPhoneNumberClass("form-control is-valid")
+        } else {
+            setPhoneNumberClass("form-control is-invalid")
+        }
+    }, [phoneNumber])
 
     const handleFirstNameChange = (e) => {
         setFirstName(e.target.value)
@@ -91,6 +118,15 @@ function AddAgent() {
         setBirthDate(e.target.value)
     }
 
+    const handleImageChange = (e) => {
+        setImage(e.target.files[0])
+    }
+
+    const handlephoneNumberChange = (e) => {
+        setPhoneNumber(e.target.value)
+    }
+
+
     function isValidEmail(email) {
         return /\S+@\S+\.\S+/.test(email);
     }
@@ -101,11 +137,24 @@ function AddAgent() {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        //userService.editUser(firstname, lastname, email, password, birthDate)
-        console.log("normalement user updated haha")
+        if (firstNameClassName === "form-control is-invalid" || emailClassName === "form-control is-invalid" || passwordClassName === 'form-control is-invalid' || lastNameClassName === "form-control is-invalid" || birthDateClassName === "form-control is-invalid" || phoneNumberClass === "form-control is-invalid" || imageClass === "form-control is-invalid") {
+            toast.error("There is an error. Please re-enter your information")
+        } else {
+            toast.success("Success. user must confirm his account via e-mail")
+            userService.register(firstname, lastname, phoneNumber, birthDate, image, email, password, role)
+            setTimeout(() => {
+                history.push("/agents")
+            }, 4000);
+        }
+    }
+
+    function isValidNumber(number) {
+        return /^[0-9]{8}$/.test(number)
     }
     return (
         <div>
+            <Toaster position="top-right"
+                reverseOrder={false} />
             <div className="page-header">
                 <Row>
                     <Col sm={12}>
@@ -149,6 +198,12 @@ function AddAgent() {
                                     </Col>
                                     <Col xs={12} sm={6}>
                                         <Form.Group>
+                                            <Form.Label>Phone Number</Form.Label>
+                                            <Form.Control type="number" className={phoneNumberClass} defaultValue={phoneNumber} onChange={handlephoneNumberChange} />
+                                        </Form.Group>
+                                    </Col>
+                                    <Col xs={12} sm={6}>
+                                        <Form.Group>
                                             <Form.Label>Email</Form.Label>
                                             <Form.Control type="text" className={emailClassName} defaultValue={email} onChange={handleEmailChange} required />
                                         </Form.Group>
@@ -162,7 +217,7 @@ function AddAgent() {
                                     <Col xs={12} sm={6}>
                                         <Form.Group>
                                             <Form.Label>Agent Image</Form.Label>
-                                            <Form.File className="form-control" />
+                                            <Form.File type="file" className={imageClass} onChange={handleImageChange} />
                                         </Form.Group>
                                     </Col>
                                     <Col xs={12}>

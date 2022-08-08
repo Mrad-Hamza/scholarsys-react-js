@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { allUsers } from '../../slices/users';
+import { allTeachers, allUsers } from '../../slices/users';
 import userService from '../../services/user.service';
 import { useHistory } from 'react-router-dom'
 // Import Components
@@ -36,7 +36,7 @@ function TeachersList() {
 
 
 
-    const usersList = useSelector((state) => state.users)
+    const usersList = useSelector((state) => state.users.teachers)
 
     const columns = [
         {
@@ -50,13 +50,43 @@ function TeachersList() {
             sortable: true,
         },
         {
-            name: 'password',
-            selector: row => row.password,
+            name: 'Phone Number',
+            selector: row => row.phoneNumber,
+            sortable: true,
+        },
+        {
+            name: 'Birth Date',
+            selector: row => row.birthDate,
+            sortable: true,
+        },
+        {
+            name: 'First Name',
+            selector: row => row.firstname,
+            sortable: true,
+        },
+        {
+            name: 'Last Name',
+            selector: row => row.lastname,
+            sortable: true,
+        },
+        {
+            name: 'Classe',
+            selector: row => row.classe,
             sortable: false,
         },
         {
-            name: 'role',
-            selector: row => row.role,
+            name: 'Niveau',
+            selector: row => row.niveau,
+            sortable: false,
+        },
+        {
+            name: 'Matiere',
+            selector: row => row.matiere,
+            sortable: false,
+        },
+        {
+            name: 'Salaire',
+            selector: row => row.salaire,
             sortable: false,
         },
         {
@@ -69,8 +99,8 @@ function TeachersList() {
     ];
 
     useEffect(() => {
-        dispatch(allUsers())
-        data = usersList.users
+        dispatch(allTeachers())
+        data = usersList
         setProgresBarValue(0)
         setTimeout(() => {
             setIsDisplayed(true)

@@ -50,9 +50,9 @@ function Login() {
                 history.push("/profile")
            })
         console.log(message)
-        if ( !message.success) {
+        /* if ( !message.success) {
             toast.error("There is an error. Please re-enter your information")
-        }
+        } */
     };
 
     return (

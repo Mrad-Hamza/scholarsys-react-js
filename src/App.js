@@ -7,6 +7,8 @@ import ForgotPassword from './pages/ForgotPassword/ForgotPassword';
 import Login from './pages/Login/Login';
 import Header from './_components/header/Header';
 import { allUsers } from './slices/users';
+import { useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import PrivateAgentRoute from './_components/_helpers/PrivateAgentRoute';
 import PrivateStudentRoute from './_components/_helpers/PrivateStudentRoute';
@@ -123,38 +125,74 @@ import {
   Event,
   AddEvent,
 
-  // Profile Module
-
-
   // Inbox Module
   Inbox,
   Compose
 } from './pages';
-import Profile from './pages/Profile/Profile';
 import { Footer } from './_components';
 import Fees from './pages/Fees/Fees';
 import { useEffect } from 'react';
 import Sidebar from './_components/sidebar/Sidebar';
 import Unauthorized from './pages/UnauthorizedPage/Unauthorized';
-
+import Profile from './pages/Profile/Profile';
+import ResetPassword from './pages/ResetPassword/ResetPassword';
+import ConfirmAccount from './pages/ConfirmAccount/ConfirmAccount';
+import ScheduleList from './pages/Schedule/ScheduleList';
+import { logout } from './slices/auth';
 
 function App() {
   const { isLoggedIn } = useSelector((state) => state.auth);
   const { user: currentUser } = useSelector((state) => state.auth);
+  const location = useLocation();
+  const history = useHistory()
+  const dispatch = useDispatch()
+
+  const token = localStorage.getItem('token')
+
+  const parseJwt = (token) => {
+    try {
+      return JSON.parse(atob(token.split('.')[1]));
+    } catch (e) {
+      return null;
+    }
+  };
+
 
   useEffect(() => {
-  }, [])
+    const currentPath = location.pathname;
+    if (isLoggedIn) {
+      if (currentPath === "/") {
+        history.push('/home')
+      }
+    } else {
+      if (currentPath === "/") {
+        history.push('/login')
+      }
+    }
+    if (token) {
+      const decodedJwt = parseJwt(token);
+      if (decodedJwt.exp * 1000 < Date.now()) {
+        dispatch(logout())
+        history.push('/login')
+      }
+      
+    }
+    else {
+      history.push('/login')
+    }
+  }, [location])
+
 
 
   if (!isLoggedIn) {
     return (
       <div>
-        <RouteUnauthenticated exact path="/login" component={Login} />
-        <RouteUnauthenticated exact path="/" component={Login} />
+        <RouteUnauthenticated path="/login" component={Login} />
         <RouteUnauthenticated path="/register" component={Register} />
         <RouteUnauthenticated path="/forgot-password" component={ForgotPassword} />
         <RouteUnauthenticated path="/error" component={Error} />
-        <Login />
+        <RouteUnauthenticated path="/reset_password/:refreshToken" component={ResetPassword} />
+        <RouteUnauthenticated path="/confirm/:refreshToken" component={ConfirmAccount} />
       </div>
     )
   } else {
@@ -170,40 +208,10 @@ function App() {
             <div className="page-wrapper">
               <div className="content container-fluid">
 
+                <Route path="/emploi-du-temps" component={ScheduleList} />
 
-                <PrivateAgentRoute path="/dashboard" component={Dashboard} />
-                <PrivateAgentRoute path="/student-dashboard" component={StudentDashboard} />
-                <PrivateAgentRoute path="/teacher-dashboard" component={TeacherDashboard} />
-
-                {/* Student Module */}
-                <PrivateAgentRoute path="/students" component={StudentsList} />
-                <PrivateAgentRoute path="/add-student" component={AddStudent} />
-                <PrivateAgentRoute path="/edit-student" component={EditStudent} />
-                <PrivateAgentRoute path="/student-details" component={StudentDetails} />
-
-                {/* Blank Page Module */}
-                <PrivateAgentRoute path="/blank-page" component={BlankPage} />
-
-                {/* Teacher Module */}
-                <PrivateAgentRoute path="/teachers" component={TeachersList} />
-                <PrivateAgentRoute path="/add-teacher" component={AddTeacher} />
-                <PrivateAgentRoute path="/edit-teacher" component={EditTeacher} />
-                <PrivateAgentRoute path="/teacher-details" component={TeacherDetails} />
-
-                {/* Users Module */}
-                <PrivateAgentRoute path="/add-agent" component={AddAgent} />
-                <PrivateAgentRoute path="/edit-agent/:id" component={EditAgent} />
-                <PrivateAgentRoute path="/agents" component={AgentsList} />
-
-                {/* Department Module */}
-                <PrivateAgentRoute path="/add-department" component={AddDepartment} />
-                <PrivateAgentRoute path="/edit-department" component={EditDepartment} />
-                <PrivateAgentRoute path="/departments" component={DepartmentsList} />
-
-                {/* Subject Module */}
-                <PrivateAgentRoute path="/add-subject" component={AddSubject} />
-                <PrivateAgentRoute path="/edit-subject" component={EditSubject} />
-                <PrivateAgentRoute path="/subjects" component={SubjectsList} />
+                {/* Profile Module */}
+                <RouteAuthenticated path="/profile" component={Profile} />
 
                 {/* Accounts Module */}
                 <RouteAuthenticated path="/fees-collections" component={FeesCollections} />
@@ -255,39 +263,73 @@ function App() {
                 <RouteAuthenticated path="/add-transport" component={AddTransport} />
                 <RouteAuthenticated path="/edit-transport" component={EditTransport} />
 
-                {/* Components Module */}
-                <PrivateAgentRoute path="/components" component={Components} />
 
-                {/* Forms Module */}
-                <PrivateAgentRoute path="/form-basic-inputs" component={FormBasicInput} />
-                <PrivateAgentRoute path="/form-horizontal" component={FormHorizontal} />
-                <PrivateAgentRoute path="/form-input-groups" component={FormInputGroups} />
-                <PrivateAgentRoute path="/form-mask" component={FormMask} />
-                <PrivateAgentRoute path="/form-validation" component={FormValidation} />
-                <PrivateAgentRoute path="/form-vertical" component={FormVertical} />
-
-                {/* Tables Module */}
-                <PrivateAgentRoute path="/tables-basic" component={TablesBasic} />
-                <PrivateAgentRoute path="/data-tables" component={DataTables} />
-
-                {/* Events Module */}
-                <PrivateAgentRoute path="/event" component={Event} />
-                <PrivateAgentRoute path="/add-event" component={AddEvent} />
-
-                {/* Profile Module */}
-                <RouteAuthenticated path="/profile" component={Profile} />
 
                 {/* Inbox Module */}
-                <PrivateAgentRoute path="/inbox" component={Inbox} />
-                <PrivateAgentRoute path="/compose" component={Compose} />
+                <RouteAuthenticated path="/inbox" component={Inbox} />
+                <RouteAuthenticated path="/compose" component={Compose} />
 
                 <RouteAuthenticated path="/unauthorized" component={Unauthorized} />
 
-
                 <RouteAuthenticated exact path="/home" component={Home} />
 
-          {/*  <RouteAuthenticated exact path="/" component={Home} />  */}
 
+
+                {/* Blank Page Module */}
+                <RouteAuthenticated path="/blank-page" component={BlankPage} />
+
+                <div>
+                  {/* Teacher Module */}
+                  <PrivateAgentRoute exact path="/teachers" component={TeachersList} />
+                  <PrivateAgentRoute exact path="/add-teacher" component={AddTeacher} />
+                  <PrivateAgentRoute exact path="/edit-teacher/:id" component={EditTeacher} />
+                  <PrivateAgentRoute exact path="/teacher-details" component={TeacherDetails} />
+
+                  {/* Users Module */}
+                  <PrivateAgentRoute exact path="/add-agent" component={AddAgent} />
+                  <PrivateAgentRoute exact path="/edit-agent/:id" component={EditAgent} />
+                  <PrivateAgentRoute exact path="/agents" component={AgentsList} />
+
+                  {/* Department Module */}
+                  <PrivateAgentRoute exact path="/add-department" component={AddDepartment} />
+                  <PrivateAgentRoute exact path="/edit-department" component={EditDepartment} />
+                  <PrivateAgentRoute exact path="/departments" component={DepartmentsList} />
+
+                  {/* Subject Module */}
+                  <PrivateAgentRoute exact path="/add-subject" component={AddSubject} />
+                  <PrivateAgentRoute exact path="/edit-subject" component={EditSubject} />
+                  <PrivateAgentRoute exact path="/subjects" component={SubjectsList} />
+
+
+                  {/* Components Module */}
+                  <PrivateAgentRoute exact path="/components" component={Components} />
+
+                  {/* Forms Module */}
+                  <PrivateAgentRoute exact path="/form-basic-inputs" component={FormBasicInput} />
+                  <PrivateAgentRoute exact path="/form-horizontal" component={FormHorizontal} />
+                  <PrivateAgentRoute exact path="/form-input-groups" component={FormInputGroups} />
+                  <PrivateAgentRoute exact path="/form-mask" component={FormMask} />
+                  <PrivateAgentRoute exact path="/form-validation" component={FormValidation} />
+                  <PrivateAgentRoute exact path="/form-vertical" component={FormVertical} />
+
+                  {/* Tables Module */}
+                  <PrivateAgentRoute exact path="/tables-basic" component={TablesBasic} />
+                  <PrivateAgentRoute exact path="/data-tables" component={DataTables} />
+
+                  {/* Events Module */}
+                  <PrivateAgentRoute exact path="/event" component={Event} />
+                  <PrivateAgentRoute exact path="/add-event" component={AddEvent} />
+
+                  <PrivateAgentRoute exact path="/dashboard" component={Dashboard} />
+                  <PrivateAgentRoute exact path="/student-dashboard" component={StudentDashboard} />
+                  <PrivateAgentRoute exact path="/teacher-dashboard" component={TeacherDashboard} />
+
+                  {/* Student Module */}
+                  <PrivateAgentRoute exact path="/students" component={StudentsList} />
+                  <PrivateAgentRoute exact path="/add-student" component={AddStudent} />
+                  <PrivateAgentRoute exact path="/edit-student/:id" component={EditStudent} />
+                  <PrivateAgentRoute exact path="/student-details" component={StudentDetails} />
+                </div>
 
               </div>
               <Route render={(props) => <Footer {...props} />} />

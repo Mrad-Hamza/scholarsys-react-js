@@ -7,32 +7,41 @@ import { useDispatch, useSelector } from "react-redux";
 // Import Images
 import Logo from '../../assets/img/logo.png';
 import LogoSmall from '../../assets/img/logo-small.png';
-import avatar1 from '../../assets/img/profiles/avatar-02.jpg';
-import avatar2 from '../../assets/img/profiles/avatar-11.jpg';
-import avatar3 from '../../assets/img/profiles/avatar-17.jpg';
-import avatar4 from '../../assets/img/profiles/avatar-13.jpg';
-import avatar5 from '../../assets/img/profiles/avatar-01.jpg';
+
 // Import Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAlignLeft, faBell, faSearch } from '@fortawesome/fontawesome-free-solid'
 
 import { logout } from '../../slices/auth';
 
+import { Link, Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+
 
 function Header(props) {
 
+	const { user: currentUser } = useSelector((state) => state.auth);
+
 	const dispatch = useDispatch()
+	const history = useHistory()
 
 	const handlesidebar = () => {
 		document.body.classList.toggle('mini-sidebar');
 	}
 
+	useEffect(() => {
+		console.log("../../assets/user_images/" + currentUser.image)
+	}, [])
+	
+
 	const handleLogout = () => {
-		console.log("aaaaaa")
 		dispatch(logout());
+		history.push('/login')
 	}
 
+
 	useEffect(() => {
+
 		var $wrapper = $('.main-wrapper');
 
 		$('body').append('<div class="sidebar-overlay"></div>');
@@ -67,12 +76,12 @@ function Header(props) {
 
 			{/* Logo */}
 			<div className="header-left">
-				<a href="" to="index.html" className="logo">
+				<button className="logo" style={{ outline: "none", border: "none" }} onClick={()=> history.push('/home')}>
 					<img src={Logo} alt="Logo" />
-				</a>
-				<a href="" className="logo logo-small">
+				</button>
+				<button className="logo logo-small" style={{ outline: "none", border: "none" }} onClick={() => history.push('/home')} >
 					<img src={LogoSmall} alt="Logo" />
-				</a>
+				</button>
 			</div>
 			{/* /Logo */}
 
@@ -114,7 +123,7 @@ function Header(props) {
 										<a href="#">
 											<div className="media">
 												<span className="avatar avatar-sm">
-													<img className="avatar-img rounded-circle" alt="User Image" src={avatar1} />
+													<img src={require("../../assets/user_images/" + currentUser.image)} className="avatar-img rounded-circle" alt="User Image aa"  />
 												</span>
 												<div className="media-body">
 													<p className="noti-details"><span className="noti-title">Carlson Tech</span> has approved <span className="noti-title">your estimate</span></p>
@@ -127,7 +136,7 @@ function Header(props) {
 										<a href="#">
 											<div className="media">
 												<span className="avatar avatar-sm">
-													<img className="avatar-img rounded-circle" alt="User Image" src={avatar2} />
+													<img className="avatar-img rounded-circle" alt="User Image" src={require("../../assets/user_images/" + currentUser.image)} />
 												</span>
 												<div className="media-body">
 													<p className="noti-details"><span className="noti-title">International Software Inc</span> has sent you a invoice in the amount of <span className="noti-title">$218</span></p>
@@ -140,7 +149,7 @@ function Header(props) {
 										<a href="#">
 											<div className="media">
 												<span className="avatar avatar-sm">
-													<img className="avatar-img rounded-circle" alt="User Image" src={avatar3} />
+													<img className="avatar-img rounded-circle" alt="User Image" src={require("../../assets/user_images/" + currentUser.image)} />
 												</span>
 												<div className="media-body">
 													<p className="noti-details"><span className="noti-title">John Hendry</span> sent a cancellation request <span className="noti-title">Apple iPhone XR</span></p>
@@ -153,7 +162,7 @@ function Header(props) {
 										<a href="#">
 											<div className="media">
 												<span className="avatar avatar-sm">
-													<img className="avatar-img rounded-circle" alt="User Image" src={avatar4} />
+													<img className="avatar-img rounded-circle" alt="User Image" src={require("../../assets/user_images/" + currentUser.image)} />
 												</span>
 												<div className="media-body">
 													<p className="noti-details"><span className="noti-title">Mercury Software Inc</span> added a new product <span className="noti-title">Apple MacBook Pro</span></p>
@@ -176,21 +185,21 @@ function Header(props) {
 				<li className="nav-item dropdown has-arrow">
 					<Dropdown>
 						<Dropdown.Toggle id="dropdown-basic" className="dropdown-toggle nav-link">
-							<span className="user-img"><img className="rounded-circle" src={avatar5} width="31" alt="Ryan Taylor" /></span>
+							<span className="user-img"><img className="rounded-circle" src={require("../../assets/user_images/" + currentUser.image)} width="31" alt="Ryan Taylor" /></span>
 						</Dropdown.Toggle>
 
 						<Dropdown.Menu>
 							<div className="user-header">
 								<div className="avatar avatar-sm">
-									<img src={avatar5} alt="User Image" className="avatar-img rounded-circle" />
+									<img src={require("../../assets/user_images/" + currentUser.image)} alt="User Image" className="avatar-img rounded-circle" />
 								</div>
 								<div className="user-text">
 									<h6>Ryan Taylor</h6>
 									<p className="text-muted mb-0">Administrator</p>
 								</div>
 							</div>
-							<Dropdown.Item href="/profile">My Profile</Dropdown.Item>
-							<Dropdown.Item href="/inbox">Inbox</Dropdown.Item>
+							<Dropdown.Item onClick={() => history.push('/profile')}>My Profile</Dropdown.Item>
+							<Dropdown.Item onClick={() => history.push('/inbox')}>Inbox</Dropdown.Item>
 							<Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
 						</Dropdown.Menu>
 					</Dropdown>

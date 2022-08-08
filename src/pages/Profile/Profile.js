@@ -1,162 +1,262 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 // Import Components
-import { Row, Col, Card, Tabs, Tab } from "react-bootstrap";
+import { Row, Col, Card, Tabs, Tab, Button } from "react-bootstrap";
 // Import Image
 import proPic from '../../assets/img/profiles/avatar-02.jpg';
 // Import Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faEdit, faMapMarkerAlt } from '@fortawesome/fontawesome-free-solid';
 
+import { useSelector } from 'react-redux/es/exports';
+
+import authService from '../../services/auth.service';
+
+import toast, { Toaster } from 'react-hot-toast';
+
+import userService from '../../services/user.service';
+
+
+
 function Profile() {
-  return (
-      <div>
-          <div className="page-header">
-              <Row>
-                  <Col sm={12}>
-                      <h3 className="page-title">Profile</h3>
-                      <ul className="breadcrumb">
-                          <li className="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
-                          <li className="breadcrumb-item active">Profile</li>
-                      </ul>
-                  </Col>
-              </Row>
-          </div>
 
-          <Row>
-              <Col sm={12}>
-                  <div className="profile-header">
-                      <div className="row align-items-center">
-                          <div className="col-auto profile-image">
-                              <a href="#">
-                                  <img className="rounded-circle" alt="User Image" src={proPic} />
-                              </a>
-                          </div>
-                          <div className="col ml-md-n2 profile-user-info">
-                              <h4 className="user-name mb-0">John Doe</h4>
-                              <h6 className="text-muted">UI/UX Design Team</h6>
-                              <div className="user-Location"><FontAwesomeIcon icon={faMapMarkerAlt} /> Florida, United States</div>
-                              <div className="about-text">Lorem ipsum dolor sit amet.</div>
-                          </div>
-                          <div className="col-auto profile-btn">
-                              <a href="" className="btn btn-primary">
-                                  Edit
-                              </a>
-                          </div>
-                      </div>
-                  </div>
+    const { user: currentUser } = useSelector((state) => state.auth);
+    const [userRole, setUserRole] = useState("")
 
-                  <Tabs defaultActiveKey="about" id="uncontrolled-tab-example" className="profile-menu">
-                      {/* Personal Detail Tab */}
-                      <Tab eventKey="about" title="About">
-                          <Row>
-                              <Col lg={9}>
-                                  <Card>
-                                      <Card.Body>
-                                          <Card.Title className="d-flex justify-content-between">
-                                              <span>Personal Details</span>
-                                              <a className="edit-link" data-toggle="modal" href="#edit_personal_details"><FontAwesomeIcon icon={faEdit} className="mr-1" />Edit</a>
-                                          </Card.Title>
+    const [firstNameClassName, setFirstNameClassName] = useState("form-control is-invalid")
+    const [lastNameClassName, setLastNameClassName] = useState("form-control is-invalid")
+    const [birthDateClassName, setBirthDateClassName] = useState("form-control is-invalid")
+    const [emailClassName, setEmailClassName] = useState("form-control is-invalid")
+    const [phoneNumberClass, setPhoneNumberClass] = useState("form-control is-invalid")
 
-                                          <div className="row">
-                                              <p className="col-sm-3 text-muted text-sm-end mb-0 mb-sm-3">Name</p>
-                                              <p className="col-sm-9">John Doe</p>
-                                          </div>
-                                          <div className="row">
-                                              <p className="col-sm-3 text-muted text-sm-end mb-0 mb-sm-3">Date of Birth</p>
-                                              <p className="col-sm-9">24 Jul 1983</p>
-                                          </div>
-                                          <div className="row">
-                                              <p className="col-sm-3 text-muted text-sm-end mb-0 mb-sm-3">Email ID</p>
-                                              <p className="col-sm-9">johndoe@example.com</p>
-                                          </div>
-                                          <div className="row">
-                                              <p className="col-sm-3 text-muted text-sm-end mb-0 mb-sm-3">Mobile</p>
-                                              <p className="col-sm-9">305-310-5857</p>
-                                          </div>
-                                          <div className="row">
-                                              <p className="col-sm-3 text-muted text-sm-end mb-0 mb-sm-3">Address</p>
-                                              <p className="col-sm-9 mb-0">4663  Agriculture Lane,<br />
-                                                  Miami,<br />
-                                                  Florida - 33165,<br />
-                                                  United States.
-                                              </p>
-                                          </div>
-                                      </Card.Body>
-                                  </Card>
-                              </Col>
-                              <Col lg={3}>
-
-                                  {/* Account Status */}
-                                  <Card>
-                                      <Card.Body>
-                                          <Card.Title className="d-flex justify-content-between">
-                                              <span>Account Status</span>
-                                              <a className="edit-link" href="#"><FontAwesomeIcon icon={faEdit} className="mr-1" /> Edit</a>
-                                          </Card.Title>
-                                          <button className="btn btn-success" type="button"><FontAwesomeIcon icon={faCheck} className="mr-1" />Active</button>
-                                      </Card.Body>
-                                  </Card>
-                                  {/* /Account Status */}
-
-                                  {/* Skills */}
-                                  <Card>
-                                      <Card.Body>
-                                          <Card.Title className="d-flex justify-content-between">
-                                              <span>Skills</span>
-                                              <a className="edit-link" href="#"><FontAwesomeIcon icon={faEdit} className="mr-1" /> Edit</a>
-                                          </Card.Title>
-                                          <div className="skill-tags">
-                                              <span>Html5</span>
-                                              <span>CSS3</span>
-                                              <span>WordPress</span>
-                                              <span>Javascript</span>
-                                              <span>Android</span>
-                                              <span>iOS</span>
-                                              <span>Angular</span>
-                                              <span>PHP</span>
-                                          </div>
-                                      </Card.Body>
-                                  </Card>
-                                  {/* Skills */}
-                              </Col>
-                          </Row>
-                      </Tab>
-                      {/* Personal Detail Tab */}
+    const [phoneNumber, setPhoneNumber] = useState(0)
+    const [firstname, setFirstName] = useState("")
+    const [lastname, setLastName] = useState("")
+    const [email, setEmail] = useState("")
+    const [birthDate, setBirthDate] = useState(Date())
 
 
-                      {/* Password Tab */}
-                      <Tab eventKey="password" title="Password">
-                          <Card>
-                              <Card.Body>
-                                  <Card.Title>Change Password</Card.Title>
-                                  <Row>
-                                      <Col md={10} lg={6}>
-                                          <form>
-                                              <div className="form-group">
-                                                  <label>Old Password</label>
-                                                  <input type="password" className="form-control" />
-                                              </div>
-                                              <div className="form-group">
-                                                  <label>New Password</label>
-                                                  <input type="password" className="form-control" />
-                                              </div>
-                                              <div className="form-group">
-                                                  <label>Confirm Password</label>
-                                                  <input type="password" className="form-control" />
-                                              </div>
-                                              <button className="btn btn-primary" type="submit">Save Changes</button>
-                                          </form>
-                                      </Col>
-                                  </Row>
-                              </Card.Body>
-                          </Card>
-                      </Tab>
-                      {/* Password Tab */}
-                  </Tabs>
-              </Col>
-          </Row>
-      </div>
-  )
+    useEffect(() => {
+        switch (currentUser.role) {
+            case "1":
+                setUserRole("Student")
+                break;
+            case "666":
+                setUserRole("Teacher")
+                break;
+            case "987":
+                setUserRole("Agent")
+                break;
+            default:
+                break;
+        }
+        setFirstName(currentUser.firstname)
+        setLastName(currentUser.lastname)
+        setEmail(currentUser.email)
+        setBirthDate(currentUser.birthDate)
+        setPhoneNumber(currentUser.phoneNumber)
+    }, [])
+
+    const handleResetPassword = (e) => {
+        e.preventDefault()
+        authService.forgotPassword(currentUser.email)
+        toast.success("Success. Please Check your e-mail to rest your password.")
+
+    }
+
+    useEffect(() => {
+        if (firstname === "" || firstname === null || firstname === undefined || firstname.length < 3) {
+            setFirstNameClassName("form-control is-invalid")
+        }
+        else {
+            setFirstNameClassName("form-control is-valid")
+        }
+        console.log(firstname)
+    }, [firstname])
+
+    useEffect(() => {
+        if (isValidNumber(phoneNumber)) {
+            setPhoneNumberClass("form-control is-valid")
+        } else {
+            setPhoneNumberClass("form-control is-invalid")
+        }
+        console.log(phoneNumber)
+    }, [phoneNumber])
+
+    useEffect(() => {
+        if (lastname === "" || lastname === null || lastname === undefined || lastname.length < 3) {
+            setLastNameClassName("form-control is-invalid")
+        }
+        else {
+            setLastNameClassName("form-control is-valid")
+        }
+        console.log(lastname)
+    }, [lastname])
+
+    useEffect(() => {
+        if (birthDate === "" || birthDate === null || birthDate === undefined) {
+            setBirthDateClassName("form-control is-invalid")
+        }
+        else {
+            setBirthDateClassName("form-control is-valid")
+        }
+        console.log(birthDate)
+    }, [birthDate])
+
+    useEffect(() => {
+        if (!isValidEmail(email)) {
+            setEmailClassName("form-control is-invalid")
+        }
+        else {
+            setEmailClassName("form-control is-valid")
+        }
+        console.log(email)
+    }, [email])
+
+    const handleFirstNameChange = (e) => {
+        setFirstName(e.target.value)
+    }
+
+    const handleLastNameChange = (e) => {
+        setLastName(e.target.value)
+    }
+
+    const handleEmailChange = (e) => {
+        setEmail(e.target.value)
+    }
+
+    const handleBirthDateChange = (e) => {
+        setBirthDate(e.target.value)
+    }
+
+    const handlephoneNumberChange = (e) => {
+        setPhoneNumber(e.target.value)
+    }
+
+    function isValidEmail(email) {
+        return /\S+@\S+\.\S+/.test(email);
+    }
+
+    function isValidNumber(number) {
+        return /^[0-9]{8}$/.test(number)
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        userService.editUser(currentUser.id, firstname, lastname, email, currentUser.password, birthDate, phoneNumber, currentUser.salaire)
+        toast.success("Success. Your profile is Updated.")
+    }
+
+    return (
+        <div>
+            <Toaster position="top-right"
+                reverseOrder={false} />
+            <div className="page-header">
+                <Row>
+                    <Col sm={12}>
+                        <h3 className="page-title">Profile</h3>
+                        <ul className="breadcrumb">
+                            <li className="breadcrumb-item">{currentUser.email}</li>
+                            <li className="breadcrumb-item active">Profile</li>
+                        </ul>
+                    </Col>
+                </Row>
+            </div>
+
+            <Row>
+                <Col sm={12}>
+                    <div className="profile-header">
+                        <div className="row align-items-center">
+                            <div className="col-auto profile-image">
+                                <a href="#">
+                                    <img className="rounded-circle" alt="User Image" src={require("../../assets/user_images/" + currentUser.image)} />
+                                </a>
+                            </div>
+                            <div className="col ml-md-n2 profile-user-info">
+                                <h4 className="user-name mb-0">{currentUser.firstname} {currentUser.lastname}</h4>
+                                <h6 className="text-muted">{userRole}</h6>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <Tabs defaultActiveKey="about" id="uncontrolled-tab-example" className="profile-menu">
+                        {/* Personal Detail Tab */}
+                        <Tab eventKey="about" title="About">
+                            <Row>
+                                <Col lg={9}>
+                                    <Card>
+                                        <Card.Body>
+                                            <Card.Title className="d-flex justify-content-between">
+                                                <span>Personal Details</span>
+                                                <a className="edit-link" data-toggle="modal" ><FontAwesomeIcon icon={faEdit} className="mr-1" />Edit</a>
+                                            </Card.Title>
+
+                                            <div className="row">
+                                                <p className="col-sm-3 text-muted text-sm-end mb-0 mb-sm-3">First Name</p>
+                                                <p className="col-sm-9"><input type="text" value={firstname} onChange={handleFirstNameChange} className='mb-3' /></p>
+                                            </div>
+                                            <div className="row">
+                                                <p className="col-sm-3 text-muted text-sm-end mb-0 mb-sm-3">Last Name</p>
+                                                <p className="col-sm-9"> <input type="text" value={lastname} onChange={handleLastNameChange} className='mb-3' /> </p>
+                                            </div>
+                                            <div className="row">
+                                                <p className="col-sm-3 text-muted text-sm-end mb-0 mb-sm-3">Date of Birth</p>
+                                                <p className="col-sm-9"> <input type="date" value={birthDate} onChange={handleBirthDateChange} className='mb-3' /> </p>
+                                            </div>
+                                            <div className="row">
+                                                <p className="col-sm-3 text-muted text-sm-end mb-0 mb-sm-3">Email ID</p>
+                                                <p className="col-sm-9"><input type="text" value={email} onChange={handleEmailChange} className='mb-3' /></p>
+                                            </div>
+                                            <div className="row">
+                                                <p className="col-sm-3 text-muted text-sm-end mb-0 mb-sm-3">Mobile</p>
+                                                <p className="col-sm-9"> <input type="number" value={phoneNumber} onChange={handlephoneNumberChange} className='mb-3' /> </p>
+                                            </div>
+                                            <div className='row'>
+                                                <p className="col-sm-9">
+                                                    <Button variant="primary" type="submit" onClick={handleSubmit}>
+                                                        Update
+                                                    </Button>
+                                                </p>
+                                            </div>
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
+                                <Col lg={3}>
+
+                                    <Card>
+                                        <Card.Body>
+                                            <Card.Title className="d-flex justify-content-between">
+                                                <span>Account Status</span>
+                                            </Card.Title>
+                                            <div className="btn btn-success"><FontAwesomeIcon icon={faCheck} className="mr-1" />Active</div>
+                                        </Card.Body>
+                                    </Card>
+
+
+                                </Col>
+                            </Row>
+                        </Tab>
+
+                        <Tab eventKey="password" title="Password">
+                            <Card>
+                                <Card.Body>
+                                    <Card.Title>Change Password
+                                        <br />
+                                        <br />
+                                        <button className="btn btn-primary" onClick={handleResetPassword}>Send reset password email</button>
+                                    </Card.Title>
+                                    <Row>
+
+                                    </Row>
+                                </Card.Body>
+                            </Card>
+                        </Tab>
+                    </Tabs>
+                </Col>
+            </Row>
+        </div>
+    )
 }
 
 export default Profile

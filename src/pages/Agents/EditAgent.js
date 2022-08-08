@@ -4,18 +4,24 @@ import { useParams } from 'react-router-dom';
 import { Row, Col, Card, Form, Button } from "react-bootstrap";
 import userService from '../../services/user.service';
 
+import { useHistory } from 'react-router-dom';
+
 
 
 function EditAgent() {
+    const history = useHistory()
 
     const [firstNameClassName, setFirstNameClassName] = useState("form-control is-invalid")
     const [lastNameClassName, setLastNameClassName] = useState("form-control is-invalid")
     const [birthDateClassName, setBirthDateClassName] = useState("form-control is-invalid")
     const [emailClassName, setEmailClassName] = useState("form-control is-invalid")
     const [passwordClassName, setPasswordClassName] = useState("form-control is-invalid")
+    const [phoneNumberClass, setPhoneNumberClass] = useState("form-control is-invalid")
+
 
     const userId = useParams()
 
+    const [phoneNumber, setPhoneNumber] = useState(0)
     const [firstname, setFirstName] = useState("")
     const [lastname, setLastName] = useState("")
     const [email, setEmail] = useState("")
@@ -37,6 +43,15 @@ function EditAgent() {
     }, [firstname])
 
     useEffect(() => {
+        if (isValidNumber(phoneNumber)) {
+            setPhoneNumberClass("form-control is-valid")
+        } else {
+            setPhoneNumberClass("form-control is-invalid")
+        }
+        console.log(phoneNumber)
+    }, [phoneNumber])
+
+    useEffect(() => {
         if (lastname === "" || lastname === null || lastname === undefined || lastname.length < 3) {
             setLastNameClassName("form-control is-invalid")
         }
@@ -45,7 +60,7 @@ function EditAgent() {
         }
         console.log(lastname)
     }, [lastname])
-    
+
     useEffect(() => {
         if (birthDate === "" || birthDate === null || birthDate === undefined) {
             setBirthDateClassName("form-control is-invalid")
@@ -55,7 +70,7 @@ function EditAgent() {
         }
         console.log(birthDate)
     }, [birthDate])
-    
+
     useEffect(() => {
         if (!isValidEmail(email)) {
             setEmailClassName("form-control is-invalid")
@@ -65,9 +80,9 @@ function EditAgent() {
         }
         console.log(email)
     }, [email])
-    
 
-    useEffect(() => {    
+
+    useEffect(() => {
         if (!isValidPassword(password)) {
             setPasswordClassName("form-control is-invalid")
         }
@@ -97,12 +112,20 @@ function EditAgent() {
         setBirthDate(e.target.value)
     }
 
+    const handlephoneNumberChange = (e) => {
+        setPhoneNumber(e.target.value)
+    }
+
     function isValidEmail(email) {
         return /\S+@\S+\.\S+/.test(email);
     }
 
     function isValidPassword(password) {
         return /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/.test(password)
+    }
+
+    function isValidNumber(number) {
+        return /^[0-9]{8}$/.test(number)
     }
 
 
@@ -113,12 +136,15 @@ function EditAgent() {
         setEmail(user.data.email)
         setPassword(user.data.password)
         setBirthDate(user.data.birthDate)
+        setPhoneNumber(user.data.phoneNumber)
     }
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        userService.editUser(userId.id,firstname,lastname,email,password,birthDate)
-        console.log("normalement user updated haha")
+        userService.editUser(userId.id, firstname, lastname, email, password, birthDate, phoneNumber)
+        setTimeout(() => {
+            history.push('/agents')
+        }, 1200);
     }
 
     return (
@@ -160,33 +186,39 @@ function EditAgent() {
                                     <Col xs={12} sm={6}>
                                         <Form.Group>
                                             <Form.Label>User Id</Form.Label>
-                                            <Form.Control disabled   type="text" defaultValue={userId.id} />
+                                            <Form.Control disabled type="text" defaultValue={userId.id} />
                                         </Form.Group>
                                     </Col>
                                     <Col xs={12} sm={6}>
                                         <Form.Group>
                                             <Form.Label>Date of Birth</Form.Label>
-                                            <Form.Control type="date" className={birthDateClassName} defaultValue={birthDate} onChange={handleBirthDateChange}/>
+                                            <Form.Control type="date" className={birthDateClassName} defaultValue={birthDate} onChange={handleBirthDateChange} />
+                                        </Form.Group>
+                                    </Col>
+                                    <Col xs={12} sm={6}>
+                                        <Form.Group>
+                                            <Form.Label>Phone Number</Form.Label>
+                                            <Form.Control type="number" className={phoneNumberClass} value={phoneNumber} onChange={handlephoneNumberChange} />
                                         </Form.Group>
                                     </Col>
                                     <Col xs={12} sm={6}>
                                         <Form.Group>
                                             <Form.Label>Email</Form.Label>
-                                            <Form.Control type="text" className={emailClassName} defaultValue={email} onChange={handleEmailChange} required/>
+                                            <Form.Control type="text" className={emailClassName} defaultValue={email} onChange={handleEmailChange} required />
                                         </Form.Group>
                                     </Col>
                                     <Col xs={12} sm={6}>
                                         <Form.Group>
                                             <Form.Label>Password</Form.Label>
-                                            <Form.Control type="text" className={passwordClassName} defaultValue={password} onChange={handlePasswordChange} required/>
+                                            <Form.Control type="text" className={passwordClassName} defaultValue={password} onChange={handlePasswordChange} required />
                                         </Form.Group>
                                     </Col>
-                                    <Col xs={12} sm={6}>
+                                    {/*  <Col xs={12} sm={6}>
                                         <Form.Group>
                                             <Form.Label>Agent Image</Form.Label>
                                             <Form.File className="form-control" />
                                         </Form.Group>
-                                    </Col>
+                                    </Col> */}
                                     <Col xs={12}>
                                         <Button variant="primary" type="submit" onClick={handleSubmit}>
                                             Submit

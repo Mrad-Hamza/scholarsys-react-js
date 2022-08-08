@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { allUsers } from '../../slices/users';
+import { allStudents } from '../../slices/users';
 import userService from '../../services/user.service';
 import { useHistory } from 'react-router-dom'
 // Import Components
@@ -38,7 +38,7 @@ function StudentsList() {
 
 
 
-    const usersList = useSelector((state) => state.users)
+    const usersList = useSelector((state) => state.users.students)
 
     const columns = [
         {
@@ -52,27 +52,52 @@ function StudentsList() {
             sortable: true,
         },
         {
-            name: 'password',
-            selector: row => row.password,
+            name: 'First Name',
+            selector: row => row.firstname,
+            sortable: true,
+        },
+        {
+            name: 'Last Name',
+            selector: row => row.lastname,
+            sortable: true,
+        },
+        {
+            name: 'Birth Date',
+            selector: row => row.birthDate,
+            sortable: true,
+        },
+        {
+            name: 'Phone Number',
+            selector: row => row.phoneNumber,
+            sortable: true,
+        },
+        {
+            name: 'Niveau',
+            selector: row => row.niveau,
             sortable: false,
         },
         {
-            name: 'role',
-            selector: row => row.role,
+            name: 'Classe',
+            selector: row => row.class,
+            sortable: false,
+        },
+        {
+            name: 'Etat Paiement',
+            selector: row => row.etat_paiement,
             sortable: false,
         },
         {
             name: 'Action',
             selector: row => row.id,
             sortable: true,
-            cell: (row) => <div><button className="btn btn-sm bg-success-light me-2" onClick={() => history.push('/edit-teacher/' + row.id)}>
+            cell: (row) => <div><button className="btn btn-sm bg-success-light me-2" onClick={() => history.push('/edit-student/' + row.id)}>
                 <FontAwesomeIcon icon={faPencilAlt} /> </button> <button className="btn btn-sm bg-danger-light" onClick={() => deleteUser(row)}> <FontAwesomeIcon icon={faTrash} /> </button></div>
         }
     ];
 
     useEffect(() => {
-        dispatch(allUsers())
-        data = usersList.users
+        dispatch(allStudents())
+        data = usersList
         setProgresBarValue(0)
         setTimeout(() => {
             setIsDisplayed(true)
@@ -107,7 +132,7 @@ function StudentsList() {
     }
 
     const addUser = () => {
-        history.push('/add-teacher')
+        history.push('/add-student')
     }
 
 
@@ -132,10 +157,10 @@ function StudentsList() {
                 <div className="page-header">
                     <Row>
                         <Col className="col">
-                            <h3 className="page-title">Teachers</h3>
+                            <h3 className="page-title">Students</h3>
                             <ul className="breadcrumb">
                                 <li className="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
-                                <li className="breadcrumb-item active">Teachers</li>
+                                <li className="breadcrumb-item active">Students</li>
                             </ul>
                         </Col>
                         <Col className="col-auto text-end float-right ms-auto">

@@ -22,7 +22,67 @@ export const allUsers = createAsyncThunk(
     }
 );
 
-const initialState = {users : []};
+export const allAgents = createAsyncThunk(
+    "users/allAgents",
+    async (thunkAPI) => {
+        try {
+            const response = await userService.getAgents()
+            return { agents: response.data };
+        } catch (error) {
+            const message =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
+            thunkAPI.dispatch(setMessage(message));
+            return thunkAPI.rejectWithValue();
+        }
+    }
+);
+
+
+export const allTeachers = createAsyncThunk(
+    "users/allTeachers",
+    async (thunkAPI) => {
+        try {
+            const response = await userService.getTeachers()
+            return { teachers: response.data };
+        } catch (error) {
+            const message =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
+            thunkAPI.dispatch(setMessage(message));
+            return thunkAPI.rejectWithValue();
+        }
+    }
+);
+
+export const allStudents = createAsyncThunk(
+    "users/allStudents",
+    async (thunkAPI) => {
+        try {
+            const response = await userService.getStudents()
+            return { students: response.data };
+        } catch (error) {
+            const message =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
+            thunkAPI.dispatch(setMessage(message));
+            return thunkAPI.rejectWithValue();
+        }
+    }
+);
+
+
+
+const initialState = {users : [], students: [], agents: [], teachers : []};
 
 const usersSlice = createSlice({
     name: "users",
@@ -34,6 +94,27 @@ const usersSlice = createSlice({
         },
         [allUsers.rejected]: (state, action) => {
             state.users = [];
+        },
+        [allAgents.fulfilled]: (state, action) => {
+            console.log(action)
+            state.agents = action.payload.agents;
+        },
+        [allAgents.rejected]: (state, action) => {
+            state.agents = [];
+        },
+        [allTeachers.fulfilled]: (state, action) => {
+            console.log(action)
+            state.teachers = action.payload.teachers;
+        },
+        [allTeachers.rejected]: (state, action) => {
+            state.teachers = [];
+        },
+        [allStudents.fulfilled]: (state, action) => {
+            console.log(action)
+            state.students = action.payload.students;
+        },
+        [allStudents.rejected]: (state, action) => {
+            state.students = [];
         }
     },
 });

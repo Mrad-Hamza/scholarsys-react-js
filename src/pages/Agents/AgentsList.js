@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { allUsers } from '../../slices/users';
+import { allAgents } from '../../slices/users';
 import userService from '../../services/user.service';
 import { useHistory } from 'react-router-dom'
 
@@ -14,16 +14,7 @@ import 'react-data-table-component-extensions/dist/index.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDownload, faPencilAlt, faPlus, faTrash } from '@fortawesome/fontawesome-free-solid';
 import { useSelector } from 'react-redux';
-import Img1 from '../../assets/img/profiles/avatar-01.jpg';
-import Img2 from '../../assets/img/profiles/avatar-02.jpg';
-import Img3 from '../../assets/img/profiles/avatar-03.jpg';
-import Img4 from '../../assets/img/profiles/avatar-04.jpg';
-import Img5 from '../../assets/img/profiles/avatar-05.jpg';
-import Img6 from '../../assets/img/profiles/avatar-06.jpg';
-import Img7 from '../../assets/img/profiles/avatar-07.jpg';
-import Img8 from '../../assets/img/profiles/avatar-08.jpg';
-import Img9 from '../../assets/img/profiles/avatar-09.jpg';
-import Img10 from '../../assets/img/profiles/avatar-10.jpg';
+
 
 let data = [
 ];
@@ -40,7 +31,7 @@ function AgentsList() {
 
 
 
-    const usersList = useSelector((state) => state.users)
+    const usersList = useSelector((state) => state.users.agents)
 
     const columns = [
         {
@@ -54,13 +45,28 @@ function AgentsList() {
             sortable: true,
         },
         {
+            name: 'Phone Number',
+            selector: row => row.phoneNumber,
+            sortable: true,
+        },
+        {
+            name: 'Birth Date',
+            selector: row => row.birthDate,
+            sortable: true,
+        },
+        {
             name: 'password',
             selector: row => row.password,
             sortable: false,
         },
         {
-            name: 'role',
-            selector: row => row.role,
+            name: 'First Name',
+            selector: row => row.firstname,
+            sortable: false,
+        },
+        {
+            name: 'Last Name',
+            selector: row => row.lastname,
             sortable: false,
         },
         {
@@ -73,8 +79,9 @@ function AgentsList() {
     ];
 
     useEffect(() => {
-        dispatch(allUsers())
-        data = usersList.users
+        console.log(usersList)
+        dispatch(allAgents())
+        data = usersList
         setProgresBarValue(0)
         setTimeout(() => {
             setIsDisplayed(true)

@@ -32,12 +32,36 @@ const login = (email, password) => {
 const logout = () => {
     localStorage.removeItem("token")
     localStorage.removeItem("user")
+    axios.post(API_URL+"logout")
 };
+
+const forgotPassword = (email) => {
+    return axios
+        .post(API_URL + "reset_password", {
+            email
+        })
+        .then((response) => {
+            return response.data
+        })
+}
+
+const resetPassword = (refreshToken,password,confirmPassword) => {
+    return axios
+        .post(API_URL + "reset_password/" + refreshToken , {
+            password,
+            confirmPassword
+        })
+        .then((response) => {
+            return response.data
+        })
+}
 
 const authService = {
     // register,
     login,
     logout,
+    forgotPassword,
+    resetPassword
 };
 
 export default authService;
