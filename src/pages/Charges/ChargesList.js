@@ -35,7 +35,7 @@ function ChargesList() {
         fetch('http://localhost:8000/charge')
         .then(response => { return response.json()})
         .then(charges => { setData(charges); })  
-    })
+    },[])
     
     const columns = [
         {
