@@ -26,3 +26,4 @@ export * from './Tables';
 export * from './Events';
 export * from './Profile';
 export * from './Inbox';
+export * from './Charges'

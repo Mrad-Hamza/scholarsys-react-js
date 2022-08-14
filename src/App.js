@@ -51,6 +51,11 @@ import {
   EditGrade,
   GradesList,
 
+  //Charge Module
+  AddCharge,
+  EditCharge,
+  ChargesList,
+
   // Accounts Module
   FeesCollections,
   Expenses,
@@ -196,6 +201,11 @@ function App() {
                   <Route path="/add-grade" component={AddGrade} />
                   <Route path="/edit-grade" component={EditGrade} />
                   <Route path="/grades" component={GradesList} />
+
+                  {/* Charge Module */}
+                  <Route path="/add-charge" component={AddCharge} />
+                  <Route path="/edit-charge" component={EditCharge} />
+                  <Route path="/charges" component={ChargesList} />
 
                   {/* Accounts Module */}
                   <Route path="/fees-collections" component={FeesCollections} />

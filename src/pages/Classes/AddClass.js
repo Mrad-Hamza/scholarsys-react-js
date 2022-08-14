@@ -1,94 +1,133 @@
 import React, {useState, useEffect} from 'react';
+import { useHistory } from 'react-router-dom';
 // Import Components
 import { Row, Col, Card, Form, Button } from "react-bootstrap";
 
 function AddClass() {
+    let history = useHistory();
+
+    const [levels,setLevels] = useState([]);
+    const [formations, setFormations] = useState([]);
+
+    const levelItems = levels.map((level)=>{
+        return(
+            <option key={'level'+level.id} data-key={level.id}>{level.designation}</option>
+        )
+    })
+
+    const formationItems = formations.map((formation)=>{
+        return(
+            <option key={'formation'+formation.id} data-key={formation.id}>{formation.nom}</option>
+        )
+    })
+
     const [name, setName] = useState('');
-    const [nameIsValid, setNameIsValid]= useState(false);
+    const [nameIsValid, setNameIsValid]= useState('form-control is-invalid');
 
     const [desgniation, setDesignation] = useState('');
-    const [desgniationIsValid, setDesignationIsValid] = useState(false);
-
-    const [niveau, setNiveau] = useState('');
-    const[niveauIsValid, setNiveauIsValid] = useState(false);
+    const [desgniationIsValid, setDesignationIsValid] = useState('form-control is-invalid');
 
     const [formation, setFormation] = useState('');
-    const [formationIsValid, setFormationIsValid] = useState(false);
+    const [formationIsValid, setFormationIsValid] = useState('form-control is-invalid');
+
+    const [niveau, setNiveau] = useState('');
+    const[niveauIsValid, setNiveauIsValid] = useState('form-control is-invalid');
+
+    useEffect(() => {
+         fetch('http://localhost:8000/formations')
+        .then(response => { return response.json()})
+        .then(formation => { setFormations(formation) })
+
+        fetch('http://localhost:8000/niveaus')
+            .then(response => { return response.json()})
+            .then(res => { 
+                var tableau = [];
+                for(var i=0; i<res.length; i++){
+                    if(res[i].formationId == formation.id){
+                        tableau.push(res[i])
+                    }
+                }
+                setLevels(tableau)     
+            })
+    },[formation]);  
 
     const handleName = (name) =>{
-        setNameIsValid(true);
             if (name.target.value !== undefined){
-                if(name.target.value.length < 3){
-                    setNameIsValid(false)
+                setNameIsValid(true);
+                if(name.target.value == ''){
+                    setNameIsValid('form-control is-invalid')
+                }
+                else if(name.target.value.length < 3){
+                    setNameIsValid('form-control is-invalid')
+                }
+                else if(name.target.value.length > 30){
+                    setNameIsValid('form-control is-invalid')
+                }else{
+                    setName(name.target.value);
+                    setNameIsValid('form-control is-valid')
                 }
             }
             else{
-                setNameIsValid(false);
-            }
-            if(nameIsValid === true){
-                setName(name.target.value);
-            }
-
-            if(nameIsValid === true){
-                setName(name.target.value);
+                setNameIsValid('form-control is-invalid');
             }
     }
 
     const handleDesgniation = (desgniation) =>{
-        setDesignationIsValid(true);
             if (desgniation.target.value !== undefined){
-                if(desgniation.target.value.length < 3){
-                    setDesignationIsValid(false)
+                if(desgniation.target.value == ''){
+                    setDesignationIsValid('form-control is-invalid')
+
+                }
+                else if(desgniation.target.value.length < 3){
+                    setDesignationIsValid('form-control is-invalid')
                 }
 
-                if(desgniation.target.value.length > 10){
-                    setDesignationIsValid(false)
+                else if(desgniation.target.value.length > 10){
+                    setDesignationIsValid('form-control is-invalid')
+                }else{
+                    setDesignation(desgniation.target.value);
+                    setDesignationIsValid('form-control is-valid');
                 }
                 
-            }
-            else{
-                setDesignationIsValid(false);
-            }
-            if(desgniationIsValid === true){
-                setDesignation(desgniation.target.value);
-            }
-            
-            if(desgniationIsValid === true){
-                setDesignation(desgniation.target.value);
+            }else{
+                setDesignationIsValid('form-control is-invalid');
             }
     }
 
-    const handleNiveau = (niveau) =>{
+    const handleNiveau = (niveau)=>{
         if(niveau.target.value !== undefined){
-            setNiveauIsValid(true);
+            const selectedIndex = niveau.target.options.selectedIndex;
+            const id = niveau.target.options[selectedIndex].getAttribute('data-key');
+            levels.map(level=>{
+                if(level.id == id){
+                    setNiveau(level)
+                    setNiveauIsValid('form-control is-valid')
+                }
+            })
         }else{
-            setNiveauIsValid(false);
+            setNiveauIsValid('form-control is-invalid');
         }
-
-        if(niveauIsValid === true){
-            setNiveau(niveau.target.value);
-        }
-        
     }
 
-    const handleFormation = (formation) =>{
+    const handleFormation = (formation)=>{
         if(formation.target.value !== undefined){
-            setFormationIsValid(true)
-        }else{
-            setFormationIsValid(false)
-        }
-
-        if(formationIsValid === true){
-            setFormation(formation.target.value)
+            setFormationIsValid(true);
+            const selectedIndex = formation.target.options.selectedIndex;
+            const id = formation.target.options[selectedIndex].getAttribute('data-key');
+            formations.map(formation => {
+                if(formation.id == id ){
+                    setFormation(formation)
+                    setFormationIsValid('form-control is-valid');
+                }
+            })
         }
     }
 
     const handleSubmit = async (classes) => {
         classes.preventDefault();
-        if((nameIsValid === false) || (desgniationIsValid === false) || (niveauIsValid === false) 
-        || (formationIsValid === false) ){
-            alert('Form contain errors');
-            return false;
+        if((nameIsValid === 'form-control is-invalid') || (desgniationIsValid === 'form-control is-invalid') 
+        || (niveauIsValid === 'form-control is-invalid') ){
+            
         }
         else{
             let confirm = window.confirm('Do you really want to submit the form?');
@@ -98,7 +137,8 @@ function AddClass() {
                 method: 'POST',
                 body: JSON.stringify({
                         nom: name,
-                        designation: desgniation
+                        designation: desgniation,
+                        niveauId: niveau.id
                     }),
                     headers: {
                         'Content-type': 'application/json; charset=UTF-8'
@@ -107,7 +147,7 @@ function AddClass() {
                 const data = await response.json();
                 console.log(data);
                 alert("Form has been submitted");
-                return true
+                history.push('/classes');
             }
             else{
                 return false;
@@ -142,40 +182,38 @@ function AddClass() {
                                         <Col xs={12} sm={6}>
                                             <Form.Group>
                                                 <Form.Label>Class Name</Form.Label>
-                                                <Form.Control type="text" defaultValue={name} onChange={handleName} />
+                                                <Form.Control className={nameIsValid} type="text"
+                                                onChange={handleName} />
                                             </Form.Group>
                                         </Col>
                                         <Col xs={12} sm={6}>
                                             <Form.Group>
                                                 <Form.Label>Class desgniation</Form.Label>
-                                                <Form.Control type="text"
-                                                defaultValue={desgniation} onChange={handleDesgniation} />
-                                            </Form.Group>
-                                        </Col>
-
-                                        <Col xs={12} sm={6}>
-                                            <Form.Group>
-                                                <Form.Label>Level</Form.Label>
-                                                <Form.Control as="select" onChange={handleNiveau}>
-                                                    <option disabled selected value>Choisir un niveau</option>	
-                                                    <option>1ére</option>
-                                                    <option>2éme</option>
-                                                    <option>3éme</option>
-                                                </Form.Control>
+                                                <Form.Control className={desgniationIsValid} type="text"
+                                                onChange={handleDesgniation} />
                                             </Form.Group>
                                         </Col>
 
                                         <Col xs={12} sm={6}>
                                             <Form.Group>
                                                 <Form.Label>Formation</Form.Label>
-                                                <Form.Control as="select" onChange={handleFormation}>
-                                                    <option disabled selected value>Choisir une formation</option>	
-                                                    <option>DS</option>
-                                                    <option>BI</option>
-                                                    <option>TWIN</option>
+                                                <Form.Control className={formationIsValid} as="select" 
+                                                onChange={handleFormation}>
+                                                    <option disabled selected value>Select a formation</option>	
+                                                    {formations && formationItems}
                                                 </Form.Control>
                                             </Form.Group>
-                                        </Col>
+                                        </Col>  
+
+                                        <Col xs={12} sm={6}>
+                                            <Form.Group>
+                                                <Form.Label>Level</Form.Label>
+                                                <Form.Control className={niveauIsValid} as="select" onChange={handleNiveau}>
+                                                    <option disabled selected value>Choisir un niveau</option>	
+                                                    {levels && levelItems}
+                                                </Form.Control>
+                                            </Form.Group>
+                                        </Col>  
 
                                         <Col xs={12}>
                                             <Button variant="primary" type="submit" onClick={handleSubmit}>

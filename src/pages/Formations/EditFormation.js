@@ -1,119 +1,158 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import { useHistory,useLocation } from 'react-router-dom';
 // Import Components
 import { Row, Col, Card, Form, Button } from "react-bootstrap";
-import { useLocation } from 'react-router-dom';
+
+function reactFormat(date){
+    var format = new Date(date)
+    return format.toISOString().slice(0, 10)
+}
 
 function EditFormation() {
+    let history = useHistory();
     const formation = useLocation().state.formation;
 
-    const [name , setName] = useState(formation.name);
-    const [nameIsValid , setNameIsValid] = useState(false);
+    const id = formation.id;
 
-    const [mtAnn, setMtAnn] = useState(formation.mtAnn);
-    const [mtAnnIsValid , setMtAnnIsValid] = useState(false);
+    console.log(formation)
 
-    const [durAnn, setDurAnn] = useState(formation.dureeAnn);
-    const [durAnnIsValid , setDurAnnIsValid] = useState(false);
+    const [name , setName] = useState(formation.nom);
+    const [nameIsValid , setNameIsValid] = useState('form-control is-valid');
 
-    const [durMens, setDurMens] = useState(formation.dureeMens);
-    const [durMensIsValid , setDurMensIsValid] = useState(false);
+    const [mtAnn, setMtAnn] = useState(formation.montant_anuelle);
+    const [mtAnnIsValid , setMtAnnIsValid] = useState('form-control is-valid');
 
-    const [dtEch, setDtEch] = useState(formation.dateEcheance);
-    const [dtEchIsValid , setDtEchIsValid] = useState(false);
+    const [durAnn, setDurAnn] = useState(formation.duree_anuelle);
+    const [durAnnIsValid , setDurAnnIsValid] = useState('form-control is-valid');
+
+    const [durMens, setDurMens] = useState(formation.duree_mensuelle);
+    const [durMensIsValid , setDurMensIsValid] = useState('form-control is-valid');
+
+    const [dtEch, setDtEch] = useState(reactFormat(formation.date_echeance));
+    const [dtEchIsValid , setDtEchIsValid] = useState('form-control is-valid');
+
+    useEffect(()=>{
+        console.log(dtEch)
+    },[name,mtAnn,durAnn,durMens,dtEch])
 
     const handleName = (name) =>{
         if (name.target.value !== undefined){
-            setNameIsValid(true);
-            if(name.target.value.length < 3){
-                setNameIsValid(false)
-            }
-
-            if(name.target.value.length > 20){
-                setNameIsValid(false)
+            if((name.target.value === '') || (name.target.value.length < 3) || (name.target.value.length > 20) ){
+                setName(null)
+                setNameIsValid('form-control is-invalid');
+            }else{
+                setNameIsValid('form-control is-valid')
+                setName(name.target.value)
             }
             
         }
         else{
-            setNameIsValid(false);
-        }
-        if(nameIsValid === true){
-            setName(name.target.value);
+            setNameIsValid('form-control is-invalid');
+            setName(null)
         }
     }
 
     const handleMtAnnuelle = (mtAnn) => {
-        if(mtAnn.target.value !== undefined){
-            setMtAnnIsValid(true);
-            if(mtAnn.target.value == 0){
-                setMtAnnIsValid(false)
+        if(mtAnn.target.value !== undefined || mtAnn.target.value !== ''){
+            if(mtAnn.target.value.match(/^(\d*\.{0,1}\d{0,3}$)/)){
+                if(mtAnn.target.value == 0){
+                    setMtAnn('')
+                    setMtAnnIsValid('form-control is-invalid');
+                }else{
+                    setMtAnnIsValid('form-control is-valid');
+                    setMtAnn(mtAnn.target.value);
+                }
+            }else{
+                setMtAnn('')
+                setMtAnnIsValid('form-control is-invalid');
             }
+            
         }
         else{
-            setMtAnnIsValid(false);
-        }
-
-        if(mtAnnIsValid===true){
-            setMtAnn(mtAnn.target.value)
+            setMtAnnIsValid('form-control is-invalid');
+            setMtAnn('')
         }
     }
 
     const handleDurAnn = (durAnn) =>{
         if(durAnn.target.value !== undefined){
-            setDurAnnIsValid(true)
-            if(durAnn.target.value == 0){
-                setDurAnnIsValid(false)
+            if(durAnn.target.value.match(/^(\d*\.{0,1}\d{0,2}$)/)){
+                if(durAnn.target.value == 0){
+                    setDurAnn(null)
+                    setDurAnnIsValid('form-control is-invalid')
+                }else{
+                    setDurAnn(durAnn.target.value);
+                    setDurAnnIsValid('form-control is-valid')
+                }
             }
-        }
-        else{
-            setDurAnnIsValid(false)
-        }
-
-        if(durAnnIsValid===true){
-            setDurAnn(durAnn.target.value)
+            else{
+                setDurAnnIsValid('form-control is-invalid')
+                setDurAnn(null)
+            }
+        }else{
+            setDurAnnIsValid('form-control is-invalid')
+            setDurAnn(null)
         }
     }
 
     const handleDurMens = (durMens)=>{
         if(durMens.target.value !== undefined ){
-            setDurMensIsValid(true)
-            if(durMens.target.value == 0){
-                setDurMensIsValid(false);
+            if(durMens.target.value.match(/^(\d*\.{0,1}\d{0,2}$)/)){
+                if(durMens.target.value == 0){
+                    setDurMensIsValid('form-control is-invalid');
+                    setDurMens(null)
+                }else{
+                    setDurMens(durMens.target.value)
+                    setDurMensIsValid('form-control is-valid')
+                }
+            }else{
+                setDurMensIsValid('form-control is-invalid')
+                setDurMens(null)
             }
         }
         else{
-            setDurMensIsValid(false)
-        }
-
-        if(durMensIsValid===true){
-            setDurMens(durMens.target.value)
+            setDurMensIsValid('form-control is-invalid')
+            setDurMens(null)
         }
     }
 
     const handleDtEch = (dtEch) =>{
-        if(dtEch.target.value !== undefined){
-            setDtEchIsValid(true);
+        if(dtEch.target.value !== undefined && dtEch.target.value !== ''){
+            setDtEchIsValid('form-control is-valid');
+            setDtEch(dtEch.target.value);
         }
         else{
-            setDtEchIsValid(false);
-        }
-
-        if(dtEchIsValid===true){
-            setDtEch(dtEch.target.value)
+            setDtEchIsValid('form-control is-invalid');
+            setDtEch(null)
         }
     }
 
-    const handleSubmit = (formation) => {
-        formation.preventDefault();
-        if((nameIsValid === false) || (mtAnnIsValid === false) || (durAnnIsValid === false)
-         || (durMensIsValid === false) || (dtEchIsValid === false)){
-            alert('Form contain errors');
-            return false;
-        }
-        else{
+    const handleSubmit = async (formation) => {
+        if((nameIsValid ==='form-control is-invalid')|| (mtAnnIsValid === 'form-control is-invalid') 
+        || (durAnnIsValid === 'form-control is-invalid') || (durMens === 'form-control is-invalid') ||
+        (dtEchIsValid === 'form-control is-invalid')){
+
+        }else{
             let confirm = window.confirm('Do you really want to submit the form?');
             if(confirm === true){
+                formation.preventDefault();
+                const response = await fetch('http://localhost:8000/formation/'+id, {
+                method: 'PATCH',
+                body: JSON.stringify({
+                        nom: name,
+                        montant_anuelle: mtAnn,
+                        duree_anuelle: durAnn,
+                        duree_mensuelle: durMens,
+                        date_echeance: dtEch
+                    }),
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8'
+                    }
+                });
+                const data = await response.json();
+                console.log(data);
                 alert("Form has been submitted");
-                return true
+                history.push('/formations')
             }
             else{
                 return false;
@@ -148,36 +187,38 @@ function EditFormation() {
                                         <Col xs={12} sm={6}>
                                             <Form.Group>
                                                 <Form.Label>Formation Name</Form.Label>
-                                                <Form.Control type="text" onChange={handleName} value={name} />
+                                                <Form.Control className={nameIsValid} type="text" 
+                                                onChange={handleName} defaultValue={name} />
                                             </Form.Group>
                                         </Col>
                                         <Col xs={12} sm={6}>
                                             <Form.Group>
                                                 <Form.Label>Montant Annuelle</Form.Label>
-                                                <Form.Control type="number" min={0} onChange={handleMtAnnuelle} 
-                                                value={mtAnn} />
+                                                <Form.Control className={mtAnnIsValid} type="number" min={0} 
+                                                onChange={handleMtAnnuelle} defaultValue={mtAnn} />
                                             </Form.Group>
                                         </Col>
                                         <Col xs={12} sm={6}>
                                             <Form.Group>
                                                 <Form.Label>Duree Annuelle</Form.Label>
-                                                <Form.Control type="number" min="0" onChange={handleDurAnn} 
-                                                value={durAnn} />
+                                                <Form.Control className={durAnnIsValid} type="number" min="0"
+                                                onChange={handleDurAnn} defaultValue={durAnn} />
                                             </Form.Group>
                                         </Col>
 
                                         <Col xs={12} sm={6}>
                                             <Form.Group>    
                                                 <Form.Label>Duree Mensuelle</Form.Label>
-                                                <Form.Control type="number" min="0" onChange={handleDurMens} 
-                                                value ={durMens} />
+                                                <Form.Control className={durMensIsValid} type="number" min="0" 
+                                                onChange={handleDurMens} defaultValue ={durMens} />
                                             </Form.Group>
                                         </Col>
 
                                         <Col xs={12} sm={12}>
                                             <Form.Group>
                                                 <Form.Label>Date d'écheance</Form.Label>
-                                                <Form.Control type="date" onChange={handleDtEch} value={dtEch} />
+                                                <Form.Control className={dtEchIsValid} type="date" 
+                                                onChange={handleDtEch} defaultValue={dtEch} />
                                             </Form.Group>
                                         </Col>
 

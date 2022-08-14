@@ -10,10 +10,10 @@ import 'react-data-table-component-extensions/dist/index.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDownload, faPencilAlt, faPlus, faTrash } from '@fortawesome/fontawesome-free-solid';
 
-const deleteGrade = async (grade)=>{
-    let confirm = window.confirm('Do you really want to delete '+grade.type+'?');
+const deleteCharge = async (charge)=>{
+    let confirm = window.confirm('Do you really want to delete '+charge.designation+'?');
     if(confirm === true){
-        const response = await fetch('http://localhost:8000/note/'+grade.id, {
+        const response = await fetch('http://localhost:8000/charge/'+charge.id, {
             method: 'DELETE'
             });
             const data = await response.json();
@@ -21,20 +21,9 @@ const deleteGrade = async (grade)=>{
     }
 }
 
-function GradesList () {
+function ChargesList() {
 
     const [data,setData] = useState([]);
-    const [matieres, setMatieres] = useState([]);
-
-    useEffect(() => {
-        fetch('http://localhost:8000/note')
-        .then(response => { return response.json()})
-        .then(notes => { setData(notes) })
-
-        fetch('http://localhost:8000/matiere')
-        .then(response => { return response.json()})
-        .then(matieres => { setMatieres(matieres) })
-    },[]);
 
     function format(date){
         var format = new Date(date)
@@ -42,54 +31,44 @@ function GradesList () {
         return format.toLocaleDateString([],options)
     }
 
-    function getMatiereName(id){
-        var matiereName = ''
-        if(matieres !== undefined){
-            matieres.map(matiere =>{
-                if(matiere.id == id){
-                    matiereName = matiere.designation
-                }
-            } )
-        }
-        return matiereName;
-    }
-
+    useEffect(()=>{
+        fetch('http://localhost:8000/charge')
+        .then(response => { return response.json()})
+        .then(charges => { setData(charges); })  
+    })
+    
     const columns = [
         {
-            name: 'Type',
+            name: 'Designation',
             sortable: true,
-            selector: row=>row.type
+            selector: row=>row.designation
         },
         {
-            name: 'Note'
+            name: 'Facture Amount',
+            selector: row=>row.montant_facture,
+            sortable: true
         },
         {
-            name: 'Subject',
-            selector: row=>getMatiereName(row.matiereId),
-            sortable: true,
+            name: 'Facture Code',
+            selector: row => row.code_facture,
+            sortable: true
         },
         {
-            name: 'Student'
-        },
-        {
-            name:'Teacher'
-        },
-        {
-            name: 'Date de passation',
-            selector: row=>format(row.date_passage_examen),
-            sortable: true,
+            name: 'Creation Date',
+            selector: row=>format(row.createdAt),
+            sortable: true
         },
         {
             name: 'Action',
             selector: row=>row.action,
             sortable: true,
-            cell: (grade) => <div><Link to={{pathname :`/edit-grade/${grade.id}` ,state: {grade} }} className="btn btn-sm bg-success-light me-2">
-            <FontAwesomeIcon icon={faPencilAlt} /> </Link>  
-            <a href="#" className="btn btn-sm bg-danger-light " onClick={() => {deleteGrade(grade)}}> <FontAwesomeIcon icon={faTrash} /> </a></div>
+            cell: (charge) => <div><Link to={{pathname:`/edit-charge/${charge.id}` ,state: {charges: charge} }}
+             className="btn btn-sm bg-success-light me-2">
+            <FontAwesomeIcon icon={faPencilAlt} /> </Link>  <a href="#" className="btn btn-sm bg-danger-light " onClick={() => {deleteCharge(charge)}}> <FontAwesomeIcon icon={faTrash} /> </a></div>
         },
     ];
-   
-    const tableData = {
+    
+        const tableData = {
             columns,
             data,
         };
@@ -100,15 +79,15 @@ function GradesList () {
                     <div className="page-header">
                         <Row>
                             <Col className="col">
-                                <h3 className="page-title">Grades</h3>
+                                <h3 className="page-title">Charges</h3>
                                 <ul className="breadcrumb">
                                     <li className="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
-                                    <li className="breadcrumb-item active">Grades</li>
+                                    <li className="breadcrumb-item active">Charges</li>
                                 </ul>
                             </Col>
                             <Col className="col-auto text-end float-end ms-auto">
                                 <a href="#" className="btn btn-outline-primary me-2"><FontAwesomeIcon icon={faDownload} /> Download</a>
-                                <a href="/add-grade" className="btn btn-primary"><FontAwesomeIcon icon={faPlus} /></a>
+                                <a href="/add-charge" className="btn btn-primary"><FontAwesomeIcon icon={faPlus} /></a>
                             </Col>
                         </Row>
                     </div>
@@ -130,4 +109,4 @@ function GradesList () {
             </div>
         )
 }
-export { GradesList };
+export {ChargesList};

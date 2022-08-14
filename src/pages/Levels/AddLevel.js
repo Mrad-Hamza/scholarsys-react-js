@@ -1,74 +1,100 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // Import Components
 import { Row, Col, Card, Form, Button } from "react-bootstrap";
+import { useHistory } from 'react-router-dom';
 
 function AddLevel() {
 
-    const [desgniation,setdesgniation] = useState('');
-    const[desgniationIsValid, setdesgniationIsValid] = useState(false);
+    let history = useHistory();
+
+    const [formations,setFormations] = useState([]);
+
+    const items = formations.map((formation)=>{
+        return(
+            <option key={formation.id} data-key={formation.id}>{formation.nom}</option>
+        )
+    })
+
+    useEffect(() => {
+        fetch('http://localhost:8000/formations')
+        .then(response => { return response.json()})
+        .then(res => { setFormations(res)})
+    },[]);  
+
+
+    const [desgniation,setdesgniation] = useState();
+    const[desgniationIsValid, setdesgniationIsValid] = useState('form-control is-invalid');
 
     const [acronyme, setAcronyme] = useState('');
-    const [acronymeIsValid, setAcronymeIsValid] = useState(false);
+    const [acronymeIsValid, setAcronymeIsValid] = useState('form-control is-invalid');
 
     const [formation, setFormation] = useState('');
-    const [formationIsValid, setFormationIsValid] = useState(false);
-
+    const [formationIsValid, setFormationIsValid] = useState('form-control is-invalid');
 
     const handleDesgniation = (desgniation) =>{
-        setdesgniationIsValid(true);
         if (desgniation.target.value !== undefined){
-            if(desgniation.target.value.length < 3){
-                setdesgniationIsValid(false)
+            if(desgniation.target.value.length == '') {
+                setdesgniationIsValid('form-control is-invalid')
             }
-
-            if(desgniation.target.value.length > 20){
-                setdesgniationIsValid(false)
+            else if(desgniation.target.value.length < 3){
+                setdesgniationIsValid('form-control is-invalid')
             }
-            
+            else if(desgniation.target.value.length > 20){
+                setdesgniationIsValid('form-control is-invalid')
+            }
+            else {
+                setdesgniation(desgniation.target.value);
+                setdesgniationIsValid('form-control is-valid');
+            }   
         }
         else{
-            setdesgniationIsValid(false);
+            setdesgniationIsValid('form-control is-invalid');
         }
-        if(desgniationIsValid === true){
-            setdesgniation(desgniation.target.value);
-        }
-
-        setdesgniation(desgniation.target.value)
     }
 
     const handleAcronyme = (acronyme) => {
         if(acronyme.target.value !== undefined){
-            setAcronymeIsValid(true);
-
-            if(acronyme.target.value.length > 6){
-                setAcronymeIsValid(false);
+            if(acronyme.target.value == ''){
+                setAcronymeIsValid('form-control is-invalid');
             }
-            if(acronyme.target.value.length < 2){
-                setAcronymeIsValid(false);
+            else if(acronyme.target.value.length > 8){
+                setAcronymeIsValid('form-control is-invalid');
+            }
+            else if(acronyme.target.value.length < 2){
+                setAcronymeIsValid('form-control is-invalid');
+            }else{
+                setAcronyme(acronyme.target.value)
+                setAcronymeIsValid('form-control is-valid');
             }
         }
         else{
-            setAcronymeIsValid(false);
+            setAcronymeIsValid('form-control is-invalid');
         }
 
-        setAcronyme(acronyme.target.value)
+        
     }
 
     const handleFormation = (formation)=>{
         if(formation.target.value !== undefined){
-            setFormationIsValid(true);
+            const selectedIndex = formation.target.options.selectedIndex;
+            const id = formation.target.options[selectedIndex].getAttribute('data-key');
+            formations.map(formation => {
+                if(formation.id == id ){
+                    setFormation(formation)
+                    setFormationIsValid('form-control is-valid');
+                }
+            })
         }else{
-            setFormationIsValid(false);
+            setFormationIsValid('form-control is-valid');
         }
-
-        setFormation(formation.target.value)
+        
     }
 
     const handleSubmit = async (level) => {
         level.preventDefault();
-        if((desgniationIsValid === false) || (acronymeIsValid === false) || (formationIsValid === false)){
+        if((desgniationIsValid === 'form-control is-invalid') || (acronymeIsValid === 'form-control is-invalid')
+        || (formationIsValid === 'form-control is-invalid')){
             alert('Form contain errors');
-            return false;
         }
         else{
             let confirm = window.confirm('Do you really want to submit the form?');
@@ -78,7 +104,8 @@ function AddLevel() {
                 method: 'POST',
                 body: JSON.stringify({
                         designation: desgniation,
-                        acronyme: acronyme
+                        acronyme: acronyme,
+                        formationId: formation.id
                     }),
                     headers: {
                         'Content-type': 'application/json; charset=UTF-8'
@@ -87,7 +114,7 @@ function AddLevel() {
                 const data = await response.json();
                 console.log(data);
                 alert("Form has been submitted");
-                return true
+                history.push('/levels');
             }
             else{
                 return false;
@@ -122,23 +149,21 @@ function AddLevel() {
                                         <Col xs={12} sm={6}>
                                             <Form.Group>
                                                 <Form.Label>Level desgniation</Form.Label>
-                                                <Form.Control type="text" onChange={handleDesgniation} />
+                                                <Form.Control className={desgniationIsValid} type="text" onChange={handleDesgniation} />
                                             </Form.Group>
                                         </Col>
                                         <Col xs={12} sm={6}>
                                             <Form.Group>
                                                 <Form.Label>Level Acronyme</Form.Label>
-                                                <Form.Control type="text"  onChange={handleAcronyme} />
+                                                <Form.Control className={acronymeIsValid} type="text"  onChange={handleAcronyme} />
                                             </Form.Group>
                                         </Col>
                                         <Col xs={12} sm={12}>
                                             <Form.Group>
                                                 <Form.Label>Formation</Form.Label>
-                                                <Form.Control as="select" onChange={handleFormation}>
-                                                    <option disabled selected value>Choisir une formation</option>	
-                                                    <option>DS</option>
-                                                    <option>BI</option>
-                                                    <option>TWIN</option>
+                                                <Form.Control className={formationIsValid} as="select" onChange={handleFormation}>
+                                                    <option disabled selected value>Choisir une formation</option>
+                                                    {items}
                                                 </Form.Control>
                                             </Form.Group>
                                         </Col>

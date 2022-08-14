@@ -67,7 +67,7 @@ app.use(errorHandler);
 
 app.listen(PORT, async () => {
 	try {
-		await sequelize.sync({ force: true });
+		//await sequelize.sync({ force: true });
 	} catch (err) {
 		console.log(err);
 	}

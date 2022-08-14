@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect,useState} from 'react';
 import {Link} from 'react-router-dom'
 // Import Components
 import { Row, Col, Card, Media } from "react-bootstrap";
@@ -10,79 +10,98 @@ import 'react-data-table-component-extensions/dist/index.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDownload, faPencilAlt, faPlus, faTrash } from '@fortawesome/fontawesome-free-solid';
 
-const data = [
-    { 
-        id: 'level1',
-        desgniation: 'Computer Science Engg',
-        acronyme: 'Aaliyah',
-        formation: '180',
-        action: ''
-    },
-    {
-        id: 'level2',
-        desgniation: 'Computer Science Engg',
-        acronyme: 'Aaliyah',
-        formation: '180',
-        action: ''
-    },
-    {
-        id: 'level3',
-        desgniation: 'Computer Science Engg',
-        acronyme: 'Aaliyah',
-        formation: '180',
-        action: ''
-    },
-    {
-        id: 'level4',
-        desgniation: 'Computer Science Engg',
-        acronyme: 'Aaliyah',
-        formation: '180',
-        action: ''
-    },
-    {
-        id: 'level5',
-        desgniation: 'Computer Science Engg',
-        acronyme: 'Aaliyah',
-        formation: '180',
-        action: ''
-    },
-    {
-        id: 'level6',
-        desgniation: 'Computer Science Engg',
-        acronyme: 'Aaliyah',
-        formation: '180',
-        action: ''
-    },
-];
-
-const columns = [
-    {
-        name: 'Desgniation',
-        sortable: true,
-        selector: row=>row.desgniation
-    },
-    {
-        name: 'Acronyme',
-        selector: row=>row.acronyme,
-        sortable: true,
-    },
-    {
-        name: 'Formation',
-        selector: row=>row.formation,
-        sortable: true,
-    },
-    {
-        name: 'Action',
-        selector: row=>row.action,
-        sortable: true,
-        cell: (level) => <div><Link to={{pathname :`/edit-level/${level.id}` , state: {level} }}
-        className="btn btn-sm bg-success-light me-2">
-        <FontAwesomeIcon icon={faPencilAlt} /> </Link>  <a href="#" className="btn btn-sm bg-danger-light "> <FontAwesomeIcon icon={faTrash} /> </a></div>
-    },
-];
-
-
 function LevelsList () {
+    const [data,setData] = useState();
+    const [formation, setFormation] = useState();
+    const [classes, setClasses] = useState();
+    const [subjects, setSubjects] = useState();
+
+    const deleteLevel = async (level)=>{
+        var childSubject = false;
+        var childClasse = false;
+        subjects.map(subject =>{
+            if (subject.niveauId == level.id){
+                childSubject = true;
+            }
+        })
+
+        classes.map(classe =>{
+            if(classe.niveauId == level.id){
+                childClasse = true
+            }
+        })
+
+        if(childClasse === false && childSubject === false){
+            let confirm = window.confirm('Do you really want to delete '+level.designation+'?');
+            if(confirm === true){
+                const response = await fetch('http://localhost:8000/niveau/'+level.id, {
+                    method: 'DELETE'
+                    });
+                const data = await response.json();
+                console.log(data);
+            }
+        }else{
+            alert("You cannot delete this one because it contains child(s)");
+        }
+        
+    }
+
+    useEffect(() => {
+        fetch('http://localhost:8000/niveaus')
+        .then(response => { return response.json()})
+        .then(niveaux => { setData(niveaux); console.log(niveaux) })
+
+        fetch('http://localhost:8000/formations')
+        .then(response => { return response.json()})
+        .then(formations => { setFormation(formations) })
+
+        fetch('http://localhost:8000/matiere')
+        .then(response => { return response.json()})
+        .then(matiere => { setSubjects(matiere) })
+
+        fetch('http://localhost:8000/classes')
+        .then(response => { return response.json()})
+        .then(classes => { setClasses(classes); })
+
+    },[]);
+
+    function getFormationById(id){
+        var name = ''
+        if(formation !== undefined){
+            formation.map(formation =>{
+                if(formation.id == id){
+                    name = formation.nom
+                }
+            } )
+        }
+        return name;
+    }
+
+    const columns = [
+        {
+            name: 'Designation',
+            sortable: true,
+            selector: row=>row.designation
+        },
+        {
+            name: 'Acronyme',
+            selector: row=>row.acronyme,
+            sortable: true,
+        },
+        {
+            name: 'Formation',
+            selector: row=>getFormationById(row.formationId),
+            sortable: true,
+        },
+        {
+            name: 'Action',
+            selector: row=>row.action,
+            sortable: true,
+            cell: (level) => <div><Link to={{pathname :`/edit-level/${level.id}` , state: {level} }}
+            className="btn btn-sm bg-success-light me-2">
+            <FontAwesomeIcon icon={faPencilAlt} /> </Link>  <a href="#" className="btn btn-sm bg-danger-light " onClick={() => {deleteLevel(level)}}> <FontAwesomeIcon icon={faTrash} /> </a></div>
+        },
+    ];
          
         const tableData = {
             columns,
@@ -102,7 +121,7 @@ function LevelsList () {
                             </Col>
                             <Col className="col-auto text-end float-end ms-auto">
                                 <a href="#" className="btn btn-outline-primary me-2"><FontAwesomeIcon icon={faDownload} /> Download</a>
-                                <a href="/add-department" className="btn btn-primary"><FontAwesomeIcon icon={faPlus} /></a>
+                                <a href="/add-level" className="btn btn-primary"><FontAwesomeIcon icon={faPlus} /></a>
                             </Col>
                         </Row>
                     </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom'
 // Import Components
 import { Row, Col, Card, Media } from "react-bootstrap";
@@ -10,90 +10,99 @@ import 'react-data-table-component-extensions/dist/index.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDownload, faPencilAlt, faPlus, faTrash } from '@fortawesome/fontawesome-free-solid';
 
-const data = [
-    { 
-        id: 'class1',
-        name: 'Data Science',
-        desgniation: 'DS',
-        formation: 'Data Science',
-        niveau: '4eme',
-        action: ''
-    },
-    {
-        id: 'class2',
-        name: 'Data Science',
-        desgniation: 'DS',
-        formation: 'Data Science',
-        niveau: '4eme',
-        action: ''
-    },
-    {
-        id: 'class3',
-        name: 'Data Science',
-        desgniation: 'DS',
-        formation: 'Data Science',
-        niveau: '4eme',
-        action: ''
-    },
-    {
-        id: 'class4',
-        name: 'Data Science',
-        desgniation: 'DS',
-        formation: 'Data Science',
-        niveau: '4eme',
-        action: ''
-    },
-    {
-        id: 'class5',
-        name: 'Data Science',
-        desgniation: 'DS',
-        formation: 'Data Science',
-        niveau: '4eme',
-        action: ''
-    },
-    {
-        id: 'class6',
-        name: 'Data Science',
-        desgniation: 'DS',
-        formation: 'Data Science',
-        niveau: '4eme',
-        action: ''
-    },
-];
-
-const columns = [
-    {
-        name: 'Name',
-        sortable: true,
-        selector: row=>row.name
-    },
-    {
-        name: 'desgniation',
-        selector: row=>row.desgniation,
-        sortable: true
-    },
-    {
-        name: 'Formation',
-        selector: row=>row.formation,
-        sortable: true
-    },
-    {
-        name: 'Niveau',
-        selector: row=>row.niveau,
-        sortable: true
-    },
-    {
-        name: 'Action',
-        selector: row=>row.action,
-        sortable: true,
-        cell: (classes) => <div><Link to={{pathname:`/edit-class/${classes.id}` ,state: {classes} }}
-         className="btn btn-sm bg-success-light me-2">
-        <FontAwesomeIcon icon={faPencilAlt} /> </Link>  <a href="#" className="btn btn-sm bg-danger-light "> <FontAwesomeIcon icon={faTrash} /> </a></div>
-    },
-];
-
+const deleteClasse = async (classe)=>{
+    let confirm = window.confirm('Do you really want to delete '+classe.nom+'?');
+    if(confirm === true){
+        const response = await fetch('http://localhost:8000/classe/'+classe.id, {
+            method: 'DELETE'
+            });
+            const data = await response.json();
+            console.log(data);
+    }
+}
 
 function ClassesList() {
+
+    const [data,setData] = useState();
+    const [niveau, setNiveau] = useState();
+    const [formation, setFormation] = useState();
+
+    useEffect(() => {
+        fetch('http://localhost:8000/classes')
+        .then(response => { return response.json()})
+        .then(classes => { setData(classes); })
+
+        fetch('http://localhost:8000/niveaus')
+        .then(response => { return response.json()})
+        .then(niveaux => { setNiveau(niveaux); })
+
+        fetch('http://localhost:8000/formations')
+        .then(response => { return response.json()})
+        .then(formation => { setFormation(formation); })
+    },[]);
+
+    function getNiveauById(id){
+        var name = ''
+        if(niveau !== undefined){
+            niveau.map(niveau =>{
+                if(niveau.id == id){
+                    name = niveau.designation
+                }
+            } )
+        }
+        return name;
+    }
+
+    function getFormationByNiveau(id){
+        var name = '';
+        var formationId;
+        if(niveau !== undefined){
+            niveau.map(niveau => {
+                if(niveau.id == id){
+                    formationId = niveau.formationId;
+                    if(formation !== undefined){
+                        formation.map(formation =>{
+                            if(formation.id == formationId){
+                                name = formation.nom
+                            }
+                        })
+                    }
+                }
+            })
+        }
+        return name;
+    }
+    
+    const columns = [
+        {
+            name: 'Name',
+            sortable: true,
+            selector: row=>row.nom
+        },
+        {
+            name: 'desgniation',
+            selector: row=>row.designation,
+            sortable: true
+        },
+        {
+            name: 'Formation',
+            selector: row => getFormationByNiveau(row.niveauId),
+            sortable: true
+        },
+        {
+            name: 'Niveau',
+            selector: row=>getNiveauById(row.niveauId),
+            sortable: true
+        },
+        {
+            name: 'Action',
+            selector: row=>row.action,
+            sortable: true,
+            cell: (classes) => <div><Link to={{pathname:`/edit-class/${classes.id}` ,state: {classes: classes} }}
+             className="btn btn-sm bg-success-light me-2">
+            <FontAwesomeIcon icon={faPencilAlt} /> </Link>  <a href="#" className="btn btn-sm bg-danger-light " onClick={() => {deleteClasse(classes)}}> <FontAwesomeIcon icon={faTrash} /> </a></div>
+        },
+    ];
     
         const tableData = {
             columns,
@@ -114,7 +123,7 @@ function ClassesList() {
                             </Col>
                             <Col className="col-auto text-end float-end ms-auto">
                                 <a href="#" className="btn btn-outline-primary me-2"><FontAwesomeIcon icon={faDownload} /> Download</a>
-                                <a href="/add-department" className="btn btn-primary"><FontAwesomeIcon icon={faPlus} /></a>
+                                <a href="/add-class" className="btn btn-primary"><FontAwesomeIcon icon={faPlus} /></a>
                             </Col>
                         </Row>
                     </div>

@@ -1,113 +1,126 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 // Import Components
 import { Row, Col, Card, Form, Button } from "react-bootstrap";
-
+import { useHistory } from 'react-router-dom';
 
 function AddFormation(){
     const [name , setName] = useState('');
-    const [nameIsValid , setNameIsValid] = useState(false);
+    const [nameIsValid , setNameIsValid] = useState('form-control is-invalid');
 
     const [mtAnn, setMtAnn] = useState('');
-    const [mtAnnIsValid , setMtAnnIsValid] = useState(false);
+    const [mtAnnIsValid , setMtAnnIsValid] = useState('form-control is-invalid');
 
     const [durAnn, setDurAnn] = useState('');
-    const [durAnnIsValid , setDurAnnIsValid] = useState(false);
+    const [durAnnIsValid , setDurAnnIsValid] = useState('form-control is-invalid');
 
     const [durMens, setDurMens] = useState('');
-    const [durMensIsValid , setDurMensIsValid] = useState(false);
+    const [durMensIsValid , setDurMensIsValid] = useState('form-control is-invalid');
 
     const [dtEch, setDtEch] = useState('');
-    const [dtEchIsValid , setDtEchIsValid] = useState(false);
+    const [dtEchIsValid , setDtEchIsValid] = useState('form-control is-invalid');
+
+    let history = useHistory();
+
 
     const handleName = (name) =>{
         if (name.target.value !== undefined){
-            setNameIsValid(true);
-            if(name.target.value.length < 3){
-                setNameIsValid(false)
-            }
-
-            if(name.target.value.length > 20){
-                setNameIsValid(false)
+            if((name.target.value === '') || (name.target.value.length < 3) || (name.target.value.length > 20) ){
+                setName(null)
+                setNameIsValid('form-control is-invalid');
+            }else{
+                setNameIsValid('form-control is-valid')
+                setName(name.target.value)
             }
             
         }
         else{
-            setNameIsValid(false);
-        }
-        if(nameIsValid === true){
-            setName(name.target.value);
+            setNameIsValid('form-control is-invalid');
+            setName(null)
         }
     }
 
     const handleMtAnnuelle = (mtAnn) => {
-        if(mtAnn.target.value !== undefined){
-            setMtAnnIsValid(true);
-            if(mtAnn.target.value == 0){
-                setMtAnnIsValid(false)
+        if(mtAnn.target.value !== undefined || mtAnn.target.value !== ''){
+            if(mtAnn.target.value.match(/^(\d*\.{0,1}\d{0,3}$)/)){
+                if(mtAnn.target.value == 0){
+                    setMtAnn('')
+                    setMtAnnIsValid('form-control is-invalid');
+                }else{
+                    setMtAnnIsValid('form-control is-valid');
+                    setMtAnn(mtAnn.target.value);
+                }
+            }else{
+                setMtAnn('')
+                setMtAnnIsValid('form-control is-invalid');
             }
+            
         }
         else{
-            setMtAnnIsValid(false);
-        }
-
-        if(mtAnnIsValid===true){
-            setMtAnn(mtAnn.target.value);
+            setMtAnnIsValid('form-control is-invalid');
+            setMtAnn('')
         }
     }
 
     const handleDurAnn = (durAnn) =>{
         if(durAnn.target.value !== undefined){
-            setDurAnnIsValid(true)
-            if(durAnn.target.value == 0){
-                setDurAnnIsValid(false)
+            if(durAnn.target.value.match(/^(\d*\.{0,1}\d{0,2}$)/)){
+                if(durAnn.target.value == 0){
+                    setDurAnn(null)
+                    setDurAnnIsValid('form-control is-invalid')
+                }else{
+                    setDurAnn(durAnn.target.value);
+                    setDurAnnIsValid('form-control is-valid')
+                }
             }
-        }
-        else{
-            setDurAnnIsValid(false)
-        }
-
-        if(durAnnIsValid===true){
-            setDurAnn(durAnn.target.value);
+            else{
+                setDurAnnIsValid('form-control is-invalid')
+                setDurAnn(null)
+            }
+        }else{
+            setDurAnnIsValid('form-control is-invalid')
+            setDurAnn(null)
         }
     }
 
     const handleDurMens = (durMens)=>{
         if(durMens.target.value !== undefined ){
-            setDurMensIsValid(true)
-            if(durMens.target.value == 0){
-                setDurMensIsValid(false);
+            if(durMens.target.value.match(/^(\d*\.{0,1}\d{0,2}$)/)){
+                if(durMens.target.value == 0){
+                    setDurMensIsValid('form-control is-invalid');
+                    setDurMens(null)
+                }else{
+                    setDurMens(durMens.target.value)
+                    setDurMensIsValid('form-control is-valid')
+                }
+            }else{
+                setDurMensIsValid('form-control is-invalid')
+                setDurMens(null)
             }
         }
         else{
-            setDurMensIsValid(false)
-        }
-
-        if(durMensIsValid===true){
-            setDurMens(durMens.target.value)
+            setDurMensIsValid('form-control is-invalid')
+            setDurMens(null)
         }
     }
 
     const handleDtEch = (dtEch) =>{
-        if(dtEch.target.value !== undefined){
-            setDtEchIsValid(true);
+        if(dtEch.target.value !== undefined && dtEch.target.value !== ''){
+            setDtEchIsValid('form-control is-valid');
+            setDtEch(dtEch.target.value);
         }
         else{
-            setDtEchIsValid(false);
-        }
-
-        if(dtEchIsValid===true){
-            setDtEch(dtEch.target.value);
+            setDtEchIsValid('form-control is-invalid');
+            setDtEch(null)
         }
     }
 
     const handleSubmit = async (formation) => {
         formation.preventDefault();
-        if((nameIsValid === false) || (mtAnnIsValid === false) || (durAnnIsValid === false)
-         || (durMensIsValid === false) || (dtEchIsValid === false)){
-            alert('Form contain errors');
-            return false;
-        }
-        else{
+        if((nameIsValid ==='form-control is-invalid')|| (mtAnnIsValid === 'form-control is-invalid') 
+        || (durAnnIsValid === 'form-control is-invalid') || (durMens === 'form-control is-invalid') ||
+        (dtEchIsValid === 'form-control is-invalid')){
+
+        }else{
             let confirm = window.confirm('Do you really want to submit the form?');
             if(confirm === true){
                 formation.preventDefault();
@@ -127,7 +140,7 @@ function AddFormation(){
                 const data = await response.json();
                 console.log(data);
                 alert("Form has been submitted");
-                return true
+                history.push('/formations');
             }
             else{
                 return false;
@@ -163,33 +176,33 @@ function AddFormation(){
                                         <Col xs={12} sm={6}>
                                             <Form.Group>
                                                 <Form.Label>Formation Name</Form.Label>
-                                                <Form.Control type="text" onChange={handleName} />
+                                                <Form.Control className={nameIsValid} type="text" onChange={handleName} />
                                             </Form.Group>
                                         </Col>
                                         <Col xs={12} sm={6}>
                                             <Form.Group>
                                                 <Form.Label>Montant Annuelle</Form.Label>
-                                                <Form.Control type="number" min={0} onChange={handleMtAnnuelle} />
+                                                <Form.Control className={mtAnnIsValid} type="number" min={0} onChange={handleMtAnnuelle} />
                                             </Form.Group>
                                         </Col>
                                         <Col xs={12} sm={6}>
                                             <Form.Group>
                                                 <Form.Label>Duree Annuelle</Form.Label>
-                                                <Form.Control type="number" min="0" onChange={handleDurAnn} />
+                                                <Form.Control className={durAnnIsValid} type="number" min="0" onChange={handleDurAnn} />
                                             </Form.Group>
                                         </Col>
 
                                         <Col xs={12} sm={6}>
                                             <Form.Group>    
                                                 <Form.Label>Duree Mensuelle</Form.Label>
-                                                <Form.Control type="number" min="0" onChange={handleDurMens} />
+                                                <Form.Control className={durMensIsValid} type="number" min="0" onChange={handleDurMens} />
                                             </Form.Group>
                                         </Col>
 
                                         <Col xs={12} sm={12}>
                                             <Form.Group>
                                                 <Form.Label>Date d'écheance</Form.Label>
-                                                <Form.Control type="date" onChange={handleDtEch} />
+                                                <Form.Control className={dtEchIsValid} type="date" onChange={handleDtEch} />
                                             </Form.Group>
                                         </Col>
 

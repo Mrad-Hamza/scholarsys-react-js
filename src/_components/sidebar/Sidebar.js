@@ -5,7 +5,7 @@ import { history } from "../_helpers";
 import { Link } from 'react-router-dom';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faThLarge, faUserGraduate, faChalkboardTeacher, faBuilding, faBook, faFile, faHockeyPuck, faDollarSign, faClipboard, faCalendar, faTable, faShieldAlt, faBaseballBall, faBus, faColumns, faCode, faGraduationCap, faUsersCog, faSchool, faUsersClass, faUserClass, faUser, faLevelDownAlt, faLevelUpAlt,  } from '@fortawesome/fontawesome-free-solid'
+import { faThLarge, faUserGraduate, faChalkboardTeacher, faBuilding, faBook, faFile, faHockeyPuck, faDollarSign, faClipboard, faCalendar, faTable, faShieldAlt, faBaseballBall, faBus, faColumns, faCode, faGraduationCap, faUsersCog, faSchool, faUsersClass, faUserClass, faUser, faLevelDownAlt, faLevelUpAlt, faFilePowerpoint, faMoneyBill,  } from '@fortawesome/fontawesome-free-solid'
 import { faSquarespace } from '@fortawesome/free-brands-svg-icons';
 
 class Sidebar extends React.Component {
@@ -148,9 +148,6 @@ class Sidebar extends React.Component {
 										<li className = {pathnames.includes('/react/add-formation') ? 'active' : ''}>
 											<Link to = "/add-formation">Formation Add</Link>
 										</li>
-										<li className = {pathnames.includes('/react/edit-formation') ? 'active' : ''}>
-											<Link to = "/edit-formation">Formation Edit</Link>
-										</li>
 									</ul>
 								</li>
 								<li className = {`submenu ${pathnames.includes('/react/levels') ? 'active' : pathnames.includes('/react/add-level') ? 'active' : pathnames.includes('/react/edit-level') ? 'active' : ''}`}>
@@ -164,9 +161,6 @@ class Sidebar extends React.Component {
 										<li className = {pathnames.includes('/react/add-level') ? 'active' : ''}>
 											<Link to = "/add-level">Add Level</Link>
 										</li>
-										<li className = {pathnames.includes('/react/edit-level') ? 'active' : ''}>
-											<Link to = "/edit-level">Edit Level</Link>
-										</li>
 									</ul>
 								</li>
 								<li className = {`submenu ${pathnames.includes('/react/classes') ? 'active' : pathnames.includes('/react/add-class') ? 'active' : pathnames.includes('/react/edit-class') ? 'active' : ''}`}>
@@ -179,9 +173,6 @@ class Sidebar extends React.Component {
 										</li>
 										<li className = {pathnames.includes('/react/add-class') ? 'active' : ''}>
 											<Link to = "/add-class">Add Class</Link>
-										</li>
-										<li className = {pathnames.includes('/react/edit-class') ? 'active' : ''}>
-											<Link to = "/edit-class">Edit Class</Link>
 										</li>
 									</ul>
 								</li>
@@ -197,9 +188,6 @@ class Sidebar extends React.Component {
 										<li className = {pathnames.includes('/react/add-subject') ? 'active' : ''}>
 											<Link to = "/add-subject">Subject Add</Link>
 										</li>
-										<li className = {pathnames.includes('/react/edit-subject') ? 'active' : ''}>
-											<Link to = "/edit-subject">Subject Edit</Link>
-										</li>
 									</ul>
 								</li>
 								<li className = {`submenu ${pathnames.includes('/react/grades') ? 'active' : pathnames.includes('/react/add-grade') ? 'active' : pathnames.includes('/react/edit-grade') ? 'active' : ''}`}>
@@ -213,8 +201,19 @@ class Sidebar extends React.Component {
 										<li className = {pathnames.includes('/react/add-grade') ? 'active' : ''}>
 											<Link to = "/add-grade">Add Grade</Link>
 										</li>
-										<li className = {pathnames.includes('/react/edit-grade') ? 'active' : ''}>
-											<Link to = "/edit-grade">Edit Grade</Link>
+									</ul>
+								</li>
+
+								<li className = {`submenu ${pathnames.includes('/react/charges') ? 'active' : pathnames.includes('/react/add-charge') ? 'active' : pathnames.includes('/react/edit-charge') ? 'active' : ''}`}>
+									<a href="#">
+										<FontAwesomeIcon icon={faMoneyBill} /> <span> Charges </span> <span className="menu-arrow"></span>
+									</a>
+									<ul>
+										<li className = {pathnames.includes('/react/charges') ? 'active' : ''}>
+											<Link to = "/charges">Charges List</Link>
+										</li>
+										<li className = {pathnames.includes('/react/add-charge') ? 'active' : ''}>
+											<Link to = "/add-charge">Add Charge</Link>
 										</li>
 									</ul>
 								</li>
