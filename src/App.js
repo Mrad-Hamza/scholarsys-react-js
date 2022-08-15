@@ -137,8 +137,9 @@ import Unauthorized from './pages/UnauthorizedPage/Unauthorized';
 import Profile from './pages/Profile/Profile';
 import ResetPassword from './pages/ResetPassword/ResetPassword';
 import ConfirmAccount from './pages/ConfirmAccount/ConfirmAccount';
-import ScheduleList from './pages/Schedule/ScheduleList';
 import { logout } from './slices/auth';
+import Schedules from './pages/Schedule/Schedules';
+import SchedulesList from './pages/Schedules/SchedulesList';
 
 function App() {
   const { isLoggedIn } = useSelector((state) => state.auth);
@@ -169,17 +170,14 @@ function App() {
         history.push('/login')
       }
     }
-    if (token) {
+   /*  if (token) {
       const decodedJwt = parseJwt(token);
       if (decodedJwt.exp * 1000 < Date.now()) {
         dispatch(logout())
         history.push('/login')
       }
-      
-    }
-    else {
-      history.push('/login')
-    }
+    } */
+
   }, [location])
 
 
@@ -208,7 +206,8 @@ function App() {
             <div className="page-wrapper">
               <div className="content container-fluid">
 
-                <Route path="/emploi-du-temps" component={ScheduleList} />
+                <Route path="/schedule/:id" component={Schedules} />
+                <Route path="/schedules-list" component={SchedulesList} />
 
                 {/* Profile Module */}
                 <RouteAuthenticated path="/profile" component={Profile} />

@@ -31,7 +31,7 @@ function Register() {
 	const [lastNameClass, setLastNameClass] = useState("form-control is-invalid")
 
 	const [birthDate, setBirthDate] = useState("")
-	const [birthDateClass, setBirthDateClass] = useState("form-control is-invalid")
+	const [birthDateClass, setBirthDateClass] = useState("form-control is-invalid form-control-sm")
 
 	const [emailClass, setEmailClass] = useState("form-control is-invalid")
 	const [email, setEmail] = useState("")
@@ -131,9 +131,9 @@ function Register() {
 
 	useEffect(() => {
 		if (birthDate !== null && birthDate !== undefined && birthDate !== "" ) {
-			setBirthDateClass("form-control is-valid")
+			setBirthDateClass("form-control is-valid form-control-sm")
 		} else {
-			setBirthDateClass("form-control is-invalid")
+			setBirthDateClass("form-control is-invalid form-control-sm")
 		}
 	}, [birthDate])
 
@@ -201,7 +201,7 @@ function Register() {
 										<input class={lastNameClass} type="text" placeholder="Last Name" value={lastName} onChange={handleLastNameChange} required />
 									</div>
 									<div className="form-group">
-										<input class={birthDate} type="date" placeholder="Birth Date" value={birthDate} onChange={handleBirthDateChange} required />
+										<input class={birthDateClass} type="date" placeholder="Birth Date" value={birthDate} onChange={handleBirthDateChange} required />
 									</div>
 									<div className="form-group">
 										<input class={emailClass} type="text" placeholder="Email" value={email} onChange={handleEmailChange} required />

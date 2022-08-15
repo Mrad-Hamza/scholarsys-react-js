@@ -89,28 +89,24 @@ const usersSlice = createSlice({
     initialState,
     extraReducers: {
         [allUsers.fulfilled]: (state, action) => {
-            console.log(action)
             state.users = action.payload.users;
         },
         [allUsers.rejected]: (state, action) => {
             state.users = [];
         },
         [allAgents.fulfilled]: (state, action) => {
-            console.log(action)
             state.agents = action.payload.agents;
         },
         [allAgents.rejected]: (state, action) => {
             state.agents = [];
         },
         [allTeachers.fulfilled]: (state, action) => {
-            console.log(action)
             state.teachers = action.payload.teachers;
         },
         [allTeachers.rejected]: (state, action) => {
             state.teachers = [];
         },
         [allStudents.fulfilled]: (state, action) => {
-            console.log(action)
             state.students = action.payload.students;
         },
         [allStudents.rejected]: (state, action) => {

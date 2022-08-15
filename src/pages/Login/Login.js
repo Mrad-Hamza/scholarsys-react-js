@@ -1,4 +1,4 @@
-import React, {useEffect,useState} from 'react';
+import React, { useEffect, useState } from 'react';
 // Import Logo
 import Logo from '../../assets/img/logo-white.png';
 // Import Icons
@@ -28,8 +28,8 @@ function Login() {
             history.push('/dashboard')
         }
     }, [])
-    
-  
+
+
     useEffect(() => {
         dispatch(clearMessage());
     }, [dispatch]);
@@ -40,15 +40,15 @@ function Login() {
 
     const handlePasswordChange = (e) => {
         setPassword(e.target.value)
-    }    
-    
+    }
+
     const HandleLogin = (e) => {
         e.preventDefault()
         dispatch(login({ email, password }))
-           .unwrap()
-           .then(() => {
+            .unwrap()
+            .then(() => {
                 history.push("/profile")
-           })
+            })
         console.log(message)
         /* if ( !message.success) {
             toast.error("There is an error. Please re-enter your information")
@@ -73,34 +73,34 @@ function Login() {
 
                                 <form>
                                     <div className="form-group">
-                                        <input className="form-control" type="text" placeholder="Email" value={email} onChange={handleEmailChange}/>
+                                        <input className="form-control" type="text" placeholder="Email" value={email} onChange={handleEmailChange} />
                                     </div>
                                     <div className="form-group">
-                                        <input className="form-control" type="text" placeholder="Password" value={password} onChange={handlePasswordChange}/>
+                                        <input className="form-control" type="text" placeholder="Password" value={password} onChange={handlePasswordChange} />
                                     </div>
                                     <div className="form-group">
                                         <button className="btn btn-primary btn-block" onClick={HandleLogin}>Login</button>
                                     </div>
                                 </form>
 
-                                <div className="text-center forgotpass"><a href="/forgot-password">Forgot Password?</a></div>
-                                <div className="login-or">
-                                    <span className="or-line"></span>
-                                    <span className="span-or">or</span>
-                                </div>
-
-                                <div className="social-login">
-                                    <span>Login with</span>
-                                    <a href="#" className="facebook"><FontAwesomeIcon icon={faFacebookF} /></a><a href="#" className="google"><FontAwesomeIcon icon={faGoogle} /></a>
-                                </div>
-
-                                <div className="text-center dont-have">Don’t have an account? <a href="/register">Register</a></div>
+                                <div className="text-center forgotpass"> <button onClick={() => history.push('/forgot-password')} style={{ outline: "none", border: "none" }} > Forgot Password? </button> </div>
+                            <div className="login-or">
+                                <span className="or-line"></span>
+                                <span className="span-or">or</span>
                             </div>
+
+                            <div className="social-login">
+                                <span>Login with</span>
+                                <a href="#" className="facebook"><FontAwesomeIcon icon={faFacebookF} /></a><a href="#" className="google"><FontAwesomeIcon icon={faGoogle} /></a>
+                            </div>
+
+                            <div className="text-center dont-have">Don’t have an account? <a href="/register">Register</a></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        </div >
     )
 }
 

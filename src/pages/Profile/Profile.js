@@ -194,23 +194,43 @@ function Profile() {
 
                                             <div className="row">
                                                 <p className="col-sm-3 text-muted text-sm-end mb-0 mb-sm-3">First Name</p>
-                                                <p className="col-sm-9"><input type="text" value={firstname} onChange={handleFirstNameChange} className='mb-3' /></p>
+                                                <p className="col-sm-9">
+                                                    <div className="col-md-10">
+                                                        <input type="text" value={firstname} className="form-control form-control-sm" onChange={handleFirstNameChange} />
+                                                    </div>
+                                                </p>
                                             </div>
                                             <div className="row">
                                                 <p className="col-sm-3 text-muted text-sm-end mb-0 mb-sm-3">Last Name</p>
-                                                <p className="col-sm-9"> <input type="text" value={lastname} onChange={handleLastNameChange} className='mb-3' /> </p>
+                                                <p className="col-sm-9">
+                                                    <div className="col-md-10">
+                                                        <input type="text" value={lastname} className="form-control form-control-sm" onChange={handleLastNameChange} />
+                                                    </div>
+                                                </p>
                                             </div>
                                             <div className="row">
                                                 <p className="col-sm-3 text-muted text-sm-end mb-0 mb-sm-3">Date of Birth</p>
-                                                <p className="col-sm-9"> <input type="date" value={birthDate} onChange={handleBirthDateChange} className='mb-3' /> </p>
+                                                <p className="col-sm-9">
+                                                    <div className="col-md-10">
+                                                        <input type="date" value={birthDate} className="form-control form-control-sm" onChange={handleBirthDateChange} />
+                                                    </div>
+                                                </p>
                                             </div>
                                             <div className="row">
                                                 <p className="col-sm-3 text-muted text-sm-end mb-0 mb-sm-3">Email ID</p>
-                                                <p className="col-sm-9"><input type="text" value={email} onChange={handleEmailChange} className='mb-3' /></p>
+                                                <p className="col-sm-9">
+                                                    <div className="col-md-10">
+                                                        <input type="text" value={email} className="form-control form-control-sm" onChange={handleEmailChange} />
+                                                    </div>
+                                                </p>
                                             </div>
                                             <div className="row">
                                                 <p className="col-sm-3 text-muted text-sm-end mb-0 mb-sm-3">Mobile</p>
-                                                <p className="col-sm-9"> <input type="number" value={phoneNumber} onChange={handlephoneNumberChange} className='mb-3' /> </p>
+                                                <p className="col-sm-9">
+                                                    <div className="col-md-10">
+                                                        <input type="number" className="form-control form-control-sm" value={phoneNumber} onChange={handlephoneNumberChange} />
+                                                    </div>
+                                                </p>
                                             </div>
                                             <div className='row'>
                                                 <p className="col-sm-9">

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect,useState } from 'react';
 import { Dropdown } from 'react-bootstrap';
 import $ from "jquery";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,6 +21,7 @@ import { useHistory } from 'react-router-dom';
 function Header(props) {
 
 	const { user: currentUser } = useSelector((state) => state.auth);
+	const [role, setrole] = useState("")
 
 	const dispatch = useDispatch()
 	const history = useHistory()
@@ -30,7 +31,19 @@ function Header(props) {
 	}
 
 	useEffect(() => {
-		console.log("../../assets/user_images/" + currentUser.image)
+		switch (currentUser.role) {
+			case '1':
+				setrole("Student")
+				break;
+			case '666': 
+				setrole("Teacher")
+				break;
+			case "987":
+				setrole("Agent")
+				break;
+			default:
+				break;
+		}
 	}, [])
 	
 
@@ -194,8 +207,8 @@ function Header(props) {
 									<img src={require("../../assets/user_images/" + currentUser.image)} alt="User Image" className="avatar-img rounded-circle" />
 								</div>
 								<div className="user-text">
-									<h6>Ryan Taylor</h6>
-									<p className="text-muted mb-0">Administrator</p>
+									<h6>{currentUser.firstname} {currentUser.lastname}</h6>
+									<p className="text-muted mb-0">{role}</p>
 								</div>
 							</div>
 							<Dropdown.Item onClick={() => history.push('/profile')}>My Profile</Dropdown.Item>
