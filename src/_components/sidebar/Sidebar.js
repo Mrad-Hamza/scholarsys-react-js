@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faThLarge, faUserGraduate, faChalkboardTeacher, faBuilding, faBook, faFile, faHockeyPuck, faDollarSign, faClipboard, faCalendar, faTable, faShieldAlt, faBaseballBall, faBus, faColumns, faCode, } from '@fortawesome/fontawesome-free-solid'
+
 import { faSquarespace } from '@fortawesome/free-brands-svg-icons';
 
 import { useSelector } from 'react-redux';
@@ -156,19 +157,44 @@ function Sidebar() {
 
 									</ul>
 								</li>
-								<li className={`submenu ${pathnames.includes('/react/departments') ? 'active' : pathnames.includes('/react/add-department') ? 'active' : pathnames.includes('/react/edit-department') ? 'active' : ''}`}>
+                
+								<li className = {`submenu ${pathnames.includes('/react/formations') ? 'active' : pathnames.includes('/react/add-formation') ? 'active' : pathnames.includes('/react/edit-formation') ? 'active' : ''}`}>
 									<a href="#">
-										<FontAwesomeIcon icon={faBuilding} /> <span> Departments</span> <span className="menu-arrow"></span>
+										<FontAwesomeIcon icon={faBuilding} /> <span> Formations</span> <span className="menu-arrow"></span>
 									</a>
 									<ul>
-										<li className={pathnames.includes('/react/departments') ? 'active' : ''}>
-											<Link to="/departments">Department List</Link>
+
+										<li className = {pathnames.includes('/react/formations') ? 'active' : ''}>
+											<Link to = "/formations">Formation List</Link>
 										</li>
-										<li className={pathnames.includes('/react/add-department') ? 'active' : ''}>
-											<Link to="/add-department">Department Add</Link>
+										<li className = {pathnames.includes('/react/add-formation') ? 'active' : ''}>
+											<Link to = "/add-formation">Formation Add</Link>
 										</li>
-										<li className={pathnames.includes('/react/edit-department') ? 'active' : ''}>
-											<Link to="/edit-department">Department Edit</Link>
+									</ul>
+								</li>
+								<li className = {`submenu ${pathnames.includes('/react/levels') ? 'active' : pathnames.includes('/react/add-level') ? 'active' : pathnames.includes('/react/edit-level') ? 'active' : ''}`}>
+									<a href="#">
+										<FontAwesomeIcon icon={faLevelUpAlt} /> <span> Levels </span> <span className="menu-arrow"></span>
+									</a>
+									<ul>
+										<li className = {pathnames.includes('/react/levels') ? 'active' : ''}>
+											<Link to = "/levels">Levels List</Link>
+										</li>
+										<li className = {pathnames.includes('/react/add-level') ? 'active' : ''}>
+											<Link to = "/add-level">Add Level</Link>
+										</li>
+									</ul>
+								</li>
+								<li className = {`submenu ${pathnames.includes('/react/classes') ? 'active' : pathnames.includes('/react/add-class') ? 'active' : pathnames.includes('/react/edit-class') ? 'active' : ''}`}>
+									<a href="#">
+										<FontAwesomeIcon icon={faUser} /> <span> Classes</span> <span className="menu-arrow"></span>
+									</a>
+									<ul>
+										<li className = {pathnames.includes('/react/classes') ? 'active' : ''}>
+											<Link to = "/classes">Class List</Link>
+										</li>
+										<li className = {pathnames.includes('/react/add-class') ? 'active' : ''}>
+											<Link to = "/add-class">Add Class</Link>
 										</li>
 									</ul>
 								</li>
@@ -184,8 +210,33 @@ function Sidebar() {
 										<li className={pathnames.includes('/react/add-subject') ? 'active' : ''}>
 											<Link to="/add-subject">Subject Add</Link>
 										</li>
-										<li className={pathnames.includes('/react/edit-subject') ? 'active' : ''}>
-											<Link to="/edit-subject">Subject Edit</Link>
+
+									</ul>
+								</li>
+								<li className = {`submenu ${pathnames.includes('/react/grades') ? 'active' : pathnames.includes('/react/add-grade') ? 'active' : pathnames.includes('/react/edit-grade') ? 'active' : ''}`}>
+									<a href="#">
+										<FontAwesomeIcon icon={faGraduationCap} /> <span> Grades </span> <span className="menu-arrow"></span>
+									</a>
+									<ul>
+										<li className = {pathnames.includes('/react/grades') ? 'active' : ''}>
+											<Link to = "/grades">Grades List</Link>
+										</li>
+										<li className = {pathnames.includes('/react/add-grade') ? 'active' : ''}>
+											<Link to = "/add-grade">Add Grade</Link>
+										</li>
+									</ul>
+								</li>
+
+								<li className = {`submenu ${pathnames.includes('/react/charges') ? 'active' : pathnames.includes('/react/add-charge') ? 'active' : pathnames.includes('/react/edit-charge') ? 'active' : ''}`}>
+									<a href="#">
+										<FontAwesomeIcon icon={faMoneyBill} /> <span> Charges </span> <span className="menu-arrow"></span>
+									</a>
+									<ul>
+										<li className = {pathnames.includes('/react/charges') ? 'active' : ''}>
+											<Link to = "/charges">Charges List</Link>
+										</li>
+										<li className = {pathnames.includes('/react/add-charge') ? 'active' : ''}>
+											<Link to = "/add-charge">Add Charge</Link>
 										</li>
 									</ul>
 								</li>

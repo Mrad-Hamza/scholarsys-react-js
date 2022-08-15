@@ -47,15 +47,35 @@ import {
   // Teachers Module
   TeacherDetails,
 
-  // Department Module
-  AddDepartment,
-  EditDepartment,
-  DepartmentsList,
+  // Formation Module
+  AddFormation,
+  EditFormation,
+  FormationsList,
+
+  // Levels Module
+  AddLevel,
+  EditLevel,
+  LevelsList,
+
+  // Levels Module
+  AddClass,
+  EditClass,
+  ClassesList,
 
   // Subject Module
   AddSubject,
   EditSubject,
   SubjectsList,
+
+  // Grade Module
+  AddGrade,
+  EditGrade,
+  GradesList,
+
+  //Charge Module
+  AddCharge,
+  EditCharge,
+  ChargesList,
 
   // Accounts Module
   FeesCollections,
@@ -299,6 +319,83 @@ function App() {
                   <PrivateAgentRoute exact path="/edit-subject" component={EditSubject} />
                   <PrivateAgentRoute exact path="/subjects" component={SubjectsList} />
 
+                  {/* Formation Module */}
+                  <Route path="/add-formation" component={AddFormation} />
+                  <Route path="/edit-formation" component={EditFormation} />
+                  <Route path="/formations" component={FormationsList} />
+
+                  {/* Levels Module */}
+                  <Route path="/add-level" component={AddLevel} />
+                  <Route path="/edit-level" component={EditLevel} />
+                  <Route path="/levels" component={LevelsList} />
+
+                  {/* Levels Module */}
+                  <Route path="/add-class" component={AddClass} />
+                  <Route path="/edit-class" component={EditClass} />
+                  <Route path="/classes" component={ClassesList} />
+
+                  {/* Subject Module */}
+                  <Route path="/add-subject" component={AddSubject} />
+                  <Route path="/edit-subject" component={EditSubject} />
+                  <Route path="/subjects" component={SubjectsList} />
+
+                  {/* Grade Module */}
+                  <Route path="/add-grade" component={AddGrade} />
+                  <Route path="/edit-grade" component={EditGrade} />
+                  <Route path="/grades" component={GradesList} />
+
+                  {/* Charge Module */}
+                  <Route path="/add-charge" component={AddCharge} />
+                  <Route path="/edit-charge" component={EditCharge} />
+                  <Route path="/charges" component={ChargesList} />
+
+                  {/* Accounts Module */}
+                  <Route path="/fees-collections" component={FeesCollections} />
+                  <Route path="/expenses" component={Expenses} />
+                  <Route path="/salary" component={Salary} />
+                  <Route path="/add-fees-collections" component={AddFeesCollections} />
+                  <Route path="/add-expenses" component={AddExpenses} />
+                  <Route path="/add-salary" component={AddSalary} />
+
+                  {/* Holiday Module */}
+                  <Route path="/holiday" component={Holiday} />
+                  <Route path="/add-holiday" component={AddHoliday} />
+
+                  {/* Fees Module */}
+                  <Route path="/fees" component={Fees} />
+                  <Route path="/add-fees" component={AddFees} />
+                  <Route path="/edit-fees" component={EditFees} />
+
+                  {/* Exam Module */}
+                  <Route path="/exam" component={Exam} />
+                  <Route path="/add-exam" component={AddExam} />
+                  <Route path="/edit-exam" component={EditExam} />
+
+                  {/* Time Table Module */}
+                  <Route path="/time-table" component={TimeTable} />
+                  <Route path="/add-time-table" component={AddTimeTable} />
+                  <Route path="/edit-time-table" component={EditTimeTable} />
+
+                  {/* Library Module */}
+                  <Route path="/library" component={Library} />
+                  <Route path="/add-book" component={AddBook} />
+                  <Route path="/edit-book" component={EditBook} />
+
+
+                  {/* Sports Module */}
+                  <Route path="/sports" component={SportsList} />
+                  <Route path="/add-sport" component={AddSport} />
+                  <Route path="/edit-sport" component={EditSport} />
+
+                  {/* Hostel Module */}
+                  <Route path="/hostel" component={HostelList} />
+                  <Route path="/add-room" component={AddRoom} />
+                  <Route path="/edit-room" component={EditRoom} />
+
+                  {/* Transport Module */}
+                  <Route path="/transport" component={TransportsList} />
+                  <Route path="/add-transport" component={AddTransport} />
+                  <Route path="/edit-transport" component={EditTransport} />
 
                   {/* Components Module */}
                   <PrivateAgentRoute exact path="/components" component={Components} />
