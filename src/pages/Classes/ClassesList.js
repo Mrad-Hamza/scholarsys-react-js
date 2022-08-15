@@ -1,4 +1,4 @@
-import React,{useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom'
 // Import Components
 import { Row, Col, Card, Media } from "react-bootstrap";
@@ -10,17 +10,27 @@ import 'react-data-table-component-extensions/dist/index.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDownload, faPencilAlt, faPlus, faTrash } from '@fortawesome/fontawesome-free-solid';
 
-function SubjectsList () {     
-    
+const deleteClasse = async (classe)=>{
+    let confirm = window.confirm('Do you really want to delete '+classe.nom+'?');
+    if(confirm === true){
+        const response = await fetch('http://localhost:8000/classe/'+classe.id, {
+            method: 'DELETE'
+            });
+            const data = await response.json();
+            console.log(data);
+    }
+}
+
+function ClassesList() {
+
     const [data,setData] = useState();
     const [niveau, setNiveau] = useState();
     const [formation, setFormation] = useState();
-    const [grades,setGrades] = useState();
 
     useEffect(() => {
-        fetch('http://localhost:8000/matiere')
+        fetch('http://localhost:8000/classes')
         .then(response => { return response.json()})
-        .then(matiere => { setData(matiere) })
+        .then(classes => { setData(classes); })
 
         fetch('http://localhost:8000/niveaus')
         .then(response => { return response.json()})
@@ -29,34 +39,7 @@ function SubjectsList () {
         fetch('http://localhost:8000/formations')
         .then(response => { return response.json()})
         .then(formation => { setFormation(formation); })
-
-        fetch('http://localhost:8000/note')
-        .then(response => { return response.json()})
-        .then(notes => { setGrades(notes) })
     },[]);
-
-    const deleteSubject = async (subject)=>{
-        var child = false;
-        grades.map(grade =>{
-            if (grade.matiereId == subject.id){
-                child = true;
-            }
-        })
-
-        if(child === false){
-            let confirm = window.confirm('Do you really want to delete '+subject.designation+'?');
-            if(confirm === true){
-                const response = await fetch('http://localhost:8000/matiere/'+subject.id, {
-                    method: 'DELETE'
-                    });
-                    const data = await response.json();
-                    console.log(data);
-            }
-        }else{
-            alert("You cannot delete this one because it contains child(s)");
-        }
-        
-    }
 
     function getNiveauById(id){
         var name = ''
@@ -89,46 +72,38 @@ function SubjectsList () {
         }
         return name;
     }
-
     
-const columns = [
-    {
-        name: 'Name',
-        sortable: true,
-        selector: row=>row.designation
-    },
-    {  
-        name: 'Formation',
-        sortable: true,
-        selector: row => getFormationByNiveau(row.niveauId)
-    },
-    {
-        name: 'Niveau',
-        selector: row=>getNiveauById(row.niveauId),
-        sortable: true,
-    },
-    {
-        name: 'Coefficient',
-        selector: row=>row.coef,
-        sortable: true,
-    },
-    {
-        name: 'Nombre Dheure',
-        selector: row=>row.nbr_heure,
-        sortable: true,
-    },
-    {
-        name: 'Action',
-        selector: row=>row.action,
-        sortable: true,
-        cell: (subject) => <div> <Link to={{ pathname: `/edit-subject/${subject.id}` , state: {subject} }} 
-                            className="btn btn-sm bg-success-light me-2">
-                            <FontAwesomeIcon icon={faPencilAlt} /> </Link> 
-                            <a href="#" className="btn btn-sm bg-danger-light" onClick={() => {deleteSubject(subject)}}> <FontAwesomeIcon icon={faTrash} /> </a>
-                        </div>
-    },
-];
-
+    const columns = [
+        {
+            name: 'Name',
+            sortable: true,
+            selector: row=>row.nom
+        },
+        {
+            name: 'desgniation',
+            selector: row=>row.designation,
+            sortable: true
+        },
+        {
+            name: 'Formation',
+            selector: row => getFormationByNiveau(row.niveauId),
+            sortable: true
+        },
+        {
+            name: 'Niveau',
+            selector: row=>getNiveauById(row.niveauId),
+            sortable: true
+        },
+        {
+            name: 'Action',
+            selector: row=>row.action,
+            sortable: true,
+            cell: (classes) => <div><Link to={{pathname:`/edit-class/${classes.id}` ,state: {classes: classes} }}
+             className="btn btn-sm bg-success-light me-2">
+            <FontAwesomeIcon icon={faPencilAlt} /> </Link>  <a href="#" className="btn btn-sm bg-danger-light " onClick={() => {deleteClasse(classes)}}> <FontAwesomeIcon icon={faTrash} /> </a></div>
+        },
+    ];
+    
         const tableData = {
             columns,
             data,
@@ -140,15 +115,15 @@ const columns = [
                     <div className="page-header">
                         <Row>
                             <Col className="col">
-                                <h3 className="page-title">Subjects</h3>
+                                <h3 className="page-title">Classes</h3>
                                 <ul className="breadcrumb">
                                     <li className="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
-                                    <li className="breadcrumb-item active">Subjects</li>
+                                    <li className="breadcrumb-item active">Classes</li>
                                 </ul>
                             </Col>
-                            <Col className="col-auto text-end float-right ms-auto">
+                            <Col className="col-auto text-end float-end ms-auto">
                                 <a href="#" className="btn btn-outline-primary me-2"><FontAwesomeIcon icon={faDownload} /> Download</a>
-                                <a href="/add-subject" className="btn btn-primary"><FontAwesomeIcon icon={faPlus} /></a>
+                                <a href="/add-class" className="btn btn-primary"><FontAwesomeIcon icon={faPlus} /></a>
                             </Col>
                         </Row>
                     </div>
@@ -170,4 +145,4 @@ const columns = [
             </div>
         )
 }
-export { SubjectsList };
+export {ClassesList};

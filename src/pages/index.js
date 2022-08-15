@@ -5,8 +5,11 @@ export * from './Dashboard';
 export * from './Students';
 export * from './Library';
 export * from './Teachers';
-export * from './Departments';
+export * from './Formations';
+export * from './Levels';
+export * from './Classes';
 export * from './Subjects';
+export * from './Grades';
 export * from './Accounts';
 export * from './Holiday';
 export * from './Fees';
@@ -23,3 +26,4 @@ export * from './Tables';
 export * from './Events';
 export * from './Profile';
 export * from './Inbox';
+export * from './Charges'

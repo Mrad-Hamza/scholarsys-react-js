@@ -26,15 +26,35 @@ import {
   EditTeacher,
   TeacherDetails,
 
-  // Department Module
-  AddDepartment,
-  EditDepartment,
-  DepartmentsList,
+  // Formation Module
+  AddFormation,
+  EditFormation,
+  FormationsList,
+
+  // Levels Module
+  AddLevel,
+  EditLevel,
+  LevelsList,
+
+  // Levels Module
+  AddClass,
+  EditClass,
+  ClassesList,
 
   // Subject Module
   AddSubject,
   EditSubject,
   SubjectsList,
+
+  // Grade Module
+  AddGrade,
+  EditGrade,
+  GradesList,
+
+  //Charge Module
+  AddCharge,
+  EditCharge,
+  ChargesList,
 
   // Accounts Module
   FeesCollections,
@@ -157,15 +177,35 @@ function App() {
                   <Route path="/edit-teacher" component={EditTeacher} />
                   <Route path="/teacher-details" component={TeacherDetails} />
 
-                  {/* Department Module */}
-                  <Route path="/add-department" component={AddDepartment} />
-                  <Route path="/edit-department" component={EditDepartment} />
-                  <Route path="/departments" component={DepartmentsList} />
+                  {/* Formation Module */}
+                  <Route path="/add-formation" component={AddFormation} />
+                  <Route path="/edit-formation" component={EditFormation} />
+                  <Route path="/formations" component={FormationsList} />
+
+                  {/* Levels Module */}
+                  <Route path="/add-level" component={AddLevel} />
+                  <Route path="/edit-level" component={EditLevel} />
+                  <Route path="/levels" component={LevelsList} />
+
+                  {/* Levels Module */}
+                  <Route path="/add-class" component={AddClass} />
+                  <Route path="/edit-class" component={EditClass} />
+                  <Route path="/classes" component={ClassesList} />
 
                   {/* Subject Module */}
                   <Route path="/add-subject" component={AddSubject} />
                   <Route path="/edit-subject" component={EditSubject} />
                   <Route path="/subjects" component={SubjectsList} />
+
+                  {/* Grade Module */}
+                  <Route path="/add-grade" component={AddGrade} />
+                  <Route path="/edit-grade" component={EditGrade} />
+                  <Route path="/grades" component={GradesList} />
+
+                  {/* Charge Module */}
+                  <Route path="/add-charge" component={AddCharge} />
+                  <Route path="/edit-charge" component={EditCharge} />
+                  <Route path="/charges" component={ChargesList} />
 
                   {/* Accounts Module */}
                   <Route path="/fees-collections" component={FeesCollections} />
