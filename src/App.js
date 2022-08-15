@@ -309,11 +309,6 @@ function App() {
                   <PrivateAgentRoute exact path="/edit-agent/:id" component={EditAgent} />
                   <PrivateAgentRoute exact path="/agents" component={AgentsList} />
 
-                  {/* Department Module */}
-                  <PrivateAgentRoute exact path="/add-department" component={AddDepartment} />
-                  <PrivateAgentRoute exact path="/edit-department" component={EditDepartment} />
-                  <PrivateAgentRoute exact path="/departments" component={DepartmentsList} />
-
                   {/* Subject Module */}
                   <PrivateAgentRoute exact path="/add-subject" component={AddSubject} />
                   <PrivateAgentRoute exact path="/edit-subject" component={EditSubject} />
@@ -333,11 +328,6 @@ function App() {
                   <Route path="/add-class" component={AddClass} />
                   <Route path="/edit-class" component={EditClass} />
                   <Route path="/classes" component={ClassesList} />
-
-                  {/* Subject Module */}
-                  <Route path="/add-subject" component={AddSubject} />
-                  <Route path="/edit-subject" component={EditSubject} />
-                  <Route path="/subjects" component={SubjectsList} />
 
                   {/* Grade Module */}
                   <Route path="/add-grade" component={AddGrade} />

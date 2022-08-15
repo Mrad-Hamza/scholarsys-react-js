@@ -34,21 +34,28 @@ class userController {
 
 	static create = async (req, res, next) => {
 		const { firstname, lastname, email, password, phoneNumber, birthDate, role } = req.body;
+		// const newUser = {
+		// 	firstname,
+		// 	lastname,
+		// 	email,
+		// 	password,
+		// 	phoneNumber,
+		// 	birthDate
+		// };
 		if (role === null || role === undefined || role === "") {
 			role = "1"
 		}
-
 		const newUser = {
 			firstname,
 			lastname,
-			email,
-			password,
 			phoneNumber,
 			birthDate,
-			image: req.files.image
+			email,
+			password,
+			image: req.files.image, 
+			role
 		};
-		if (role) newUser.role = role;
-
+		console.log(newUser)
 		try {
 			await UserService.create(newUser);
 
@@ -69,27 +76,30 @@ class userController {
 			return res.status(200).json(user);
 		} catch (err) {
 			next(err);
+			// res.status(404).json({ error: `user ${id} not found` });
 		}
 	};
 
 	static update = async (req, res, next) => {
-		const { firstname, lastname, email, password, phoneNumber, birthDate } = req.body;
+		const { firstname, lastname, email, password, phoneNumber, birthDate,salaire } = req.body;
 		let updatedUser = {
 			firstname,
 			lastname,
 			email,
 			password,
 			phoneNumber,
-			birthDate
+			birthDate,
+			salaire
 		};
-
 		const id = req.params.id;
 		try {
 			updatedUser = UserService.updateOne(id, updatedUser);
 			return res.status(204).json(updatedUser);
 		} catch (err) {
+			console.log(err);
 			// console.log(err);
 			next(err);
+			// res.status(404).json({ error: `user with ${id} not found` });
 		}
 	};
 	static delete = async (req, res, next) => {
@@ -99,8 +109,21 @@ class userController {
 			return res.status(200).json({ message: `user ${id} deleted` });
 		} catch (err) {
 			next(err);
+			// return res.status(500).json({ error: `Somethign went wrong when deleting user ${id}` });
 		}
 	};
+	static StudentCount = async (req, res, next) => {
+		const studentC = User.count({ where: { role: 1 } });
+		if (!studentC) {
+			res.status(500).json({ success: false })
+
+		}
+		studentC.then(function (result) {
+			res.send({
+				count: result
+			})
+		});
+	}
 }
 
 module.exports = userController;

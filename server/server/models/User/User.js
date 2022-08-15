@@ -3,8 +3,8 @@ const sequlize = require('../../config/db.config');
 const Classe = require('../classe');
 const Emploi = require('../Emploi/Emploi');
 const Seance = require('../Seance/Seance');
+// const joi = require('joi');
 
-//
 const User = sequlize.define(
 	'user',
 	{
@@ -16,11 +16,11 @@ const User = sequlize.define(
 		},
 		firstname: {
 			type: Sequelize.STRING,
-			allowNull: false
+			//allowNull: false
 		},
 		lastname: {
 			type: Sequelize.STRING,
-			allowNull: false
+			//allowNull: false
 		},
 		email: {
 			type: Sequelize.STRING,
@@ -37,11 +37,11 @@ const User = sequlize.define(
 		},
 		phoneNumber: {
 			type: Sequelize.STRING,
-			allowNull: false
+			//allowNull: false
 		},
 		birthDate: {
 			type: Sequelize.DATEONLY,
-			allowNull: false
+			//allowNull: false
 		},
 		confirmed: {
 			type: Sequelize.BOOLEAN,
@@ -56,21 +56,23 @@ const User = sequlize.define(
 			defaultValue: 1,
 			allowNull: false
 		},
-		// salaire: {
-		// 	type: Sequelize.DOUBLE,
-		// 	allowNull: true
-		// }
-		// sopecificData => for teachers => [classesId] that he teaches + salarire
-		// sopecificData => for student => his classeId
-		specificData: {
-			type: Sequelize.JSON,
+		salaire: {
+			type: Sequelize.DOUBLE,
 			allowNull: true
+		},
+		createdAt: {
+			type: 'TIMESTAMP',
+			defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+			allowNull: false
+		},
+		updatedAt: {
+			type: 'TIMESTAMP',
+			defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+			allowNull: false
 		}
 	},
 	{
-		timestamps: true,
-		createdAt: true,
-		updatedAt: true
+		timestamps: false
 	}
 );
 //prof has many seance
@@ -103,13 +105,13 @@ User.hasMany(Seance, {
 	foreignKey: 'agentId'
 });
 
-User.belongsToMany(Classe, {
-	through: 'teacher_classes',
+User.hasOne(Seance, {
 	foreignKey: 'teacherId'
 });
-Classe.belongsToMany(User, {
-	through: 'teacher_classes',
-	foreignKey: 'classeId'
+User.hasMany(Classe, {
+	foreignKey: 'teacherId'
 });
-
+User.hasOne(Classe, {
+	foreignKey: 'studentId'
+});
 module.exports = User;

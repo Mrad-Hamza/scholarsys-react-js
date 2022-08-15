@@ -1,7 +1,7 @@
 // db should be here
 const Sequelize = require('sequelize');
 
-const sequelize = new Sequelize('scholarsys', 'root', 'abdou', {
+const sequelize = new Sequelize('scholarsys', 'root', '', {
 	dialect: 'mysql',
 	host: 'localhost'
 });
