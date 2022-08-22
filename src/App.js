@@ -316,9 +316,7 @@ function App() {
                   <PrivateAgentRoute exact path="/agents" component={AgentsList} />
 
                   {/* Department Module */}
-                  <PrivateAgentRoute exact path="/add-department" component={AddDepartment} />
-                  <PrivateAgentRoute exact path="/edit-department" component={EditDepartment} />
-                  <PrivateAgentRoute exact path="/departments" component={DepartmentsList} />
+        
 
                   {/* Subject Module */}
                   <PrivateAgentRoute exact path="/add-subject" component={AddSubject} />
