@@ -9,19 +9,21 @@ import 'react-data-table-component-extensions/dist/index.css';
 // Import Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDownload, faPencilAlt, faPlus, faTrash } from '@fortawesome/fontawesome-free-solid';
+import toast, { Toaster } from 'react-hot-toast';
+import { useDispatch, useSelector } from 'react-redux';
 
 const deleteClasse = async (classe)=>{
-    let confirm = window.confirm('Do you really want to delete '+classe.nom+'?');
-    if(confirm === true){
+        toast.success('Classe deleted')
         const response = await fetch('http://localhost:8000/classe/'+classe.id, {
             method: 'DELETE'
             });
             const data = await response.json();
             console.log(data);
-    }
+            window.location.reload(false);
 }
 
 function ClassesList() {
+    const dispatch = useDispatch();
 
     const [data,setData] = useState();
     const [niveau, setNiveau] = useState();
@@ -39,6 +41,7 @@ function ClassesList() {
         fetch('http://localhost:8000/formations')
         .then(response => { return response.json()})
         .then(formation => { setFormation(formation); })
+        
     },[]);
 
     function getNiveauById(id){
@@ -94,6 +97,7 @@ function ClassesList() {
             selector: row=>getNiveauById(row.niveauId),
             sortable: true
         },
+        
         {
             name: 'Action',
             selector: row=>row.action,
@@ -111,6 +115,7 @@ function ClassesList() {
 
         return (
             <div>
+                <Toaster position="top-right" reverseOrder={false} />
                 <div className="page-header">
                     <div className="page-header">
                         <Row>
@@ -122,7 +127,6 @@ function ClassesList() {
                                 </ul>
                             </Col>
                             <Col className="col-auto text-end float-end ms-auto">
-                                <a href="#" className="btn btn-outline-primary me-2"><FontAwesomeIcon icon={faDownload} /> Download</a>
                                 <a href="/add-class" className="btn btn-primary"><FontAwesomeIcon icon={faPlus} /></a>
                             </Col>
                         </Row>

@@ -15,8 +15,6 @@ import toast, { Toaster } from 'react-hot-toast';
 
 import userService from '../../services/user.service';
 
-
-
 function Profile() {
 
     const { user: currentUser } = useSelector((state) => state.auth);
