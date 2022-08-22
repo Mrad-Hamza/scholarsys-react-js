@@ -28,15 +28,35 @@ import {
     EditTeacher,
     TeacherDetails,
 
-    // Department Module
-    AddDepartment,
-    EditDepartment,
-    DepartmentsList,
+    // Formation Module
+    AddFormation,
+    EditFormation,
+    FormationsList,
+
+    //Levels Module
+    AddLevel,
+    EditLevel,
+    LevelsList,
+
+    //Classes Module
+    AddClass,
+    EditClass,
+    ClassesList,
 
     // Subject Module
     AddSubject,
     EditSubject,
     SubjectsList,
+
+    // Grade Module
+    AddGrade,
+    EditGrade,
+    GradesList,
+
+    // Charge Module
+    AddCharge,
+    EditCharge,
+    ChargesList,
 
     // Accounts Module
     FeesCollections,
@@ -112,7 +132,8 @@ import {
 
     // Inbox Module
     Inbox,
-    Compose
+    Compose,
+    GradesList
 } from '../pages';
 import { Sidebar, Header, Footer } from '../_components';
 
@@ -161,15 +182,35 @@ class RouterComponent extends React.Component {
                                     <Route path="/edit-teacher" component={EditTeacher} />
                                     <Route path="/teacher-details" component={TeacherDetails} />
 
-                                    {/* Department Module */}
-                                    <Route path="/add-department" component={AddDepartment} />
-                                    <Route path="/edit-department" component={EditDepartment} />
-                                    <Route path="/departments" component={DepartmentsList} />
+                                    {/* Formation Module */}
+                                    <Route path="/add-formation" component={AddFormation} />
+                                    <Route path="/edit-formation/:id" component={EditFormation} />
+                                    <Route path="/formations" component={FormationsList} />
+
+                                    {/* Level Module */}
+                                    <Route path="/add-level" component={AddLevel} />
+                                    <Route path="/edit-level/:id" component={EditLevel} />
+                                    <Route path="/levels" component={LevelsList} />
+
+                                    {/* Class Module */}
+                                    <Route path="/add-class" component={AddClass} />
+                                    <Route path="/edit-class/:id" component={EditClass} />
+                                    <Route path="/classes" component={ClassesList} />
 
                                     {/* Subject Module */}
                                     <Route path="/add-subject" component={AddSubject} />
-                                    <Route path="/edit-subject" component={EditSubject} />
+                                    <Route path="/edit-subject/:id" component={EditSubject} />
                                     <Route path="/subjects" component={SubjectsList} />
+
+                                    {/* Grade Module */}
+                                    <Route path="/add-grade" component={AddGrade} />
+                                    <Route path="/edit-grade/:id" component={EditGrade} />
+                                    <Route path="/grades" component={GradesList} />
+
+                                    {/* Charge Module */}
+                                    <Route path="/add-charge" component={AddCharge} />
+                                    <Route path="/edit-charge/:id" component={EditCharge} />
+                                    <Route path="/charges" component={ChargesList} />
 
                                     {/* Accounts Module */}
                                     <Route path="/fees-collections" component={FeesCollections} />
