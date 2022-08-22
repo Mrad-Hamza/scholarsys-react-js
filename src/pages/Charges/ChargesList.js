@@ -9,16 +9,16 @@ import 'react-data-table-component-extensions/dist/index.css';
 // Import Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDownload, faPencilAlt, faPlus, faTrash } from '@fortawesome/fontawesome-free-solid';
+import toast, { Toaster } from 'react-hot-toast';
 
 const deleteCharge = async (charge)=>{
-    let confirm = window.confirm('Do you really want to delete '+charge.designation+'?');
-    if(confirm === true){
+    toast.success('Charge has been deleted')
         const response = await fetch('http://localhost:8000/charge/'+charge.id, {
             method: 'DELETE'
             });
             const data = await response.json();
             console.log(data);
-    }
+            window.location.reload(false);
 }
 
 function ChargesList() {
@@ -45,23 +45,24 @@ function ChargesList() {
         },
         {
             name: 'Facture Amount',
-            selector: row=>row.montant_facture,
+            selector: row=>row.montant_facture+' DT',
             sortable: true
         },
         {
             name: 'Facture Code',
             selector: row => row.code_facture,
-            sortable: true
+            sortable: true,
         },
         {
             name: 'Creation Date',
             selector: row=>format(row.createdAt),
-            sortable: true
+            sortable: true,
         },
         {
             name: 'Action',
             selector: row=>row.action,
             sortable: true,
+            center:true,
             cell: (charge) => <div><Link to={{pathname:`/edit-charge/${charge.id}` ,state: {charges: charge} }}
              className="btn btn-sm bg-success-light me-2">
             <FontAwesomeIcon icon={faPencilAlt} /> </Link>  <a href="#" className="btn btn-sm bg-danger-light " onClick={() => {deleteCharge(charge)}}> <FontAwesomeIcon icon={faTrash} /> </a></div>
@@ -75,6 +76,7 @@ function ChargesList() {
 
         return (
             <div>
+                <Toaster position="top-right" reverseOrder={false} />
                 <div className="page-header">
                     <div className="page-header">
                         <Row>
@@ -86,7 +88,6 @@ function ChargesList() {
                                 </ul>
                             </Col>
                             <Col className="col-auto text-end float-end ms-auto">
-                                <a href="#" className="btn btn-outline-primary me-2"><FontAwesomeIcon icon={faDownload} /> Download</a>
                                 <a href="/add-charge" className="btn btn-primary"><FontAwesomeIcon icon={faPlus} /></a>
                             </Col>
                         </Row>

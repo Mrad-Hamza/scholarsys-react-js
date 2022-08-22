@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 // Import Components
 import { Row, Col, Card, Form, Button } from "react-bootstrap";
 import { useHistory } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
 
 function AddFormation(){
     const [name , setName] = useState('');
@@ -23,7 +24,7 @@ function AddFormation(){
 
 
     const handleName = (name) =>{
-        if (name.target.value !== undefined){
+        if (name.target.value !== undefined || name.target.value !== ''){
             if((name.target.value === '') || (name.target.value.length < 3) || (name.target.value.length > 20) ){
                 setName(null)
                 setNameIsValid('form-control is-invalid');
@@ -62,7 +63,7 @@ function AddFormation(){
     }
 
     const handleDurAnn = (durAnn) =>{
-        if(durAnn.target.value !== undefined){
+        if(durAnn.target.value !== undefined || durAnn.target.value !== ''){
             if(durAnn.target.value.match(/^(\d*\.{0,1}\d{0,2}$)/)){
                 if(durAnn.target.value == 0){
                     setDurAnn(null)
@@ -83,7 +84,7 @@ function AddFormation(){
     }
 
     const handleDurMens = (durMens)=>{
-        if(durMens.target.value !== undefined ){
+        if(durMens.target.value !== undefined || durMens.target.value !== '' ){
             if(durMens.target.value.match(/^(\d*\.{0,1}\d{0,2}$)/)){
                 if(durMens.target.value == 0){
                     setDurMensIsValid('form-control is-invalid');
@@ -119,10 +120,9 @@ function AddFormation(){
         if((nameIsValid ==='form-control is-invalid')|| (mtAnnIsValid === 'form-control is-invalid') 
         || (durAnnIsValid === 'form-control is-invalid') || (durMens === 'form-control is-invalid') ||
         (dtEchIsValid === 'form-control is-invalid')){
-
+            toast.error('Form contains errors');
         }else{
-            let confirm = window.confirm('Do you really want to submit the form?');
-            if(confirm === true){
+                toast.success('Form has been submitted')
                 formation.preventDefault();
                 const response = await fetch('http://localhost:8000/createFormation', {
                 method: 'POST',
@@ -139,18 +139,14 @@ function AddFormation(){
                 });
                 const data = await response.json();
                 console.log(data);
-                alert("Form has been submitted");
-                history.push('/formations');
-            }
-            else{
-                return false;
-            }
+                history.push('/formations')
         }
     }
 
 
         return (
             <div>
+                <Toaster position="top-right" reverseOrder={false} />
                 <div className="page-header">
                     <Row>
                         <Col sm={12}>

@@ -4,6 +4,10 @@ import { useHistory } from 'react-router-dom';
 import { Row, Col, Card, Form, Button } from "react-bootstrap";
 import { useLocation } from 'react-router-dom';
 import { tab } from '@testing-library/user-event/dist/tab';
+import { useDispatch, useSelector } from 'react-redux';
+import { allStudents, allTeachers } from '../../slices/users';
+import toast, { Toaster } from 'react-hot-toast';
+import Select from "react-select";
 
 function reactFormat(date){
     var format = new Date(date)
@@ -11,13 +15,15 @@ function reactFormat(date){
 }
 
 function EditGrade () {
-
+    const dispatch = useDispatch();
     let history = useHistory();
 
     const [matieres,setMatieres] = useState([]);
     const [levels,setLevels] = useState([]);
     const [formations, setFormations] = useState([]);
     const [classes, setClasses] = useState([]);
+    const teachers = useSelector((state) => state.users.teachers);
+    const students = useSelector((state) => state.users.students)
 
     const formationItems = formations.map((formation)=>{
         return(
@@ -43,13 +49,29 @@ function EditGrade () {
         )
     })
 
+    const studentsItems = students.map((student)=>{
+        return(
+            <option key={'student'+student.id} data-key={student.id}>{student.firstname}</option>
+        )
+    })
+
+    const teachersItems = teachers.map((teacher)=>{
+        return(
+            <option key={'teacher'+teacher.id} data-key={teacher.id}>{teacher.firstname}</option>
+        )
+    })
+
+    useEffect(() => {
+        dispatch(allStudents())
+        dispatch(allTeachers())
+    }, [])
+
     const grade = useLocation().state.grade;
     const id = grade.id;
 
     const [type, setType] = useState(grade.type);
     const [typeIsValid, setTypeIsValid] = useState('form-control is-valid');
-
-    const [value,setValue] = useState(grade.value);
+    const [value,setValue] = useState(grade.note_val);
     const [valueIsValid, setValueIsValid] = useState('form-control is-valid');
 
     const [formation, setFormation] = useState();
@@ -91,6 +113,8 @@ function EditGrade () {
         fetch('http://localhost:8000/formations')
         .then(response => { return response.json()})
         .then(formation => { setFormations(formation) })
+
+
     },[]);  
 
     useEffect(()=>{
@@ -125,7 +149,6 @@ function EditGrade () {
     },[niveau])
 
     useEffect(()=>{
-        console.log('done')
         if(oldFormation !== undefined){
             fetch('http://localhost:8000/niveaus')
             .then(response => { return response.json()})
@@ -155,6 +178,7 @@ function EditGrade () {
                         tableau.push(res[i])
                     }
                 }
+                setNiveau(undefined)
                 setLevels(tableau)     
             })
         }
@@ -183,6 +207,7 @@ function EditGrade () {
                 for(var i=0; i<res.length; i++){
                     if(res[i].niveauId == niveau.id){
                         tableau.push(res[i])
+                        setClasse(res[i])
                     }
                 }
                 setClasses(tableau)      
@@ -212,13 +237,20 @@ function EditGrade () {
     }
 
     const handleValue = (value) => {
-        if(value.target.value !== undefined){
-            setValueIsValid('form-control is-valid');
-            setValue(value.target.value);
+        if(value.target.value !== undefined && value.target.value !== ''){
+            if(value.target.value.match(/^(\d*\.{0,1}\d{0,3}$)/)){
+                if(Number.parseFloat(value.target.value) > 20 || Number.parseFloat(value.target.value) < 0 ){
+                    setValueIsValid('form-control is-invalid');
+                }else{
+                    setValueIsValid('form-control is-valid');
+                    setValue(value.target.value);
+                }
+            }else{
+                setValueIsValid('form-control is-invalid');
+            }
         }
         else{
             setValueIsValid('form-control is-invalid');
-            setValue(null)
         }
     }
 
@@ -241,6 +273,7 @@ function EditGrade () {
         if(level.target.value !== undefined){
             const selectedIndex = level.target.options.selectedIndex;
             const id = level.target.options[selectedIndex].getAttribute('data-key');
+            console.log(id)
             levels.map((level)=>{
                 if(level.id == id){
                     setNiveau(level)
@@ -284,18 +317,18 @@ function EditGrade () {
     })
 
     const handleEtudiant = (etudiant) => {
-        if(etudiant.target.value !== undefined){
+        if(etudiant !== undefined){
             setEtudiantIsValid('form-control is-valid')
-            setEtudiant(etudiant.target.value)
+            setEtudiant(etudiant)
         }else{
             setEtudiantIsValid('form-control is-invalid')
         }
     }
 
     const handleProf = (prof) => {
-        if(prof.target.value !== undefined){
+        if(prof !== undefined){
             setProfIsValid('form-control is-valid')
-            setProf(prof.target.value)
+            setProf(prof)
         }else{
             setProfIsValid('form-control is-invalid')
         }
@@ -312,21 +345,22 @@ function EditGrade () {
 
     const handleSubmit = async(grade) => {
         grade.preventDefault();
-        if((typeIsValid === 'form-control is-invalid') || (matiereIsValid === 'form-control is-invalid') 
-        || (etudiantIsValid === 'form-control is-invalid') 
+        if((typeIsValid === 'form-control is-invalid') || (valueIsValid === 'form-control is-invalid') ||
+         (matiereIsValid === 'form-control is-invalid') || (etudiantIsValid === 'form-control is-invalid') 
         || (profIsValid === 'form-control is-invalid') || (dtPassIsValid === 'form-control is-invalid') ){
-            
+            toast.error('Form contains errors');
         }
         else{
-            let confirm = window.confirm('Do you really want to submit the form?');
-            if(confirm === true){
+            toast.success('Form has been submitted')
                 grade.preventDefault();
+                console.log(matiere)
                 const response = await fetch('http://localhost:8000/note/'+id, {
                 method: 'PATCH',
                 body: JSON.stringify({
                         type: type,
                         date_passage_examen: dtPass,
-                        matiereId : matiere.id
+                        matiereId : matiere.id,
+                        note_val: value
                     }),
                     headers: {
                         'Content-type': 'application/json; charset=UTF-8'
@@ -334,17 +368,46 @@ function EditGrade () {
                 });
                 const data = await response.json();
                 console.log(data);
-                alert("Form has been submitted");
                 history.push('/grades')
-            }
-            else{
-                return false;
-            }
+        }
+    }
+
+    useEffect(()=>{
+        if(teachers !== undefined){
+            teachers.map(teacher => {
+                if(teacher.id == grade.teacherId){
+                    setProf(teacher)
+                }
+            })
+        }
+
+        if(students !== undefined){
+            students.map(student => {
+                if(student.id == grade.studentId){
+                    setEtudiant(student)
+                }
+            })
+        }
+    },[students,teachers])
+
+    const studentList = students.map((student)=>{
+        return {value: student.id, label: student.firstname +' '+ student.lastname}
+    });
+
+    const teachersList = teachers.map(teacher =>{
+        return {value: teacher.id, label: teacher.firstname +' ' + teacher.lastname}
+    })
+
+    const lastStudent = ()=> {
+        console.log(etudiant)
+        if(etudiant !== undefined){
+            return {value: etudiant.id, label: etudiant.firstname +' ' + etudiant.lastname}
         }
     }
     
         return (
             <div>
+                <Toaster position="top-right" reverseOrder={false} />
                 <div className="page-header">
                     <Row>
                         <Col sm={12}>
@@ -377,7 +440,8 @@ function EditGrade () {
                                         <Col xs={12} sm={6}>
                                             <Form.Group>
                                                 <Form.Label>Value</Form.Label>
-                                                <Form.Control className={valueIsValid} type="number" min={0} max={20} defaultValue={value} />
+                                                <Form.Control className={valueIsValid} type="number" min={0} max={20}
+                                                onChange={handleValue} defaultValue={value} />
                                             </Form.Group>
                                         </Col>
 
@@ -424,24 +488,25 @@ function EditGrade () {
                                         <Col xs={12} sm={6}>
                                             <Form.Group>
                                                 <Form.Label>Etudiant</Form.Label>
-                                                <Form.Control className={etudiantIsValid} as="select" onChange={handleEtudiant} defaultValue= {etudiant} >
-                                                    <option>Choisir un etudiant</option>	
-                                                    <option>Louay</option>
-                                                    <option>Hamza</option>
-                                                    <option>Abdou</option>
-                                                </Form.Control>
+                                                    <Select
+                                                        options={studentList}
+                                                        value={lastStudent}
+                                                        onChange={handleEtudiant}
+                                                        isSearchable={true}
+                                                        //className={etudiantIsValid}
+                                                        />
                                             </Form.Group>
                                         </Col>
 
                                         <Col xs={12} sm={6}>
                                             <Form.Group>    
                                                 <Form.Label>Proffeseur</Form.Label>
-                                                <Form.Control className={profIsValid} as="select" onChange={handleProf} defaultValue= {prof} >
-                                                    <option>Choisir un prof</option>	
-                                                    <option>Achref</option>
-                                                    <option>Amine</option>
-                                                    <option>Sirine</option>
-                                                </Form.Control>
+                                                <Select
+                                                    options={teachersList}
+                                                    value={prof}
+                                                    onChange={handleProf}
+                                                    isSearchable={true}
+                                                    />
                                             </Form.Group>
                                         </Col>
 

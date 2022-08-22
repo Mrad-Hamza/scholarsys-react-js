@@ -9,6 +9,7 @@ import 'react-data-table-component-extensions/dist/index.css';
 // Import Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDownload, faPencilAlt, faPlus, faTrash } from '@fortawesome/fontawesome-free-solid';
+import toast, { Toaster } from 'react-hot-toast';
 
 function FormationsList (){ 
     const [data,setData] = useState();
@@ -29,17 +30,15 @@ function FormationsList (){
         })
 
         if(child === false){
-            let confirm = window.confirm('Do you really want to delete '+formation.nom+'?');
-            if(confirm === true){
+            toast.success('Formation deleted')
             const response = await fetch('http://localhost:8000/formation/'+formation.id, {
                 method: 'DELETE'
                 });
                 const data = await response.json();
                 console.log(data);
                 window.location.reload(false);
-            }
         }else{
-            alert("You cannot delete this one because it contains child(s)");
+            toast.error('You cannot delete this one because it contains child(s)')
         }
         
     }
@@ -60,32 +59,38 @@ function FormationsList (){
         {
             name: 'Name',
             sortable: true,
-            selector: row=>row.nom
+            selector: row=>row.nom,
+            center:true
         },
         {
             name: 'Montant annuelle',
-            selector: row=>row.montant_anuelle,
+            selector: row=>row.montant_anuelle +' DT',
             sortable: true,
+            center:true
         },
         {
             name: 'Duree Annuelle',
-            selector: row=>row.duree_anuelle,
+            selector: row=>row.duree_anuelle+' ans',
             sortable: true,
+            center:true
         },
         {
             name: 'Duree Mensuelle',
-            selector: row=>row.duree_mensuelle,
+            selector: row=>row.duree_mensuelle+ ' mois',
             sortable: true,
+            center:true
         },
         {
             name: "Date d'écheances",
             selector: row => format(row.date_echeance),
             sortable: true,
+            center:true
         },
         {
             name: 'Action', 
             selector: row=>row.action,
             sortable: true,
+            center:true,
             cell: (formation) => <div><Link to={{pathname: `/edit-formation/${formation.id}`, state:{formation} }} 
              className="btn btn-sm bg-success-light me-2">
             <FontAwesomeIcon icon={faPencilAlt} />
@@ -101,6 +106,7 @@ function FormationsList (){
 
         return (
             <div>
+                <Toaster position="top-right" reverseOrder={false} />
                 <div className="page-header">
                     <div className="page-header">
                         <Row>
@@ -112,7 +118,6 @@ function FormationsList (){
                                 </ul>
                             </Col>
                             <Col className="col-auto text-end float-end ms-auto">
-                                <a href="#" className="btn btn-outline-primary me-2"><FontAwesomeIcon icon={faDownload} /> Download</a>
                                 <a href="/add-formation" className="btn btn-primary"><FontAwesomeIcon icon={faPlus} /></a>
                             </Col>
                         </Row>

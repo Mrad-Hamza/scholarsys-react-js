@@ -2,6 +2,8 @@ import React, {useState, useEffect} from 'react';
 import { useHistory } from 'react-router-dom';
 // Import Components
 import { Row, Col, Card, Form, Button } from "react-bootstrap";
+import toast, { Toaster } from 'react-hot-toast';
+import { useDispatch } from 'react-redux';
 
 function AddClass() {
     let history = useHistory();
@@ -52,7 +54,7 @@ function AddClass() {
     },[formation]);  
 
     const handleName = (name) =>{
-            if (name.target.value !== undefined){
+            if (name.target.value !== undefined || name.target.value !== ''){
                 setNameIsValid(true);
                 if(name.target.value == ''){
                     setNameIsValid('form-control is-invalid')
@@ -73,7 +75,7 @@ function AddClass() {
     }
 
     const handleDesgniation = (desgniation) =>{
-            if (desgniation.target.value !== undefined){
+            if (desgniation.target.value !== undefined || desgniation.target.value !== '' ){
                 if(desgniation.target.value == ''){
                     setDesignationIsValid('form-control is-invalid')
 
@@ -127,18 +129,17 @@ function AddClass() {
         classes.preventDefault();
         if((nameIsValid === 'form-control is-invalid') || (desgniationIsValid === 'form-control is-invalid') 
         || (niveauIsValid === 'form-control is-invalid') ){
-            
+            toast.error('Form contains errors')
         }
         else{
-            let confirm = window.confirm('Do you really want to submit the form?');
-            if(confirm === true){
+            toast.success("Form has been submitted");
                 classes.preventDefault();
                 const response = await fetch('http://localhost:8000/createClasse', {
                 method: 'POST',
                 body: JSON.stringify({
                         nom: name,
                         designation: desgniation,
-                        niveauId: niveau.id
+                        niveauId: niveau.id,
                     }),
                     headers: {
                         'Content-type': 'application/json; charset=UTF-8'
@@ -146,17 +147,13 @@ function AddClass() {
                 });
                 const data = await response.json();
                 console.log(data);
-                alert("Form has been submitted");
                 history.push('/classes');
-            }
-            else{
-                return false;
-            }
         }
     }
 
         return (
             <div>
+                <Toaster position="top-right" reverseOrder={false} />
                 <div className="page-header">
                     <Row>
                         <Col sm={12}>
@@ -213,7 +210,7 @@ function AddClass() {
                                                     {levels && levelItems}
                                                 </Form.Control>
                                             </Form.Group>
-                                        </Col>  
+                                        </Col>
 
                                         <Col xs={12}>
                                             <Button variant="primary" type="submit" onClick={handleSubmit}>

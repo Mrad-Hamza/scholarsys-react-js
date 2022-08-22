@@ -9,19 +9,24 @@ import 'react-data-table-component-extensions/dist/index.css';
 // Import Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDownload, faPencilAlt, faPlus, faTrash } from '@fortawesome/fontawesome-free-solid';
+import toast, { Toaster } from 'react-hot-toast';
+import { useDispatch, useSelector } from 'react-redux';
+import { allStudents, allTeachers } from '../../slices/users';
 
 const deleteGrade = async (grade)=>{
-    let confirm = window.confirm('Do you really want to delete '+grade.type+'?');
-    if(confirm === true){
+    toast.success('Grade has been deleted');
         const response = await fetch('http://localhost:8000/note/'+grade.id, {
             method: 'DELETE'
             });
             const data = await response.json();
             console.log(data);
-    }
+            window.location.reload(false);
 }
 
 function GradesList () {
+    const dispatch = useDispatch();
+    const teachers = useSelector((state) => state.users.teachers);
+    const students = useSelector((state) => state.users.students)
 
     const [data,setData] = useState([]);
     const [matieres, setMatieres] = useState([]);
@@ -34,6 +39,9 @@ function GradesList () {
         fetch('http://localhost:8000/matiere')
         .then(response => { return response.json()})
         .then(matieres => { setMatieres(matieres) })
+
+        dispatch(allStudents())
+        dispatch(allTeachers())
     },[]);
 
     function format(date){
@@ -54,14 +62,40 @@ function GradesList () {
         return matiereName;
     }
 
+    function getTeacherById(id){
+        var teacherName= ''
+        if(teachers !== undefined){
+            teachers.map(teacher => {
+                if(teacher.id == id){
+                    teacherName= teacher.firstname + ' ' + teacher.lastname
+                }
+            })
+            return teacherName
+        }
+    }
+
+    function getStudentById(id){
+        var studentName= ''
+        if(students !== undefined){
+            students.map(student => {
+                if(student.id == id){
+                    studentName= student.firstname + ' ' + student.lastname
+                }
+            })
+            return studentName
+        }
+    }
+
     const columns = [
         {
             name: 'Type',
             sortable: true,
-            selector: row=>row.type
+            selector: row=>row.type,
         },
         {
-            name: 'Note'
+            name: 'Note',
+            sortable: true,
+            selector: row=>row.note_val+'/20',
         },
         {
             name: 'Subject',
@@ -69,20 +103,30 @@ function GradesList () {
             sortable: true,
         },
         {
-            name: 'Student'
+            name: 'Student',
+            sortable: true,
+            selector: row => getStudentById(row.studentId),
+            center: true
         },
         {
-            name:'Teacher'
+            name:'Teacher',
+            sortable: true,
+            selector: row=>getTeacherById(row.teacherId),
+            center:true
         },
         {
             name: 'Date de passation',
             selector: row=>format(row.date_passage_examen),
             sortable: true,
+            width: '200px',
+            center:true
         },
         {
             name: 'Action',
             selector: row=>row.action,
             sortable: true,
+            width: '120px',
+            center:true,
             cell: (grade) => <div><Link to={{pathname :`/edit-grade/${grade.id}` ,state: {grade} }} className="btn btn-sm bg-success-light me-2">
             <FontAwesomeIcon icon={faPencilAlt} /> </Link>  
             <a href="#" className="btn btn-sm bg-danger-light " onClick={() => {deleteGrade(grade)}}> <FontAwesomeIcon icon={faTrash} /> </a></div>
@@ -96,6 +140,7 @@ function GradesList () {
 
         return (
             <div>
+                <Toaster position="top-right" reverseOrder={false} />
                 <div className="page-header">
                     <div className="page-header">
                         <Row>
@@ -107,7 +152,6 @@ function GradesList () {
                                 </ul>
                             </Col>
                             <Col className="col-auto text-end float-end ms-auto">
-                                <a href="#" className="btn btn-outline-primary me-2"><FontAwesomeIcon icon={faDownload} /> Download</a>
                                 <a href="/add-grade" className="btn btn-primary"><FontAwesomeIcon icon={faPlus} /></a>
                             </Col>
                         </Row>
