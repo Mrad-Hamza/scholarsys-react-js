@@ -37,7 +37,7 @@ const deleteUser = (id) => {
 //         });
 // }
 
-const register = (firstname, lastname, phoneNumber, birthDate, image, email, password,role) => {
+const register = (firstname, lastname, phoneNumber, birthDate, image, email, password,role,salaire) => {
     var formData = new FormData();
     formData.append("firstname", firstname);
     formData.append("lastname", lastname);
@@ -47,7 +47,7 @@ const register = (firstname, lastname, phoneNumber, birthDate, image, email, pas
     formData.append("email", email);
     formData.append("password", password);
     formData.append("role", role);
-
+    formData.append("salary",salaire)
 
 
     return axios

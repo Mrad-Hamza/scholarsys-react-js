@@ -11,7 +11,7 @@ const PrivateTeacherRoute = ({ component: Component, path }: RouteProps) => {
     if (!isLoggedIn) {
         return <Redirect to="/login" />;
     }
-    if (currentUser.role === "1" || currentUser.role === "666") {
+    if (parseInt(currentUser.role) !== 666) {
         return <Redirect to="/unauthorized" />;
     }
    

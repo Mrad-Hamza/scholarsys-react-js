@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { allStudents } from '../../slices/users';
+import { allClasses } from '../../slices/classes';
 import userService from '../../services/user.service';
 import { useHistory } from 'react-router-dom'
 // Import Components
@@ -13,17 +14,7 @@ import 'react-data-table-component-extensions/dist/index.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDownload, faPencilAlt, faPlus, faTrash } from '@fortawesome/fontawesome-free-solid';
 import { useSelector } from 'react-redux';
-
-import Img1 from '../../assets/img/profiles/avatar-01.jpg';
-import Img2 from '../../assets/img/profiles/avatar-02.jpg';
-import Img3 from '../../assets/img/profiles/avatar-03.jpg';
-import Img4 from '../../assets/img/profiles/avatar-04.jpg';
-import Img5 from '../../assets/img/profiles/avatar-05.jpg';
-import Img6 from '../../assets/img/profiles/avatar-06.jpg';
-import Img7 from '../../assets/img/profiles/avatar-07.jpg';
-import Img8 from '../../assets/img/profiles/avatar-08.jpg';
-import Img9 from '../../assets/img/profiles/avatar-09.jpg';
-import Img10 from '../../assets/img/profiles/avatar-10.jpg';
+import { parse } from 'path-browserify';
 
 let data = [
 ];
@@ -39,6 +30,7 @@ function StudentsList() {
 
 
     const usersList = useSelector((state) => state.users.students)
+    const classes = useSelector((state) => state.classes.classes)
 
     const columns = [
         {
@@ -72,18 +64,19 @@ function StudentsList() {
             sortable: true,
         },
         {
-            name: 'Niveau',
-            selector: row => row.niveau,
-            sortable: false,
-        },
-        {
             name: 'Classe',
-            selector: row => row.class,
-            sortable: false,
-        },
-        {
-            name: 'Etat Paiement',
-            selector: row => row.etat_paiement,
+            selector: row => {
+                let data = JSON.parse(JSON.parse(row.specificData)) || {}
+                let classNames = ""
+                console.log(data.classeId)
+                classes.forEach(element => {
+                    if (parseInt(data.classeId) === parseInt(element.id)) {
+                        console.log(element.designation)
+                        classNames = element.designation 
+                    } 
+                });
+                return classNames
+            },
             sortable: false,
         },
         {
@@ -97,6 +90,7 @@ function StudentsList() {
 
     useEffect(() => {
         dispatch(allStudents())
+        dispatch(allClasses())
         data = usersList
         setProgresBarValue(0)
         setTimeout(() => {

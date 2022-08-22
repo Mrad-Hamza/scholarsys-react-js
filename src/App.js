@@ -160,6 +160,9 @@ import ConfirmAccount from './pages/ConfirmAccount/ConfirmAccount';
 import { logout } from './slices/auth';
 import Schedules from './pages/Schedule/Schedules';
 import SchedulesList from './pages/Schedules/SchedulesList';
+import AddSchedule from './pages/Schedules/AddSchedule';
+import ViewSchedule from './pages/Schedule/ViewSchedule';
+import ViewScheduleForTeacher from './pages/Schedule/ViewScheduleForTeacher';
 
 function App() {
   const { isLoggedIn } = useSelector((state) => state.auth);
@@ -190,13 +193,13 @@ function App() {
         history.push('/login')
       }
     }
-   /*  if (token) {
-      const decodedJwt = parseJwt(token);
-      if (decodedJwt.exp * 1000 < Date.now()) {
-        dispatch(logout())
-        history.push('/login')
-      }
-    } */
+    /*  if (token) {
+       const decodedJwt = parseJwt(token);
+       if (decodedJwt.exp * 1000 < Date.now()) {
+         dispatch(logout())
+         history.push('/login')
+       }
+     } */
 
   }, [location])
 
@@ -226,8 +229,11 @@ function App() {
             <div className="page-wrapper">
               <div className="content container-fluid">
 
-                <Route path="/schedule/:id" component={Schedules} />
-                <Route path="/schedules-list" component={SchedulesList} />
+                <PrivateAgentRoute path="/schedule/:id" component={Schedules} />
+                <PrivateAgentRoute path="/schedules-list" component={SchedulesList} />
+                <PrivateAgentRoute path="/add-schedule" component={AddSchedule} />
+                <RouteAuthenticated path="/view-schedule/:id" component={ViewSchedule} />
+                <RouteAuthenticated path="/view-schedule-teacher/:id" component={ViewScheduleForTeacher} />
 
                 {/* Profile Module */}
                 <RouteAuthenticated path="/profile" component={Profile} />
@@ -308,6 +314,7 @@ function App() {
                   <PrivateAgentRoute exact path="/add-agent" component={AddAgent} />
                   <PrivateAgentRoute exact path="/edit-agent/:id" component={EditAgent} />
                   <PrivateAgentRoute exact path="/agents" component={AgentsList} />
+
 
                   {/* Subject Module */}
                   <PrivateAgentRoute exact path="/add-subject" component={AddSubject} />

@@ -31,14 +31,17 @@ function Header(props) {
 	}
 
 	useEffect(() => {
-		switch (currentUser.role) {
-			case '1':
+		switch (parseInt(currentUser.role)) {
+			case 1999:
+				setrole("Admin")
+				break;
+			case 1:
 				setrole("Student")
 				break;
-			case '666': 
+			case 666: 
 				setrole("Teacher")
 				break;
-			case "987":
+			case 987:
 				setrole("Agent")
 				break;
 			default:

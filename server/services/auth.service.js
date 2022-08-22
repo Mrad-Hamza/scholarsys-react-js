@@ -32,7 +32,7 @@ class AuthService {
 		// logged in successful
 		const accessToken = Token.createToken(user, { type: 'access' });
 		const refreshToken = Token.createToken(user, { type: 'refresh' });
-		return [ accessToken, refreshToken ];
+		return [ accessToken, refreshToken, user ];
 	}
 	static async confirm(token) {
 		const payload = jwt.verify(token, process.env.EMAIL_SECRET);
