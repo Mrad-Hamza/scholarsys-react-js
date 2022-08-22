@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import { Row, Col } from "react-bootstrap";
 import { useSelector } from 'react-redux/es/exports';
 
@@ -8,16 +8,19 @@ function Home() {
 
 
     useEffect(() => {
-        switch (currentUser.role) {
-            case "1":
+        switch (parseInt(currentUser.role)) {
+            case 1:
                 setUserRole("Student")
                 break;
-            case "666":
+            case 666:
                 setUserRole("Teacher")
                 break;
-            case "987":
+            case 987:
                 setUserRole("Agent")
                 break;
+            case 1999:
+                setUserRole("Admin")
+                break
             default:
                 break;
         }
@@ -39,8 +42,8 @@ function Home() {
             <Row>
                 <Col sm={12} className="mb-5">
                     Welcome {currentUser.firstname} to our school management website.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     Your are logged in as a {userRole}.
                 </Col>
             </Row>

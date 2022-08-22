@@ -78,7 +78,7 @@ function Sidebar() {
 		return '';
 	} */
 
-	if (currentUser.role === "987") {
+	if (parseInt(currentUser.role) === 987) {
 		return (
 			<div className="sidebar" id="sidebar">
 
@@ -271,14 +271,14 @@ function Sidebar() {
 										<FontAwesomeIcon icon={faBus} /> <span>Transport</span>
 									</Link>
 								</li>
-								
+
 								<li className={pathnames.includes('/react/components') ? 'active' : ''}>
 									<Link to="/components">
 										<FontAwesomeIcon icon={faSquarespace} /> <span>Components</span>
 									</Link>
 								</li>
-								
-								
+
+
 							</ul>
 						</div>
 					</div>
@@ -286,7 +286,7 @@ function Sidebar() {
 			</div >
 		)
 	}
-	else if (currentUser.role === "1") {
+	else if (parseInt(currentUser.role) === 1) {
 		return (
 			<div className="sidebar" id="sidebar">
 
@@ -381,7 +381,7 @@ function Sidebar() {
 			</div >
 		)
 	}
-	else if (currentUser.role === "666") {
+	else if (parseInt(currentUser.role) === 666) {
 		return (
 			<div className="sidebar" id="sidebar">
 
@@ -470,6 +470,214 @@ function Sidebar() {
 										<FontAwesomeIcon icon={faBus} /> <span>Transport</span>
 									</Link>
 								</li>
+							</ul>
+						</div>
+					</div>
+				</Scrollbars >
+			</div >
+		)
+	} 
+	else if (parseInt(currentUser.role) === 1999) {
+		return (
+			<div className="sidebar" id="sidebar">
+
+				<Scrollbars style={{ height: "100vh" }}>
+					<div className="sidebar-inner">
+						<div id="sidebar-menu" className="sidebar-menu">
+							<ul>
+								<li className="menu-title">
+									<span>Main Menu</span>
+								</li>
+								<li className={pathnames.includes('/react/dashboard') || pathnames.includes('/react/teacher-dashboard') || pathnames.includes('/react/student-dashboard') ? 'active' : ''}>
+									<a href="#">
+										<FontAwesomeIcon icon={faThLarge} /> <span>Dashboard</span> <span className="menu-arrow"></span>
+									</a>
+
+									<ul>
+										<li className={pathnames.includes('/react/dashboard') ? 'active' : ''}>
+											<Link to="/dashboard">Admin Dashboard</Link>
+										</li>
+										<li className={pathnames.includes('/react/teacher-dashboard') ? 'active' : ''}>
+											<Link to="/teacher-dashboard">Teacher Dashboard</Link>
+										</li>
+										<li className={pathnames.includes('/react/student-dashboard') ? 'active' : ''}>
+											<Link to="/student-dashboard">Student Dashboard</Link>
+										</li>
+									</ul>
+
+								</li>
+
+								<li className={`submenu ${pathnames.includes('/react/students') ? 'active' : pathnames.includes('/react/student-details') ? 'active' : pathnames.includes('/react/add-student') ? 'active' : pathnames.includes('/react/edit-student') ? 'active' : ''}`}>
+									<a href="#">
+										<FontAwesomeIcon icon={faUserGraduate} /> <span> Students</span> <span className="menu-arrow"></span>
+									</a>
+									<ul>
+										<li className={pathnames.includes('/react/students') ? 'active' : ''}>
+											<Link to="/students">Student List</Link>
+										</li>
+										{/* <li className={pathnames.includes('/react/student-details') ? 'active' : ''}>
+										<Link to="/student-details">Student View</Link>
+									</li> */}
+										<li className={pathnames.includes('/react/add-student') ? 'active' : ''}>
+											<Link to="/add-student">Student Add</Link>
+										</li>
+
+									</ul>
+								</li>
+								<li className={`submenu ${pathnames.includes('/react/teachers') ? 'active' : pathnames.includes('/react/teacher-details') ? 'active' : pathnames.includes('/react/add-teacher') ? 'active' : pathnames.includes('/react/edit-teacher') ? 'active' : ''}`}>
+
+									<a href="#">
+										<FontAwesomeIcon icon={faChalkboardTeacher} /> <span> Teachers</span> <span className="menu-arrow"></span>
+									</a>
+									<ul>
+										<li className={pathnames.includes('/react/teachers') ? 'active' : ''}>
+											<Link to="/teachers">Teacher List</Link>
+										</li>
+
+										<li className={pathnames.includes('/react/add-teacher') ? 'active' : ''}>
+											<Link to="/add-teacher">Teacher Add</Link>
+										</li>
+
+									</ul>
+								</li>
+								<li className={`submenu ${pathnames.includes('/react/agents') ? 'active' : pathnames.includes('/react/agent-details') ? 'active' : pathnames.includes('/react/add-agent') ? 'active' : pathnames.includes('/react/edit-agent') ? 'active' : ''}`}>
+
+									<a href="#">
+										<FontAwesomeIcon icon={faChalkboardTeacher} /> <span> Agents</span> <span className="menu-arrow"></span>
+									</a>
+									<ul>
+										<li className={pathnames.includes('/react/teacher-details') ? 'active' : ''}>
+											<Link to="/agents">Agents List</Link>
+										</li>
+										<li className={pathnames.includes('/react/add-teacher') ? 'active' : ''}>
+											<Link to="/add-agent">Agent Add</Link>
+										</li>
+
+									</ul>
+								</li>
+								<li className={`submenu ${pathnames.includes('/react/departments') ? 'active' : pathnames.includes('/react/add-department') ? 'active' : pathnames.includes('/react/edit-department') ? 'active' : ''}`}>
+									<a href="#">
+										<FontAwesomeIcon icon={faBuilding} /> <span> Departments</span> <span className="menu-arrow"></span>
+									</a>
+									<ul>
+										<li className={pathnames.includes('/react/departments') ? 'active' : ''}>
+											<Link to="/departments">Department List</Link>
+										</li>
+										<li className={pathnames.includes('/react/add-department') ? 'active' : ''}>
+											<Link to="/add-department">Department Add</Link>
+										</li>
+										<li className={pathnames.includes('/react/edit-department') ? 'active' : ''}>
+											<Link to="/edit-department">Department Edit</Link>
+										</li>
+									</ul>
+								</li>
+								<li className={`submenu ${pathnames.includes('/react/subjects') ? 'active' : pathnames.includes('/react/add-subject') ? 'active' : pathnames.includes('/react/edit-subject') ? 'active' : ''}`}>
+
+									<a href="#">
+										<FontAwesomeIcon icon={faBook} /> <span> Subjects</span> <span className="menu-arrow"></span>
+									</a>
+									<ul>
+										<li className={pathnames.includes('/react/subjects') ? 'active' : ''}>
+											<Link to="/subjects">Subject List</Link>
+										</li>
+										<li className={pathnames.includes('/react/add-subject') ? 'active' : ''}>
+											<Link to="/add-subject">Subject Add</Link>
+										</li>
+										<li className={pathnames.includes('/react/edit-subject') ? 'active' : ''}>
+											<Link to="/edit-subject">Subject Edit</Link>
+										</li>
+									</ul>
+								</li>
+
+								<li className="menu-title">
+									<span>Management</span>
+								</li>
+
+								<li className={`submenu ${pathnames.includes('/react/fees-collections') ? 'active' : pathnames.includes('/react/expenses') ? 'active' : pathnames.includes('/react/salary') ? 'active' : pathnames.includes('/react/add-fees-collections') ? 'active' : pathnames.includes('/react/add-expenses') ? 'active' : pathnames.includes('/react/add-salary') ? 'active' : ''}`}>
+
+									<a href="#">
+										<FontAwesomeIcon icon={faFile} /> <span> Accounts</span> <span className="menu-arrow"></span>
+									</a>
+									<ul>
+										<li className={pathnames.includes('/react/fees-collections') ? 'active' : ''}>
+											<Link to="/fees-collections">Fees Collection</Link>
+										</li>
+										<li className={pathnames.includes('/react/expenses') ? 'active' : ''}>
+											<Link to="/expenses">Expenses</Link>
+										</li>
+										<li className={pathnames.includes('/react/salary') ? 'active' : ''}>
+											<Link to="/salary">Salary</Link>
+										</li>
+										<li className={pathnames.includes('/react/add-fees-collections') ? 'active' : ''}>
+											<Link to="/add-fees-collections">Add Fees</Link>
+										</li>
+										<li className={pathnames.includes('/react/add-expenses') ? 'active' : ''}>
+											<Link to="/add-expenses">Add Expenses</Link>
+										</li>
+										<li className={pathnames.includes('/react/add-salary') ? 'active' : ''}>
+											<Link to="/add-salary">Add Salary</Link>
+										</li>
+									</ul>
+								</li>
+								<li className={pathnames.includes('/react/holiday') ? 'active' : ''}>
+									<Link to="/holiday">
+										<FontAwesomeIcon icon={faHockeyPuck} /> <span>Holiday</span>
+									</Link>
+								</li>
+								<li className={pathnames.includes('/react/fees') ? 'active' : ''}>
+									<Link to="/fees">
+										<FontAwesomeIcon icon={faDollarSign} /> <span>Fees</span>
+									</Link>
+								</li>
+								<li className={pathnames.includes('/react/exam') ? 'active' : ''}>
+									<Link to="/exam">
+										<FontAwesomeIcon icon={faClipboard} /> <span>Exam list</span>
+									</Link>
+								</li>
+								<li className={pathnames.includes('/react/event') ? 'active' : ''}>
+									<Link to="/event">
+										<FontAwesomeIcon icon={faCalendar} /> <span>Events</span>
+									</Link>
+								</li>
+								<li className={pathnames.includes('/react/time-table') ? 'active' : ''}>
+									<Link to="/time-table">
+										<FontAwesomeIcon icon={faTable} /> <span>Time Table</span>
+									</Link>
+								</li>
+								<li className={pathnames.includes('/react/library') ? 'active' : ''}>
+									<Link to="/library">
+										<FontAwesomeIcon icon={faBook} /> <span>Library</span>
+									</Link>
+								</li>
+
+
+								<li className="menu-title">
+									<span>Others</span>
+								</li>
+
+								<li className={pathnames.includes('/react/sports') ? 'active' : ''}>
+									<Link to="/sports">
+										<FontAwesomeIcon icon={faBaseballBall} /> <span>Sports</span>
+									</Link>
+								</li>
+								<li className={pathnames.includes('/react/hostel') ? 'active' : ''}>
+									<Link to="/hostel">
+										<FontAwesomeIcon icon={faBuilding} /> <span>Hostel</span>
+									</Link>
+								</li>
+								<li className={pathnames.includes('/react/transport') ? 'active' : ''}>
+									<Link to="/transport">
+										<FontAwesomeIcon icon={faBus} /> <span>Transport</span>
+									</Link>
+								</li>
+
+								<li className={pathnames.includes('/react/components') ? 'active' : ''}>
+									<Link to="/components">
+										<FontAwesomeIcon icon={faSquarespace} /> <span>Components</span>
+									</Link>
+								</li>
+
+
 							</ul>
 						</div>
 					</div>
@@ -479,4 +687,4 @@ function Sidebar() {
 	}
 }
 
-export default Sidebar
+export default Sidebar	

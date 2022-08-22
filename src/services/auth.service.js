@@ -20,10 +20,8 @@ const login = (email, password) => {
         })
         .then((response) => {
             if (response.data.accessToken) {
-                console.log(response.data)
                 localStorage.setItem("user", JSON.stringify(response.data.user));
                 localStorage.setItem("token", response.data.accessToken)
-                console.log(response.data)
             }
             return response.data;
         });

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { allTeachers, allUsers } from '../../slices/users';
+import { allClasses } from '../../slices/classes';
 import userService from '../../services/user.service';
 import { useHistory } from 'react-router-dom'
 // Import Components
@@ -11,7 +12,7 @@ import DataTableExtensions from 'react-data-table-component-extensions';
 import 'react-data-table-component-extensions/dist/index.css';
 // Import Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faDownload, faPencilAlt, faPlus, faTrash } from '@fortawesome/fontawesome-free-solid';
+import { faDownload, faPencilAlt, faPlus, faTrash, faSchool } from '@fortawesome/fontawesome-free-solid';
 import { useSelector } from 'react-redux';
 
 import Img1 from '../../assets/img/profiles/avatar-01.jpg';
@@ -35,7 +36,7 @@ function TeachersList() {
     const history = useHistory()
 
 
-
+    const classes = useSelector((state) => state.classes.classes)
     const usersList = useSelector((state) => state.users.teachers)
 
     const columns = [
@@ -71,23 +72,33 @@ function TeachersList() {
         },
         {
             name: 'Classe',
-            selector: row => row.classe,
-            sortable: false,
-        },
-        {
-            name: 'Niveau',
-            selector: row => row.niveau,
-            sortable: false,
-        },
-        {
-            name: 'Matiere',
-            selector: row => row.matiere,
+            selector: row => {
+                let data = JSON.parse(JSON.parse(row.specificData)) || {}
+                let classNames = ""
+                console.log(data.classesId)
+                classes.forEach(element => {
+                    if (data.classesId.includes(element.id)) {
+                        console.log(element.designation)
+                        classNames += element.designation + ", "
+                    }
+                });
+                return classNames
+            },
             sortable: false,
         },
         {
             name: 'Salaire',
-            selector: row => row.salaire,
+            selector: row => {
+                let data = JSON.parse(JSON.parse(row.specificData)) || {}
+                return data.salary
+            },
             sortable: false,
+        },
+        {
+            name: 'Schedule',
+            selector: row => row.id,
+            cell: (row) => <div><button className="btn btn-sm bg-success-light me-2" onClick={() => UserSchedule(row)}>
+                <FontAwesomeIcon icon={faSchool} /> </button> </div>
         },
         {
             name: 'Action',
@@ -100,6 +111,7 @@ function TeachersList() {
 
     useEffect(() => {
         dispatch(allTeachers())
+        dispatch(allClasses())
         data = usersList
         setProgresBarValue(0)
         setTimeout(() => {
@@ -138,6 +150,9 @@ function TeachersList() {
         history.push('/add-teacher')
     }
 
+    const UserSchedule = (row) => {
+        history.push('view-schedule-teacher/' + row.id)
+    }
 
     function DatatableView() {
         return (

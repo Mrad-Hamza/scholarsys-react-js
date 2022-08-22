@@ -215,7 +215,7 @@ function AddTeacher() {
             console.log("a")
         } else {
             toast.success("Success. user must confirm his account via e-mail")
-            userService.register(firstname, lastname, phoneNumber, birthDate, image, email, password, "666")
+            userService.register(firstname, lastname, phoneNumber, birthDate, image, email, password, 666,salaire)
             setTimeout(() => {
                 history.push("/teachers")
             }, 4000);
@@ -279,24 +279,14 @@ function AddTeacher() {
                                             <Form.Control type="text" className={passwordClassName} defaultValue={password} onChange={handlePasswordChange} required />
                                         </Form.Group>
                                     </Col>
-                                    <Col xs={12} sm={6}>
-                                        <Form.Group>
-                                            <Form.Label>Niveau</Form.Label>
-                                            <Form.Control type="text" className={niveauClassName} defaultValue={niveau} onChange={handleNiveauChange} required />
-                                        </Form.Group>
-                                    </Col>
+                                 
                                     <Col xs={12} sm={6}>
                                         <Form.Group>
                                             <Form.Label>Classe</Form.Label>
                                             <Form.Control type="text" className={classeClassName} defaultValue={classe} onChange={handleClasseChange} required />
                                         </Form.Group>
                                     </Col>
-                                    <Col xs={12} sm={6}>
-                                        <Form.Group>
-                                            <Form.Label>Matiere</Form.Label>
-                                            <Form.Control type="text" className={matiereClassName} defaultValue={matiere} onChange={handleMatiereChange} required />
-                                        </Form.Group>
-                                    </Col>
+                        
                                     <Col xs={12} sm={6}>
                                         <Form.Group>
                                             <Form.Label>Salaire</Form.Label>

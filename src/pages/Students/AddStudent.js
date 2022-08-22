@@ -194,7 +194,7 @@ function AddStudent() {
             console.log("a")
         } else {
             toast.success("Success. user must confirm his account via e-mail")
-            userService.register(firstname, lastname, phoneNumber, birthDate, image, email, password, null)
+            userService.register(firstname, lastname, phoneNumber, birthDate, image, email, password, 1)
             setTimeout(() => {
                 history.push("/students")
             }, 3000);
@@ -257,24 +257,7 @@ function AddStudent() {
                                             <Form.Control type="text" className={passwordClassName} defaultValue={password} onChange={handlePasswordChange} required />
                                         </Form.Group>
                                     </Col>
-                                    <Col xs={12} sm={6}>
-                                        <Form.Group>
-                                            <Form.Label>Niveau</Form.Label>
-                                            <Form.Control type="text" className={niveauClassName} defaultValue={niveau} onChange={handleNiveauChange} required />
-                                        </Form.Group>
-                                    </Col>
-                                    <Col xs={12} sm={6} >
-                                        <Form.Group>
-                                            <Form.Label>Etat Paiement</Form.Label>
-                                            <select className={etatPaiementClassName} onChange={handleEtatPaiementChange}>
-                                                <option>-- Select --</option>
-                                                <option>Annuelle</option>
-                                                <option>Semestrielle</option>
-                                                <option>Trimestrielle</option>
-                                                <option>Mensuelle</option>
-                                            </select>
-                                        </Form.Group>
-                                    </Col>
+                            
                                     <Col xs={12} sm={6}>
                                         <Form.Group>
                                             <Form.Label>Classe</Form.Label>

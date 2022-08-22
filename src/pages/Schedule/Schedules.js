@@ -1,8 +1,7 @@
 
-import React, { Fragment, useState, useEffect, useCallback, useMemo } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 
 import FullCalendar from '@fullcalendar/react' // must go before plugins
-import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
 import timeGridPlugin from '@fullcalendar/timegrid';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
@@ -10,9 +9,9 @@ import { ProgressBar } from "react-bootstrap";
 
 import { useParams } from 'react-router-dom';
 import { allSessions } from '../../slices/sessions';
+import { Tooltip } from "bootstrap";
 
 import startOfISOWeek from 'date-fns/startOfISOWeek';
-import endOfISOWeek from 'date-fns/endOfISOWeek';
 
 import { allRooms } from '../../slices/room';
 import { allTeachers } from '../../slices/users';
@@ -21,17 +20,10 @@ import { useSelector } from 'react-redux/es/exports';
 import { useDispatch } from 'react-redux/es/exports';
 
 import fr from '@fullcalendar/core/locales/fr';
-import interactionPlugin from "@fullcalendar/interaction"
-import { SubjectsList } from '../Subjects';
+import interactionPlugin ,{ Draggable } from "@fullcalendar/interaction"
 import sessionService from '../../services/session.service';
-import { monthsInQuarter } from 'date-fns';
 
-const initialevents = [
- //   { title: 'event 1', start: '2022-08-16T07:00:00', end: '2022-08-13T10:00:00', allDay: false, editable: true, start_hour: 0, start_minute: 0, seance_duration: 2, day: 1, emploiId: 1, teacherId: 18, agentId: 19, matiereId: 1 },
- //   { title: 'event 2', start: '2022-08-17T07:00:00', end: '2022-08-13T012:00:00', allDay: false, editable: true, start_hour: 0, start_minute: 0, seance_duration: 2, day: 1, emploiId: 1, teacherId: 18, agentId: 19, matiereId: 1 }
-]
-
-const initialEventRow = { title: '', start: '', end: '', allDay: false, editable: true, start_hour: 0, start_minute: 0, seance_duration: 0, day: 0, emploiId: 0, teacherId: 0, agentId: 0, matiereId: 0 }
+import userService from '../../services/user.service';
 
 
 const initialEventInformation = {
@@ -43,7 +35,12 @@ const initialEventInformation = {
     title: ""
 }
 
+
 const weekday = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"];
+
+let scheduleEvents = []
+
+let tooltipInstance = null;
 
 
 function Schedules() {
@@ -54,67 +51,84 @@ function Schedules() {
     const subjectsList = useSelector((state) => state.subjects.subjects)
     const teachersList = useSelector((state) => state.users.teachers)
     const roomsList = useSelector((state) => state.rooms.rooms)
-
-    const [eventRow, setEventRow] = useState(initialEventRow)
-    const [events, setevents] = useState(initialevents)
+    //{title:"",defId:"",publicId:"",extendedProps:{agentId:"",day:"",emploiId:"",matiere:"",matiereId:"",room:"",roomId:"",teacher:"",teacherId:"",seance_duration:"",start_hour:"",start_minute:""}}
+    //const [eventRow, setEventRow] = useState()
+    const [events, setevents] = useState([])
     const [isDisplayed, setIsDisplayed] = useState(false);
-    const [show, setShow] = useState(false);
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [currentEvent, setcurrentEvent] = useState([])
+    const [deleteEventId, setDeleteEventId] = useState(false)
     const [eventInformations, setEventInformations] = useState(initialEventInformation)
     const [progresBarValue, setProgresBarValue] = useState(0)
-
     const emploiId = useParams()
 
+    const calendarRef = React.useRef()
 
     const { user: currentUser } = useSelector((state) => state.auth);
 
 
     useEffect(() => {
+        setevents([])
         dispatch(allSessions())
         dispatch(allTeachers())
         dispatch(allSubjects())
         dispatch(allRooms())
         setProgresBarValue(0)
+
+        generateDataFromSessions()
+
         setTimeout(() => {
             setIsDisplayed(true)
-        }, 2000);
-        filterByEmploiId(sessions)
-        console.log("again")
+        }, 1000);
+
+
+
+        //calendarRef.current.getApi().addEventSource(events)
+        //FullCalendar.getApi().render();
     }, [isDisplayed])
 
-    useEffect(() => {
-      console.log(events)
-    }, [events])
-    
 
     useEffect(() => {
+        setTimeout(() => {
+           
+
+        }, 1000);
         
     }, [])
 
-    useEffect(() => {
-        //filterByEmploiId(sessions)
-    }, [])
+
 
     useEffect(() => {
         if (!isDisplayed) {
             setTimeout(() => {
                 setProgresBarValue(30)
-            }, 300);
+            }, 200);
             setTimeout(() => {
                 setProgresBarValue(45)
-            }, 800);
+            }, 500);
             setTimeout(() => {
                 setProgresBarValue(80)
-            }, 1400);
+            }, 800);
             setTimeout(() => {
                 setProgresBarValue(95)
-            }, 1800);
+            }, 950);
         }
     }, [isDisplayed])
 
+    useEffect(() => {
+        console.log(currentEvent)
+    }, [currentEvent])
+
+
     const handleClose = () => {
-        setShow(false)
+        setShowAddModal(false)
+        setShowDeleteModal(false)
     };
-    const handleShow = () => setShow(true);
+
+    const handleShowAddModal = () => setShowAddModal(true);
+
+    const handleShowDeleteModal = () => setShowDeleteModal(true)
 
 
     const handleEventTeacherChange = (e) => {
@@ -134,118 +148,309 @@ function Schedules() {
     const handleEventSubjectChange = (e) => {
         setEventInformations({
             ...eventInformations,
-            title: e.target.value.slice(1, e.target.value.length),
-            subject: e.target.value[0],
+            title: e.target.value.substring(e.target.value.indexOf(' ') + 1),
+            subject: parseInt(e.target.value.substring(0, e.target.value.indexOf(' '))),
         })
     }
 
-    const handleConfirmAddEvent = (e) => {
-        setevents(events => [...events, { title: eventInformations.title, start: eventInformations.start.toISOString(), end: eventInformations.end.toISOString(), editable: true }])
+    const handleConfirmAddEvent = async (e) => {
+        let user = await userService.getUser(parseInt(eventInformations.teacher))
+        let subjectName
+        let roomName
+        subjectsList.map((subject) => {
+            if (subject.id === parseInt(eventInformations.subject)) {
+                subjectName = subject.designation
+            }
+        })
+        roomsList.map((room) => {
+            if (room.id === parseInt(eventInformations.room)) {
+                roomName = room.designation
+            }
+        })
+
+        setevents(events => [...events, {
+            title: eventInformations.title,
+            start: eventInformations.startStr,
+            end: eventInformations.endStr,
+            teacherId: eventInformations.teacher,
+            subjectId: eventInformations.subject,
+            roomId: eventInformations.room,
+            teacher: user.data.firstname + " " + user.data.lastname,
+            subject: subjectName,
+            room: roomName
+        }])
+
         sessionService.createSession(eventInformations.start.getHours(), eventInformations.start.getMinutes(), eventInformations.end.getHours() - eventInformations.start.getHours(), eventInformations.start.getDay(), parseInt(emploiId.id), parseInt(eventInformations.teacher), parseInt(currentUser.id), parseInt(eventInformations.subject), parseInt(eventInformations.room))
+
         handleClose()
         //setEventInformations(null)
     }
 
-    const handleEventClick = (e) => {
-        console.log(e)
+
+
+
+    const handleUpdateEventTeacherChange = (e) => {
+        console.log(e.target.value)
+        setcurrentEvent({
+            ...currentEvent,
+            teacherId: parseInt(e.target.value),
+        })
     }
 
+    const handleUpdateEventRoomChange = (e) => {
+        console.log(e.target.value)
+        setcurrentEvent({
+            ...currentEvent,
+            salleId: parseInt(e.target.value),
+        })
+    }
+
+    const handleUpdateEventSubjectChange = (e) => {
+        console.log(e.target.value)
+        setcurrentEvent({
+            ...currentEvent,
+            matiereId: parseInt(e.target.value.substring(0, e.target.value.indexOf(' '))),
+        })
+    }
+
+
+    const handleEventClick = async (clickInfo) => {
+        setShowDeleteModal(true)
+        let eventById = await sessionService.getSessionById(clickInfo.event._def.publicId)
+        setcurrentEvent(eventById)
+        setDeleteEventId(clickInfo.event._def.publicId)
+        //setevents((events) => events.filter((event) => event.id !== clickInfo.event._def.publicId))
+        tooltipInstance.dispose();
+        tooltipInstance = null;
+
+
+    }
+
+    const handleConfirmDeleteEvent = () => {
+        calendarRef.current.getApi().getEventById(deleteEventId).remove()
+        sessionService.deleteSession(deleteEventId)
+        if (tooltipInstance) {
+            tooltipInstance.dispose();
+            tooltipInstance = null;
+        }
+        handleClose()
+    }
+
+    const handleUpdateEvent = async () => {
+        console.log(currentEvent)
+        //sessionService.updateSession(currentEvent.start_hour, currentEvent.start_minute, currentEvent.seance_duration, currentEvent.day, currentEvent.emploiId, currentEvent.teacherId, currentEvent.agentId, currentEvent.matiereId, currentEvent.salleId, currentEvent.id)
+        sessionService.updateSession(currentEvent.start_hour, currentEvent.start_minute, currentEvent.seance_duration, weekday.indexOf(currentEvent.day) + 1, currentEvent.emploiId, currentEvent.teacherId, currentEvent.agentId, currentEvent.matiereId, currentEvent.salleId, currentEvent.id)
+        if (tooltipInstance) {
+            tooltipInstance.dispose();
+            tooltipInstance = null;
+        }
+        dispatch(allSessions())
+        generateDataFromSessions()
+        handleClose()
+        setIsDisplayed(false)
+        calendarRef.current.getApi().rerenderEvents()
+       /*  let user = await userService.getUser(currentEvent.teacherId)
+        let subjectName
+        let roomName
+        subjectsList.map((subject) => {
+            if (subject.id === currentEvent.matiereId) {
+                subjectName = subject.designation
+            }
+        })
+        roomsList.map((room) => {
+            if (room.id === currentEvent.salleId) {
+                roomName = room.designation
+            }
+        }) */
+     
+    /*     let eventAPI = calendarRef.current.getApi().getEventById(currentEvent.id)
+        console.log(eventAPI)
+        eventAPI.setExtendedProp("emploiId", currentEvent.roomId)
+        eventAPI.setExtendedProp("teacherId", currentEvent.teacherId)
+        eventAPI.setExtendedProp("matiere", subjectName)
+        eventAPI.setExtendedProp("room", roomName)
+        eventAPI.setExtendedProp("teacher", user.data.firstname + " " + user.data.lastname) */
+    }
 
 
     const handleDateClick = (arg) => { // bind with an arrow function
         setEventInformations(arg)
-        handleShow()
+        handleShowAddModal()
         //setevents(events => [...events, { title: 'test1', start: arg.start.toISOString(), end: arg.end.toISOString(), editable: true }])
     }
 
-    const filterByEmploiId = (sessions) => {
-        //sessions.filter(session => session.emploiId !== emploiId.id)
-        const start = startOfISOWeek(new Date());
-        sessions.map(session => {
-            let month = (new Date().getMonth() + 1).toLocaleString('en-US', {
-                minimumIntegerDigits: 2,
-                useGrouping: false
-            })
-            let minute = session.start_minute.toLocaleString('en-US', {
-                minimumIntegerDigits: 2,
-                useGrouping: false
-            })
-            let hour = session.start_hour.toLocaleString('en-US', {
-                minimumIntegerDigits: 2,
-                useGrouping: false
-            })
-            let day = start.toISOString().substring(8,10)
-            switch (weekday.indexOf(session.day)) {
-                case 0:
-                    console.log("lundi")
-                    day = parseInt(day) + 1
-                    break;
-                case 1:
-                    console.log("mardi")
-                    day = parseInt(day) +2
-                    break;
-                case 2:
-                    console.log("mercredi")
-                    day = parseInt(day) + 3
-                    break;
-                case 3:
-                    console.log("jeudi")
-                    day = parseInt(day) + 4
-                    break;
-                case 4:
-                    console.log("vendredi")
-                    day = parseInt(day) + 5
-                    break;
-                case 5:
-                    console.log("samedi")
-                    day = parseInt(day) + 6
-                    break;
-                case 6:
-                    console.log("dimanbche")
-                    day = parseInt(day) + 7
-                    break;
-                default:
-                    break;
-            }
-            initialEventRow.start = new Date().getFullYear() + "-" + (month) + "-"+day
-                + "T" + hour + ":" + minute + ":00"
-            initialEventRow.end = new Date().getFullYear() + "-" + (month) + "-"+day
-                + "T" + (hour) + ":" + minute + ":00"
-            initialEventRow.editable = true
-            initialEventRow.allDay = false
-            initialEventRow.title = "test"
-            initialEventRow.start_hour=session.start_hour
-            initialEventRow.start_minute=session.start_minute
-            initialEventRow.seance_duration=session.seance_duration
-            initialEventRow.day = weekday.indexOf(session.day)
-            initialEventRow.emploiId=session.emploiId
-            initialEventRow.teacherId=session.teacherId
-            initialEventRow.agentId=session.agentId
-            initialEventRow.matiereId=session.matiereId
-            setEventRow(initialEventRow)
-        })
-        setevents(events => [...events, { title: 'test1', start: eventRow.start, end: eventRow.end, editable: true }])
+    function handleHover(mouseEnterInfo) {
+        tooltipInstance = new Tooltip(mouseEnterInfo.el, {
+            title: "Subject : " + mouseEnterInfo.event.title + "<br> Room : " +
+                mouseEnterInfo.event.extendedProps.room + "<br> Teacher : " +
+                mouseEnterInfo.event.extendedProps.teacher
+            ,
+            html: true,
+            placement: "top",
+            trigger: "focus",
+            container: "body"
+        });
+
+        tooltipInstance.show();
 
     }
 
+    const handleEventAdd = (addInfo) => {
+        //console.log(addInfo)
+        console.log("event added")
+    }
+
+    const handleEventChange = (changeInfo) => {
+        if (tooltipInstance) {
+            tooltipInstance.dispose();
+            tooltipInstance = null;
+        }
+        let start = changeInfo.event._instance.range.start
+        let end = changeInfo.event._instance.range.end
+        let duration = end.getHours() - start.getHours()
+        sessionService.updateSession(start.getHours() - 1, start.getMinutes(), duration, start.getDay(), changeInfo.event._def.extendedProps.emploiId, changeInfo.event._def.extendedProps.teacherId, changeInfo.event._def.extendedProps.agentId, changeInfo.event._def.extendedProps.matiereId, changeInfo.event._def.extendedProps.roomId, parseInt(changeInfo.event._def.publicId))
+
+    }
+
+
+    function handleMouseLeave() {
+        if (tooltipInstance) {
+            tooltipInstance.dispose();
+            tooltipInstance = null;
+        }
+    }
+
+    function renderEventContent(eventInfo) {
+        return (
+            <>
+                <b>{eventInfo.timeText}</b>
+                <br />
+                <i>{eventInfo.event.title}</i>
+            </>
+        )
+    }
+
+    const generateDataFromSessions = () => {
+        //sessions.filter(session => session.emploiId !== emploiId.id)
+        const start = startOfISOWeek(new Date());
+        scheduleEvents = []
+        setevents([])
+        sessions.forEach(async (session) => {
+            if (session.emploiId === parseInt(emploiId.id)) {
+                let month = (new Date().getMonth() + 1).toLocaleString('en-US', {
+                    minimumIntegerDigits: 2,
+                    useGrouping: false
+                })
+                let minute = session.start_minute.toLocaleString('en-US', {
+                    minimumIntegerDigits: 2,
+                    useGrouping: false
+                })
+                let hour = session.start_hour.toLocaleString('en-US', {
+                    minimumIntegerDigits: 2,
+                    useGrouping: false
+                })
+                let endHour = parseInt(hour) + parseInt(session.seance_duration)
+                let day = start.toISOString().substring(8, 10)
+                switch (weekday.indexOf(session.day)) {
+                    case 0:
+                        day = parseInt(day) + 1
+                        break;
+                    case 1:
+                        day = parseInt(day) + 2
+                        break;
+                    case 2:
+                        day = parseInt(day) + 3
+                        break;
+                    case 3:
+                        day = parseInt(day) + 4
+                        break;
+                    case 4:
+                        day = parseInt(day) + 5
+                        break;
+                    case 5:
+                        day = parseInt(day) + 6
+                        break;
+                    case 6:
+                        day = parseInt(day) + 7
+                        break;
+                    default:
+                        break;
+                }
+                let user = await userService.getUser(session.teacherId)
+                let subjectName
+                let roomName
+                subjectsList.map((subject) => {
+                    if (subject.id === session.matiereId) {
+                        subjectName = subject.designation
+                    }
+                })
+                roomsList.map((room) => {
+                    if (room.id === session.salleId) {
+                        roomName = room.designation
+                    }
+                })
+                let data = {}
+                data.start = new Date().getFullYear() + "-" + (month) + "-" + day
+                    + "T" + hour + ":" + minute + ":00"
+                data.end = new Date().getFullYear() + "-" + (month) + "-" + day
+                    + "T" + endHour + ":" + minute + ":00"
+                data.editable = true
+                data.allDay = false
+                data.title = subjectName
+                data.id = session.id
+                data.start_hour = session.start_hour
+                data.start_minute = session.start_minute
+                data.seance_duration = session.seance_duration
+                data.day = weekday.indexOf(session.day)
+                data.roomId = session.salleId
+                data.room = roomName
+                data.emploiId = session.emploiId
+                data.teacherId = session.teacherId
+                data.teacher = user.data.firstname + " " + user.data.lastname
+                data.agentId = session.agentId
+                data.matiereId = session.matiereId
+                data.matiere = subjectName
+                scheduleEvents.push(data)
+            }
+        })
+        setTimeout(() => {
+            scheduleEvents.map(event => {
+                setevents(events => [...events, event])
+            });
+
+        }, 500);
+    }
+
+
     return (
         <>
+
             {isDisplayed ? <FullCalendar
+                id={"calendar"}
+                ref={calendarRef}
                 locale={fr}
                 plugins={[timeGridPlugin, interactionPlugin]}
                 initialView="timeGridWeek"
                 weekends={true}
+                //droppable={true}
                 dayHeaderFormat={{ weekday: 'long' }}
                 slotMinTime={"07:00:00"}
                 slotMaxTime={"20:00:00"}
                 selectable={true}
-                select={handleDateClick}
-                events={events}
                 eventClick={handleEventClick}
+
+                select={handleDateClick}
+                eventAdd={handleEventAdd}
+                eventChange={handleEventChange}
+                eventContent={renderEventContent}
+                eventMouseEnter={handleHover}
+                eventMouseLeave={handleMouseLeave}
+                //eventDidMount={handleHover}
+                events={events}
             /> : <ProgressBar striped variant="info" now={progresBarValue} className="mb-4" />
             }
-            
-            <Modal show={show} onHide={handleClose} >
+
+            <Modal show={showAddModal} onHide={handleClose} >
                 <Modal.Header closeButton>
                     <Modal.Title>Create Session</Modal.Title>
                 </Modal.Header>
@@ -255,7 +460,7 @@ function Schedules() {
                             <option>-- Choose Subject --</option>
                             {
                                 subjectsList.map((subject) => {
-                                    return <option value={subject.id + subject.designation}>{subject.designation} </option>
+                                    return <option value={subject.id + " " + subject.designation}>{subject.designation} </option>
                                 })
                             }
                         </select>
@@ -302,6 +507,58 @@ function Schedules() {
                     </Button>
                 </Modal.Footer>
             </Modal>
+
+
+            <Modal show={showDeleteModal} onHide={handleClose} >
+                <Modal.Header closeButton>
+                    <Modal.Title>Update Session</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="col-md-10">
+                        <select className="form-control" onChange={handleUpdateEventSubjectChange}>
+                            <option>-- Change Subject --</option>
+                            {
+                                subjectsList.map((subject) => {
+                                    return <option value={subject.id + " " + subject.designation}>{subject.designation} </option>
+                                })
+                            }
+                        </select>
+                    </div>
+                    <br />
+                    <div className="col-md-10">
+                        <select className="form-control" onChange={handleUpdateEventTeacherChange}>
+                            <option>-- Change Teacher --</option>
+                            {
+                                teachersList.map((teacher) => {
+                                    return <option value={teacher.id} > {teacher.firstname} {teacher.lastname} </option>
+                                })
+                            }
+                        </select>
+                    </div>
+                    <br />
+                    <div className="col-md-10">
+                        <select className="form-control" onChange={handleUpdateEventRoomChange}>
+                            <option>-- Change Room --</option>
+                            {
+                                roomsList.map((room) => {
+                                    return <option value={room.id} > {room.designation} </option>
+                                })
+                            }
+                        </select>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleConfirmDeleteEvent}>
+                        Delete Session
+                    </Button>
+                    <Button variant="primary" onClick={handleUpdateEvent}>
+                        Save Changes
+                    </Button>
+
+                </Modal.Footer>
+            </Modal>
+
+
         </>
 
     )

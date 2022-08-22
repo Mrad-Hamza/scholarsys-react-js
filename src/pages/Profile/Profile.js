@@ -5,7 +5,7 @@ import { Row, Col, Card, Tabs, Tab, Button } from "react-bootstrap";
 import proPic from '../../assets/img/profiles/avatar-02.jpg';
 // Import Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faEdit, faMapMarkerAlt } from '@fortawesome/fontawesome-free-solid';
+import { faCheck, faEdit, faMapMarkerAlt, faStreetView } from '@fortawesome/fontawesome-free-solid';
 
 import { useSelector } from 'react-redux/es/exports';
 
@@ -14,10 +14,17 @@ import authService from '../../services/auth.service';
 import toast, { Toaster } from 'react-hot-toast';
 
 import userService from '../../services/user.service';
+import { useHistory } from 'react-router-dom';
 
+import { useDispatch } from 'react-redux';
+import { allSchedules } from '../../slices/schedules'
 
 
 function Profile() {
+    const dispatch = useDispatch()
+    const history = useHistory()
+
+    const schedules = useSelector((state)=> state.schedules.schedules)
 
     const { user: currentUser } = useSelector((state) => state.auth);
     const [userRole, setUserRole] = useState("")
@@ -33,19 +40,38 @@ function Profile() {
     const [lastname, setLastName] = useState("")
     const [email, setEmail] = useState("")
     const [birthDate, setBirthDate] = useState(Date())
-
+    const [classId, setclassId] = useState(null)
+    const [schedule, setschedule] = useState({})
 
     useEffect(() => {
-        switch (currentUser.role) {
-            case "1":
+      if (classId !== null) {
+          schedules.map((schedule) => {
+               if (schedule.classeId === classId) {
+                   setschedule(schedule)
+               }
+          })
+      }
+    }, [classId])
+    
+
+    useEffect(() => {
+        dispatch(allSchedules())
+        let {classeId :id} = JSON.parse(JSON.parse(currentUser.specificData)) || {}
+        setclassId(id)
+        
+        switch (parseInt(currentUser.role)) {
+            case 1:
                 setUserRole("Student")
                 break;
-            case "666":
+            case 666:
                 setUserRole("Teacher")
                 break;
-            case "987":
+            case 987:
                 setUserRole("Agent")
                 break;
+            case 1999:
+                setUserRole("Admin")
+                break
             default:
                 break;
         }
@@ -70,7 +96,6 @@ function Profile() {
         else {
             setFirstNameClassName("form-control is-valid")
         }
-        console.log(firstname)
     }, [firstname])
 
     useEffect(() => {
@@ -79,7 +104,6 @@ function Profile() {
         } else {
             setPhoneNumberClass("form-control is-invalid")
         }
-        console.log(phoneNumber)
     }, [phoneNumber])
 
     useEffect(() => {
@@ -89,7 +113,6 @@ function Profile() {
         else {
             setLastNameClassName("form-control is-valid")
         }
-        console.log(lastname)
     }, [lastname])
 
     useEffect(() => {
@@ -99,7 +122,6 @@ function Profile() {
         else {
             setBirthDateClassName("form-control is-valid")
         }
-        console.log(birthDate)
     }, [birthDate])
 
     useEffect(() => {
@@ -109,7 +131,6 @@ function Profile() {
         else {
             setEmailClassName("form-control is-valid")
         }
-        console.log(email)
     }, [email])
 
     const handleFirstNameChange = (e) => {
@@ -144,6 +165,14 @@ function Profile() {
         e.preventDefault()
         userService.editUser(currentUser.id, firstname, lastname, email, currentUser.password, birthDate, phoneNumber, currentUser.salaire)
         toast.success("Success. Your profile is Updated.")
+    }
+
+    const handleViewScheduleForTeacher = () => {
+        history.push('view-schedule-teacher/'+currentUser.id)
+    }
+
+    const handleViewScheduleForStudent = () => {
+        history.push('view-schedule/' + schedule.id)
     }
 
     return (
@@ -253,6 +282,23 @@ function Profile() {
                                         </Card.Body>
                                     </Card>
 
+                                    {userRole === "Student" && <Card>
+                                        <Card.Body>
+                                            <Card.Title className="d-flex justify-content-between">
+                                                <span>Schedule</span>
+                                            </Card.Title>
+                                            <button className="btn btn-success" onClick={handleViewScheduleForStudent}>View </button>
+                                        </Card.Body>
+                                    </Card>}
+
+                                    {userRole === "Teacher" && <Card>
+                                        <Card.Body>
+                                            <Card.Title className="d-flex justify-content-between">
+                                                <span>Schedule</span>
+                                            </Card.Title>
+                                            <button className="btn btn-success" onClick={handleViewScheduleForTeacher}>View </button>
+                                        </Card.Body>
+                                    </Card>}
 
                                 </Col>
                             </Row>
@@ -272,6 +318,8 @@ function Profile() {
                                 </Card.Body>
                             </Card>
                         </Tab>
+
+
                     </Tabs>
                 </Col>
             </Row>
