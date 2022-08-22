@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 // Import Components
 import { Row, Col, Card, Form, Button } from "react-bootstrap";
 import { useHistory, useLocation } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
 
 function EditLevel () {
 
@@ -108,11 +109,10 @@ function EditLevel () {
         level.preventDefault();
         if((desgniationIsValid === 'form-control is-invalid') || (acronymeIsValid === 'form-control is-invalid')
         || (formationIsValid === 'form-control is-invalid')){
-            alert('Form contain errors');
+            toast.error('Form contain errors');
         }
         else{
-            let confirm = window.confirm('Do you really want to submit the form?');
-            if(confirm === true){
+            toast.success("Form has been submitted");
                 level.preventDefault();
                 const response = await fetch('http://localhost:8000/niveau/'+id, {
                 method: 'PATCH',
@@ -127,17 +127,13 @@ function EditLevel () {
                 });
                 const data = await response.json();
                 console.log(data);
-                alert("Form has been submitted");
                 history.push("/levels");
-            }
-            else{
-                return false;
-            }
         }
     }
 
         return (
             <div>
+                <Toaster position="top-right" reverseOrder={false} />
                 <div className="page-header">
                     <Row>
                         <Col sm={12}>

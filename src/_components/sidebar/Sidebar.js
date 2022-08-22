@@ -5,7 +5,9 @@ import { history } from "../_helpers";
 import { Link } from 'react-router-dom';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faThLarge, faUserGraduate, faChalkboardTeacher, faBuilding, faBook, faFile, faHockeyPuck, faDollarSign, faClipboard, faCalendar, faTable, faShieldAlt, faBaseballBall, faBus, faColumns, faCode, faLevelUpAlt, faUser, faGraduationCap, faMoneyBill, } from '@fortawesome/fontawesome-free-solid'
+
+import { faThLarge, faUserGraduate, faChalkboardTeacher, faBuilding, faBook, faFile, faHockeyPuck, faDollarSign, faClipboard, faCalendar, faTable, faShieldAlt, faBaseballBall, faBus, faColumns, faCode, faLevelUpAlt, faGraduationCap, faMoneyBill, faUser, } from '@fortawesome/fontawesome-free-solid'
+
 
 import { faSquarespace } from '@fortawesome/free-brands-svg-icons';
 
@@ -79,7 +81,9 @@ function Sidebar() {
 		return '';
 	} */
 
+
 	if (parseInt(currentUser.role) === 987) {
+
 		return (
 			<div className="sidebar" id="sidebar">
 
@@ -432,7 +436,9 @@ function Sidebar() {
 			</div >
 		)
 	}
+
 	else if (parseInt(currentUser.role) === 666) {
+
 		return (
 			<div className="sidebar" id="sidebar">
 

@@ -9,6 +9,7 @@ import 'react-data-table-component-extensions/dist/index.css';
 // Import Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDownload, faPencilAlt, faPlus, faTrash } from '@fortawesome/fontawesome-free-solid';
+import toast, { Toaster, useToasterStore } from 'react-hot-toast';
 
 function SubjectsList () {     
     
@@ -44,16 +45,15 @@ function SubjectsList () {
         })
 
         if(child === false){
-            let confirm = window.confirm('Do you really want to delete '+subject.designation+'?');
-            if(confirm === true){
+            toast.success('Subject has been deleted')
                 const response = await fetch('http://localhost:8000/matiere/'+subject.id, {
                     method: 'DELETE'
                     });
                     const data = await response.json();
                     console.log(data);
-            }
+                    window.location.reload(false);
         }else{
-            alert("You cannot delete this one because it contains child(s)");
+            toast.error("You cannot delete this one because it contains child(s)");
         }
         
     }
@@ -136,6 +136,7 @@ const columns = [
 
         return (
             <div>
+                <Toaster position="top-right" reverseOrder={false} />
                 <div className="page-header">
                     <div className="page-header">
                         <Row>
@@ -147,7 +148,6 @@ const columns = [
                                 </ul>
                             </Col>
                             <Col className="col-auto text-end float-right ms-auto">
-                                <a href="#" className="btn btn-outline-primary me-2"><FontAwesomeIcon icon={faDownload} /> Download</a>
                                 <a href="/add-subject" className="btn btn-primary"><FontAwesomeIcon icon={faPlus} /></a>
                             </Col>
                         </Row>

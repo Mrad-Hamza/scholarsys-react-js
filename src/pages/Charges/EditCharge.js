@@ -2,6 +2,8 @@ import React, {useState, useEffect} from 'react';
 import { useHistory , useLocation } from 'react-router-dom';
 // Import Components
 import { Row, Col, Card, Form, Button } from "react-bootstrap";
+import toast, { Toaster } from 'react-hot-toast';
+
 
 function EditCharge() {
     let history = useHistory();
@@ -49,13 +51,12 @@ function EditCharge() {
     }
 
     const handleSubmit = async (charge)=>{
+        charge.preventDefault();
         if(designationIsValid === 'form-control is-invalid' || montantFactureIsValid === 'form-control is-invalid'
         || codeFactureIsValid === 'form-control is-invalid'){
-
+            toast.error("Form contain errors");
         }else{
-            let confirm = window.confirm('Do you really want to update the form?');
-            if(confirm === true){
-                charge.preventDefault();
+                toast.success("Form has been submitted");
                 const response = await fetch('http://localhost:8000/charge/'+id, {
                 method: 'PATCH',
                 body: JSON.stringify({
@@ -69,17 +70,13 @@ function EditCharge() {
                 });
                 const data = await response.json();
                 console.log(data);
-                alert("Form has been submitted");
                 history.push('/charges');
-            }
-            else{
-                return false;
-            }
         }
     }
 
         return (
             <div>
+                <Toaster position="top-right" reverseOrder={false} />
                 <div className="page-header">
                     <Row>
                         <Col sm={12}>

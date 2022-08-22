@@ -101,6 +101,7 @@ if (cluster.isMaster) {
 		try {
 			//await sequelize.sync({ force: true });
 			 await sequelize.sync();
+
 		} catch (err) {
 			console.log(err);
 		}

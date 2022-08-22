@@ -2,6 +2,8 @@ import React, {useState, useEffect} from 'react';
 import { useHistory } from 'react-router-dom';
 // Import Components
 import { Row, Col, Card, Form, Button } from "react-bootstrap";
+import toast, { Toaster } from 'react-hot-toast';
+
 
 function AddCharge() {
     let history = useHistory();
@@ -47,10 +49,9 @@ function AddCharge() {
     const handleSubmit = async (charge)=>{
         if(designationIsValid === 'form-control is-invalid' || montantFactureIsValid === 'form-control is-invalid'
         || codeFactureIsValid === 'form-control is-invalid'){
-
+            toast.error('Form contain errors')
         }else{
-            let confirm = window.confirm('Do you really want to submit the form?');
-            if(confirm === true){
+            toast.success("Form has been submitted");
                 charge.preventDefault();
                 const response = await fetch('http://localhost:8000/createCharge', {
                 method: 'POST',
@@ -65,17 +66,14 @@ function AddCharge() {
                 });
                 const data = await response.json();
                 console.log(data);
-                alert("Form has been submitted");
                 history.push('/charges');
-            }
-            else{
-                return false;
-            }
+            
         }
     }
 
         return (
             <div>
+                <Toaster position="top-right" reverseOrder={false} />
                 <div className="page-header">
                     <Row>
                         <Col sm={12}>

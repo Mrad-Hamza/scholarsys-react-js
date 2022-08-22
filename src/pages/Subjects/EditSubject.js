@@ -3,8 +3,7 @@ import { useLocation, useHistory } from 'react-router-dom';
 
 // Import Components
 import { Row, Col, Card, Form, Button } from "react-bootstrap";
-import { formatWithOptions } from 'util';
-
+import toast, { Toaster } from 'react-hot-toast';
 
 function EditSubject () {
 
@@ -148,7 +147,7 @@ function EditSubject () {
         }
 
         const handleCoef = (coef) => {
-            if(coef.target.value !== undefined){
+            if(coef.target.value !== undefined || coef.target.value !== ''){
                 if(coef.target.value.match(/^(\d*\.{0,1}\d{0,2}$)/)){
                     if(coef.target.value == 0){
                         setCoefIsValid('form-control is-invalid')
@@ -165,7 +164,7 @@ function EditSubject () {
         }
 
         const handleNbHeure = (nbHeure)=> {
-            if(nbHeure.target.value !== undefined){
+            if(nbHeure.target.value !== undefined || nbHeure.target.value !== ''){
                 if(nbHeure.target.value.match(/^(\d*\.{0,1}\d{0,2}$)/)){
                     if(nbHeure.target.value == 0){
                         setNbHeureIsValid('form-control is-invalid')
@@ -185,11 +184,9 @@ function EditSubject () {
             subject.preventDefault();
             if((nameIsValid === 'form-control is-invalid') || (levelIsValid === 'form-control is-invalid') 
             || (coefIsValid === 'form-control is-invalid') || (nbHeureIsValid === 'form-control is-invalid') ){
-                
+                toast.error('Form contains errors')
             }
             else{
-                let confirm = window.confirm('Do you really want to submit the form?');
-                if(confirm === true){
                     subject.preventDefault();
                     console.log(level)
                     const response = await fetch('http://localhost:8000/matiere/'+id, {
@@ -206,16 +203,13 @@ function EditSubject () {
                     });
                     const data = await response.json();
                     console.log(data);
-                    alert("Form has been submitted");
+                    toast.success("Form has been submitted");
                     history.push('/subjects')
-                }
-                else{
-                    return false;
-                }
             }
         }
         return (
             <div>
+                <Toaster position="top-right" reverseOrder={false} />
                 <div className="page-header">
                     <Row>
                         <Col sm={12}>
