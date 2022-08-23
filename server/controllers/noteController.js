@@ -34,8 +34,8 @@ const modifier = (req, res, next) => {
 			date_passage_examen: req.body.date_passage_examen,
 			note_val: req.body.note_val,
 			matiereId: req.body.matiereId,
-			teacherId: req.body.teacherId
-
+			teacherId: req.body.teacherId,
+			studentId: req.body.studentId
 
 		},
 		{ where: { id: req.params.id } }

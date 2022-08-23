@@ -419,6 +419,7 @@ function AddGrade () {
                                                     value={prof}
                                                     onChange={handleProf}
                                                     isSearchable={true}
+                                                    //className={profIsValid}
                                                     />
                                             </Form.Group>
                                         </Col>
