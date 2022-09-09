@@ -1,12 +1,12 @@
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 
 import FullCalendar from '@fullcalendar/react' // must go before plugins
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { ProgressBar } from "react-bootstrap";
 
 import { useParams } from 'react-router-dom';
-import { allSessions } from '../../slices/sessions';
+import { sessionsByTeacherId } from '../../slices/sessions';
 import { Tooltip } from "bootstrap";
 
 import startOfISOWeek from 'date-fns/startOfISOWeek';
@@ -19,6 +19,8 @@ import { useDispatch } from 'react-redux/es/exports';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDownload } from '@fortawesome/fontawesome-free-solid';
+
+import { useHistory } from 'react-router-dom';
 
 import fr from '@fullcalendar/core/locales/fr';
 
@@ -34,9 +36,11 @@ let tooltipInstance = null;
 function ViewScheduleForTeacher() {
 
     const dispatch = useDispatch()
+    const history = useHistory()
 
-    const sessions = useSelector((state) => state.sessions.sessions);
+    const { seances: sessions } = useSelector((state) => state.sessions.sessions);
     const subjectsList = useSelector((state) => state.subjects.subjects)
+    const { user: currentUser } = useSelector((state) => state.auth);
     const roomsList = useSelector((state) => state.rooms.rooms)
     //{title:"",defId:"",publicId:"",extendedProps:{agentId:"",day:"",emploiId:"",matiere:"",matiereId:"",room:"",roomId:"",teacher:"",teacherId:"",seance_duration:"",start_hour:"",start_minute:""}}
     //const [eventRow, setEventRow] = useState()
@@ -51,7 +55,7 @@ function ViewScheduleForTeacher() {
 
     useEffect(() => {
         setevents([])
-        dispatch(allSessions())
+        dispatch(sessionsByTeacherId(emploiId.id))
         dispatch(allTeachers())
         dispatch(allSubjects())
         dispatch(allRooms())
@@ -61,7 +65,7 @@ function ViewScheduleForTeacher() {
 
         setTimeout(() => {
             setIsDisplayed(true)
-        }, 1000);
+        }, 2000);
         //calendarRef.current.getApi().addEventSource(events)
         //FullCalendar.getApi().render();
     }, [isDisplayed])
@@ -84,13 +88,13 @@ function ViewScheduleForTeacher() {
     }, [isDisplayed])
 
 
-    const generateDataFromSessions = () => {
+    const generateDataFromSessions = useCallback(() => {
         //sessions.filter(session => session.emploiId !== emploiId.id)
         const start = startOfISOWeek(new Date());
         scheduleEvents = []
         setevents([])
-        sessions.forEach(async (session) => {
-            if (session.teacherId === parseInt(emploiId.id)) {
+        if (sessions !== undefined) {
+            sessions.forEach(async (session) => {
                 let month = (new Date().getMonth() + 1).toLocaleString('en-US', {
                     minimumIntegerDigits: 2,
                     useGrouping: false
@@ -144,10 +148,17 @@ function ViewScheduleForTeacher() {
                     }
                 })
                 let data = {}
-                data.start = new Date().getFullYear() + "-" + (month) + "-" + day
-                    + "T" + hour + ":" + minute + ":00"
-                data.end = new Date().getFullYear() + "-" + (month) + "-" + day
-                    + "T" + endHour + ":" + minute + ":00"
+                if (parseInt(day) >= 10) {
+                    data.start = new Date().getFullYear() + "-" + (month) + "-" + day
+                        + "T" + hour + ":" + minute + ":00+01:00"
+                    data.end = new Date().getFullYear() + "-" + (month) + "-" + day
+                        + "T" + endHour + ":" + minute + ":00+01:00"
+                } else {
+                    data.start = new Date().getFullYear() + "-" + (month) + "-0" + day
+                        + "T" + hour + ":" + minute + ":00+01:00"
+                    data.end = new Date().getFullYear() + "-" + (month) + "-0" + day
+                        + "T" + endHour + ":" + minute + ":00+01:00"
+                }
                 data.editable = true
                 data.allDay = false
                 data.title = subjectName
@@ -165,15 +176,19 @@ function ViewScheduleForTeacher() {
                 data.matiereId = session.matiereId
                 data.matiere = subjectName
                 scheduleEvents.push(data)
-            }
-        })
-        setTimeout(() => {
-            scheduleEvents.map(event => {
-                setevents(events => [...events, event])
-            });
+            })
+            setTimeout(() => {
+                scheduleEvents.map(event => {
+                    setevents(events => [...events, event])
+                });
+            }, 1000);
+        }
+    }, [sessions,roomsList,subjectsList])
 
-        }, 500);
-    }
+    useEffect(() => {
+      console.log(events)
+    }, [events])
+    
 
     function handleMouseLeave() {
         if (tooltipInstance) {
@@ -198,9 +213,19 @@ function ViewScheduleForTeacher() {
 
     }
 
+
+    const handleButtonClick = async () => {
+        let user = await userService.getUser(emploiId.id)
+        window.open("http://localhost:8000/static/emploi/teachers/emploi_" + user.data.firstname + "_" + user.data.lastname + ".pdf")
+    }
+
+    const handleEventClick = (clickInfo) => {
+        history.push("/attendance/" + clickInfo.event._def.publicId)
+    }
+
     return (
         <>
-            <button href="#" className="btn btn-outline-primary me-2"><FontAwesomeIcon icon={faDownload} /> Download</button>
+            <button href="#" className="btn btn-outline-primary me-2" onClick={handleButtonClick}><FontAwesomeIcon icon={faDownload} /> Download</button>
             {isDisplayed ? <FullCalendar
                 id={"calendar"}
                 ref={calendarRef}
@@ -212,7 +237,7 @@ function ViewScheduleForTeacher() {
                 dayHeaderFormat={{ weekday: 'long' }}
                 slotMinTime={"07:00:00"}
                 slotMaxTime={"20:00:00"}
-
+                eventClick={handleEventClick}
                 eventMouseEnter={handleHover}
                 eventMouseLeave={handleMouseLeave}
                 //eventDidMount={handleHover}

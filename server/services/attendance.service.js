@@ -14,6 +14,13 @@ class attendanceService {
 			}
 		});
 	}
+	static async deleteByStudentId(id) {
+		await Attendance.destroy({
+			where: {
+				studentId : id
+			}
+		})
+	}
 	static async delete(id) {
 		await Attendance.destroy({
 			where: {
@@ -26,6 +33,21 @@ class attendanceService {
 		const attendance = await Attendance.findByPk(id);
 
 		return attendance;
+	}
+	static async getAllBySessionId(id) {
+		return await Attendance.findAll({
+			where: {
+				seanceId: id
+			}
+		});
+	}
+	static async getOneBySessionIdAndStudentId(seanceId, studentId) {
+		return await Attendance.findAll({
+			where: {
+				seanceId: seanceId,
+				studentId: studentId
+			}
+		});
 	}
 }
 

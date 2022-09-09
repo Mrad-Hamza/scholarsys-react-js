@@ -67,6 +67,26 @@ class SeanceController {
 			next(err);
 		}
 	};
+
+	static getSeancesByEmploiId = async (req, res, next) => {
+		const id = req.params.id;
+		try {
+			const seances = await SeanceService.getSeancesByEmploiId(id);
+			return res.status(200).json({ seances });
+		} catch (error) {
+			next(error);
+		}
+	};
+	static getSeancesByTeacherId = async (req, res, next) => {
+		const id = req.params.id;
+		try {
+			const seances = await SeanceService.getSeancesByTeacherId(id);
+			return res.status(200).json({ seances });
+		} catch (error) {
+			next(error);
+		}
+	};
+	
 	static update = async (req, res, next) => {
 		const {
 			startHour,

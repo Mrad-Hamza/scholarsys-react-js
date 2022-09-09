@@ -1,5 +1,5 @@
 
-import React, { Fragment, useState, useEffect } from 'react'
+import React, { Fragment, useState, useEffect, useCallback  } from 'react'
 
 import FullCalendar from '@fullcalendar/react' // must go before plugins
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -8,7 +8,7 @@ import Button from 'react-bootstrap/Button';
 import { ProgressBar } from "react-bootstrap";
 
 import { useParams } from 'react-router-dom';
-import { allSessions } from '../../slices/sessions';
+import { allSessions, sessionsByEmploiId } from '../../slices/sessions';
 import { Tooltip } from "bootstrap";
 
 import startOfISOWeek from 'date-fns/startOfISOWeek';
@@ -20,10 +20,12 @@ import { useSelector } from 'react-redux/es/exports';
 import { useDispatch } from 'react-redux/es/exports';
 
 import fr from '@fullcalendar/core/locales/fr';
-import interactionPlugin ,{ Draggable } from "@fullcalendar/interaction"
+import interactionPlugin from "@fullcalendar/interaction"
 import sessionService from '../../services/session.service';
 
 import userService from '../../services/user.service';
+
+import Select from "react-select";
 
 
 const initialEventInformation = {
@@ -47,7 +49,7 @@ function Schedules() {
 
     const dispatch = useDispatch()
 
-    const sessions = useSelector((state) => state.sessions.sessions);
+    const { seances: sessions } = useSelector((state) => state.sessions.sessions);
     const subjectsList = useSelector((state) => state.subjects.subjects)
     const teachersList = useSelector((state) => state.users.teachers)
     const roomsList = useSelector((state) => state.rooms.rooms)
@@ -69,8 +71,7 @@ function Schedules() {
 
 
     useEffect(() => {
-        setevents([])
-        dispatch(allSessions())
+        dispatch(sessionsByEmploiId(emploiId.id))
         dispatch(allTeachers())
         dispatch(allSubjects())
         dispatch(allRooms())
@@ -80,9 +81,7 @@ function Schedules() {
 
         setTimeout(() => {
             setIsDisplayed(true)
-        }, 1000);
-
-
+        }, 2000);
 
         //calendarRef.current.getApi().addEventSource(events)
         //FullCalendar.getApi().render();
@@ -90,35 +89,21 @@ function Schedules() {
 
 
     useEffect(() => {
-        setTimeout(() => {
-           
-
-        }, 1000);
-        
-    }, [])
-
-
-
-    useEffect(() => {
         if (!isDisplayed) {
             setTimeout(() => {
                 setProgresBarValue(30)
-            }, 200);
+            }, 1000);
             setTimeout(() => {
                 setProgresBarValue(45)
-            }, 500);
+            }, 1500);
             setTimeout(() => {
                 setProgresBarValue(80)
-            }, 800);
+            }, 3500);
             setTimeout(() => {
                 setProgresBarValue(95)
-            }, 950);
+            }, 4800);
         }
     }, [isDisplayed])
-
-    useEffect(() => {
-        console.log(currentEvent)
-    }, [currentEvent])
 
 
     const handleClose = () => {
@@ -134,53 +119,53 @@ function Schedules() {
     const handleEventTeacherChange = (e) => {
         setEventInformations({
             ...eventInformations,
-            teacher: e.target.value,
+            teacherId: e.value,
+            teacher: e.label
         })
     }
 
     const handleEventRoomChange = (e) => {
         setEventInformations({
             ...eventInformations,
-            room: e.target.value,
+            roomId: e.value,
+            room: e.label
         })
     }
 
     const handleEventSubjectChange = (e) => {
         setEventInformations({
             ...eventInformations,
-            title: e.target.value.substring(e.target.value.indexOf(' ') + 1),
-            subject: parseInt(e.target.value.substring(0, e.target.value.indexOf(' '))),
+            title: e.label,
+            subject: e.value,
+            matiereId: e.value,
+            matiere: e.label
         })
     }
 
     const handleConfirmAddEvent = async (e) => {
-        let user = await userService.getUser(parseInt(eventInformations.teacher))
-        let subjectName
-        let roomName
-        subjectsList.map((subject) => {
-            if (subject.id === parseInt(eventInformations.subject)) {
-                subjectName = subject.designation
-            }
-        })
-        roomsList.map((room) => {
-            if (room.id === parseInt(eventInformations.room)) {
-                roomName = room.designation
-            }
-        })
+        console.log(eventInformations)
+        let user = await userService.getUser(parseInt(eventInformations.teacherId))
 
         setevents(events => [...events, {
             title: eventInformations.title,
             start: eventInformations.startStr,
             end: eventInformations.endStr,
-            teacherId: eventInformations.teacher,
-            subjectId: eventInformations.subject,
-            roomId: eventInformations.room,
-            teacher: user.data.firstname + " " + user.data.lastname,
-            subject: subjectName,
-            room: roomName
+            teacherId: eventInformations.teacherId,
+            subjectId: eventInformations.matiereId,
+            roomId: eventInformations.roomId,
+            teacher: eventInformations.teacher,
+            subject: eventInformations.matiere,
+            room: eventInformations.room
         }])
-
-        sessionService.createSession(eventInformations.start.getHours(), eventInformations.start.getMinutes(), eventInformations.end.getHours() - eventInformations.start.getHours(), eventInformations.start.getDay(), parseInt(emploiId.id), parseInt(eventInformations.teacher), parseInt(currentUser.id), parseInt(eventInformations.subject), parseInt(eventInformations.room))
+        let dayNumber = eventInformations.start.getDay() - 1
+        let day
+        if (dayNumber === -1) {
+            day = "dimanche"
+        } else {
+            day = weekday[dayNumber]
+        }
+        console.log(day, dayNumber)
+        sessionService.createSession(eventInformations.start.getHours(), eventInformations.start.getMinutes(), eventInformations.end.getHours() - eventInformations.start.getHours(), day, parseInt(emploiId.id), parseInt(eventInformations.teacherId), parseInt(currentUser.id), parseInt(eventInformations.matiereId), parseInt(eventInformations.roomId))
 
         handleClose()
         //setEventInformations(null)
@@ -190,26 +175,33 @@ function Schedules() {
 
 
     const handleUpdateEventTeacherChange = (e) => {
-        console.log(e.target.value)
+        console.log(e)
         setcurrentEvent({
             ...currentEvent,
-            teacherId: parseInt(e.target.value),
+            teacherId: parseInt(e.value),
+            teacher: e.label
         })
     }
 
     const handleUpdateEventRoomChange = (e) => {
-        console.log(e.target.value)
         setcurrentEvent({
             ...currentEvent,
-            salleId: parseInt(e.target.value),
+            salleId: parseInt(e.value),
+            salle: e.label
         })
     }
 
     const handleUpdateEventSubjectChange = (e) => {
-        console.log(e.target.value)
+        /*  console.log(e.target.value)
+         setcurrentEvent({
+             ...currentEvent,
+             matiereId: parseInt(e.target.value.substring(0, e.target.value.indexOf(' '))),
+         }) */
+        console.log(e)
         setcurrentEvent({
             ...currentEvent,
-            matiereId: parseInt(e.target.value.substring(0, e.target.value.indexOf(' '))),
+            matiereId: parseInt(e.value),
+            matiere: e.label
         })
     }
 
@@ -244,32 +236,31 @@ function Schedules() {
             tooltipInstance.dispose();
             tooltipInstance = null;
         }
-        dispatch(allSessions())
+        dispatch(sessionsByEmploiId(emploiId.id))
         generateDataFromSessions()
         handleClose()
         setIsDisplayed(false)
-        calendarRef.current.getApi().rerenderEvents()
-       /*  let user = await userService.getUser(currentEvent.teacherId)
-        let subjectName
-        let roomName
-        subjectsList.map((subject) => {
-            if (subject.id === currentEvent.matiereId) {
-                subjectName = subject.designation
-            }
-        })
-        roomsList.map((room) => {
-            if (room.id === currentEvent.salleId) {
-                roomName = room.designation
-            }
-        }) */
-     
-    /*     let eventAPI = calendarRef.current.getApi().getEventById(currentEvent.id)
-        console.log(eventAPI)
-        eventAPI.setExtendedProp("emploiId", currentEvent.roomId)
-        eventAPI.setExtendedProp("teacherId", currentEvent.teacherId)
-        eventAPI.setExtendedProp("matiere", subjectName)
-        eventAPI.setExtendedProp("room", roomName)
-        eventAPI.setExtendedProp("teacher", user.data.firstname + " " + user.data.lastname) */
+        /*  let user = await userService.getUser(currentEvent.teacherId)
+         let subjectName
+         let roomName
+         subjectsList.map((subject) => {
+             if (subject.id === currentEvent.matiereId) {
+                 subjectName = subject.designation
+             }
+         })
+         roomsList.map((room) => {
+             if (room.id === currentEvent.salleId) {
+                 roomName = room.designation
+             }
+         }) */
+
+        /*     let eventAPI = calendarRef.current.getApi().getEventById(currentEvent.id)
+            console.log(eventAPI)
+            eventAPI.setExtendedProp("emploiId", currentEvent.roomId)
+            eventAPI.setExtendedProp("teacherId", currentEvent.teacherId)
+            eventAPI.setExtendedProp("matiere", subjectName)
+            eventAPI.setExtendedProp("room", roomName)
+            eventAPI.setExtendedProp("teacher", user.data.firstname + " " + user.data.lastname) */
     }
 
 
@@ -330,13 +321,13 @@ function Schedules() {
         )
     }
 
-    const generateDataFromSessions = () => {
+    const generateDataFromSessions = useCallback( () => {
         //sessions.filter(session => session.emploiId !== emploiId.id)
+        setevents([])
         const start = startOfISOWeek(new Date());
         scheduleEvents = []
-        setevents([])
-        sessions.forEach(async (session) => {
-            if (session.emploiId === parseInt(emploiId.id)) {
+        if (sessions !== undefined) {
+            sessions.forEach(async (session) => {
                 let month = (new Date().getMonth() + 1).toLocaleString('en-US', {
                     minimumIntegerDigits: 2,
                     useGrouping: false
@@ -351,6 +342,7 @@ function Schedules() {
                 })
                 let endHour = parseInt(hour) + parseInt(session.seance_duration)
                 let day = start.toISOString().substring(8, 10)
+                console.log(day)
                 switch (weekday.indexOf(session.day)) {
                     case 0:
                         day = parseInt(day) + 1
@@ -390,10 +382,17 @@ function Schedules() {
                     }
                 })
                 let data = {}
-                data.start = new Date().getFullYear() + "-" + (month) + "-" + day
-                    + "T" + hour + ":" + minute + ":00"
-                data.end = new Date().getFullYear() + "-" + (month) + "-" + day
-                    + "T" + endHour + ":" + minute + ":00"
+                if ( parseInt(day)>= 10) {
+                    data.start = new Date().getFullYear() + "-" + (month) + "-" + day
+                        + "T" + hour + ":" + minute + ":00+01:00"
+                    data.end = new Date().getFullYear() + "-" + (month) + "-" + day
+                        + "T" + endHour + ":" + minute + ":00+01:00"
+                } else {
+                    data.start = new Date().getFullYear() + "-" + (month) + "-0" + day
+                        + "T" + hour + ":" + minute + ":00+01:00"
+                    data.end = new Date().getFullYear() + "-" + (month) + "-0" + day
+                        + "T" + endHour + ":" + minute + ":00+01:00"
+                }
                 data.editable = true
                 data.allDay = false
                 data.title = subjectName
@@ -408,19 +407,35 @@ function Schedules() {
                 data.teacherId = session.teacherId
                 data.teacher = user.data.firstname + " " + user.data.lastname
                 data.agentId = session.agentId
-                data.matiereId = session.matiereId
-                data.matiere = subjectName
+                data.subjectId = session.matiereId
+                data.subject = subjectName
                 scheduleEvents.push(data)
-            }
-        })
-        setTimeout(() => {
-            scheduleEvents.map(event => {
-                setevents(events => [...events, event])
-            });
+            })
+            console.log(scheduleEvents)
+            setTimeout(() => {
+                scheduleEvents.map(event => {
+                    setevents(events => [...events, event])
+                });
+            }, 500);
+        }
+    }, [sessions, roomsList, subjectsList])
+    
+    useEffect(() => {
+        console.log(events)
+    }, [events])
 
-        }, 500);
-    }
 
+    const subjectsSelectList = subjectsList.map((subject) => {
+        return { value: subject.id, label: subject.designation }
+    });
+
+    const teachersSelectList = teachersList.map((teacher) => {
+        return { value: teacher.id, label: teacher.firstname + " " + teacher.lastname }
+    });
+
+    const roomsSelectList = roomsList.map((room) => {
+        return { value: room.id, label: room.designation }
+    })
 
     return (
         <>
@@ -456,36 +471,55 @@ function Schedules() {
                 </Modal.Header>
                 <Modal.Body>
                     <div className="col-md-10">
-                        <select className="form-control" onChange={handleEventSubjectChange}>
+                        {/*  <select className="form-control" onChange={handleEventSubjectChange}>
                             <option>-- Choose Subject --</option>
                             {
                                 subjectsList.map((subject) => {
                                     return <option value={subject.id + " " + subject.designation}>{subject.designation} </option>
                                 })
                             }
-                        </select>
+                        </select> */}
+                        <Select
+                            placeholder="Select a subject ..."
+                            options={subjectsSelectList}
+                            onChange={handleEventSubjectChange}
+                            isSearchable={true}
+                        />
                     </div>
                     <br />
                     <div className="col-md-10">
-                        <select className="form-control" onChange={handleEventTeacherChange}>
+                        {/*   <select className="form-control" onChange={handleEventTeacherChange}>
                             <option>-- Choose Teacher --</option>
                             {
                                 teachersList.map((teacher) => {
                                     return <option value={teacher.id} > {teacher.firstname} {teacher.lastname} </option>
                                 })
                             }
-                        </select>
+                        </select> */}
+                        <Select
+                            placeholder="Select a teacher ..."
+                            options={teachersSelectList}
+                            onChange={handleEventTeacherChange}
+                            isSearchable={true}
+                        />
+
                     </div>
                     <br />
                     <div className="col-md-10">
-                        <select className="form-control" onChange={handleEventRoomChange}>
+                        {/*   <select className="form-control" onChange={handleEventRoomChange}>
                             <option>-- Choose Room --</option>
                             {
                                 roomsList.map((room) => {
                                     return <option value={room.id} > {room.designation} </option>
                                 })
                             }
-                        </select>
+                        </select> */}
+                        <Select
+                            placeholder="Select a room ..."
+                            options={roomsSelectList}
+                            onChange={handleEventRoomChange}
+                            isSearchable={true}
+                        />
                     </div>
                     <br />
                     <div className="col-md-10">
@@ -515,36 +549,33 @@ function Schedules() {
                 </Modal.Header>
                 <Modal.Body>
                     <div className="col-md-10">
-                        <select className="form-control" onChange={handleUpdateEventSubjectChange}>
-                            <option>-- Change Subject --</option>
-                            {
-                                subjectsList.map((subject) => {
-                                    return <option value={subject.id + " " + subject.designation}>{subject.designation} </option>
-                                })
-                            }
-                        </select>
+
+                        <Select
+                            placeholder="Select a subject ..."
+                            options={subjectsSelectList}
+                            onChange={handleUpdateEventSubjectChange}
+                            isSearchable={true}
+                        />
+
                     </div>
                     <br />
                     <div className="col-md-10">
-                        <select className="form-control" onChange={handleUpdateEventTeacherChange}>
-                            <option>-- Change Teacher --</option>
-                            {
-                                teachersList.map((teacher) => {
-                                    return <option value={teacher.id} > {teacher.firstname} {teacher.lastname} </option>
-                                })
-                            }
-                        </select>
+                        <Select
+                            placeholder="Select a teacher ..."
+                            options={teachersSelectList}
+                            onChange={handleUpdateEventTeacherChange}
+                            isSearchable={true}
+                        />
                     </div>
                     <br />
                     <div className="col-md-10">
-                        <select className="form-control" onChange={handleUpdateEventRoomChange}>
-                            <option>-- Change Room --</option>
-                            {
-                                roomsList.map((room) => {
-                                    return <option value={room.id} > {room.designation} </option>
-                                })
-                            }
-                        </select>
+
+                        <Select
+                            placeholder="Select a room ..."
+                            options={roomsSelectList}
+                            onChange={handleUpdateEventRoomChange}
+                            isSearchable={true}
+                        />
                     </div>
                 </Modal.Body>
                 <Modal.Footer>

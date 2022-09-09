@@ -8,6 +8,15 @@ class attendanceController {
 			next(error);
 		}
 	};
+	static deleteByStudentId = async (req, res, next) => {
+		try {
+			const id = req.params.id;
+			await attendanceService.deleteByStudentId(id);
+			return res.status(200).json({ success: true });
+		} catch (error) {
+			next(error);
+		}
+	};
 	static create = async (req, res, next) => {
 		try {
 			const { seanceId, state, studentId } = req.body;
@@ -30,6 +39,25 @@ class attendanceController {
 			console.log(id);
 			const attendance = await attendanceService.getOne(id);
 			return res.status(200).json({ success: true, attendance });
+		} catch (error) {
+			next(error);
+		}
+	};
+	static getBySeanceId = async (req, res, next) => {
+		try {
+			const id = req.params.id;
+			const attendance = await attendanceService.getAllBySessionId(id);
+			return res.status(200).json({ attendance });
+		} catch (error) {
+			next(error);
+		}
+	};
+	static getBySeanceIdAndStudentId = async (req, res, next) => {
+		try {
+			const seanceId = req.params.seanceId;
+			const studentId = req.params.studentId;
+			const attendance = await attendanceService.getOneBySessionIdAndStudentId(seanceId, studentId);
+			return res.status(200).json({ attendance });
 		} catch (error) {
 			next(error);
 		}

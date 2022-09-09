@@ -30,7 +30,7 @@ const login = (email, password) => {
 const logout = () => {
     localStorage.removeItem("token")
     localStorage.removeItem("user")
-    axios.post(API_URL+"logout")
+    axios.post(API_URL + "logout")
 };
 
 const forgotPassword = (email) => {
@@ -43,9 +43,9 @@ const forgotPassword = (email) => {
         })
 }
 
-const resetPassword = (refreshToken,password,confirmPassword) => {
+const resetPassword = (refreshToken, password, confirmPassword) => {
     return axios
-        .post(API_URL + "reset_password/" + refreshToken , {
+        .post(API_URL + "reset_password/" + refreshToken, {
             password,
             confirmPassword
         })
@@ -54,12 +54,22 @@ const resetPassword = (refreshToken,password,confirmPassword) => {
         })
 }
 
+const confirmAccount = (emailToken) => {
+    return axios
+        .get(API_URL + "confirm/" + emailToken)
+        .then((res) => {
+            return res.data
+        })
+}
+
+
 const authService = {
     // register,
     login,
     logout,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    confirmAccount
 };
 
 export default authService;

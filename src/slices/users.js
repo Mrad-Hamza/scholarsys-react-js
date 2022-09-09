@@ -80,6 +80,26 @@ export const allStudents = createAsyncThunk(
     }
 );
 
+export const allStudentsByClasseId = createAsyncThunk(
+    "users/allStudentsByClasseId",
+    async (id,thunkAPI) => {
+        try {
+            const response = await userService.getStudentsByClasseId(id)
+            //console.log(response)
+            return { students: response };
+        } catch (error) {
+            const message =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
+            thunkAPI.dispatch(setMessage(message));
+            return thunkAPI.rejectWithValue();
+        }
+    }
+);
+
 
 
 const initialState = {users : [], students: [], agents: [], teachers : []};
@@ -110,6 +130,12 @@ const usersSlice = createSlice({
             state.students = action.payload.students;
         },
         [allStudents.rejected]: (state, action) => {
+            state.students = [];
+        },
+        [allStudentsByClasseId.fulfilled]: (state, action) => {
+            state.students = action.payload.students;
+        },
+        [allStudentsByClasseId.rejected]: (state, action) => {
             state.students = [];
         }
     },

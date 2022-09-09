@@ -29,10 +29,32 @@ const deleteSchedule = (id) => {
         })
 }
 
+const getOne = (id) => {
+    return axios
+        .get(API_URL+"/"+id)
+        .then ((res) => {
+            return res.data
+        })
+}
+
+const generatePDF = () => {
+    axios.get(API_URL+"/generate/students")
+    axios.get(API_URL + "/generate/teachers")
+}
+
+const getScheduleByClassId = (id) => {
+    return axios
+        .get(API_URL+"/classe/"+id)
+        .then(res=>{return res.data})
+}
+
 const scheduleService = {
     getAllSchedules,
     addSchedule,
-    deleteSchedule
+    deleteSchedule,
+    getOne,
+    generatePDF,
+    getScheduleByClassId,
 };
 
 export default scheduleService;

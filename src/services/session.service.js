@@ -10,10 +10,10 @@ const getAllSessions = () => {
         })
 }
 
-const createSession = (startHour,startMinute,seanceDuration,day,emploiId,teacherId,agentId,matiereId,salleId) => {
-    
+const createSession = (startHour, startMinute, seanceDuration, day, emploiId, teacherId, agentId, matiereId, salleId) => {
+    console.log(startHour, startMinute, seanceDuration, day, emploiId, teacherId, agentId, matiereId, salleId)
     return axios
-        .post(API_URL+'/', {
+        .post(API_URL + '/', {
             startHour,
             startMinute,
             seanceDuration,
@@ -31,21 +31,21 @@ const createSession = (startHour,startMinute,seanceDuration,day,emploiId,teacher
 
 const getSessionById = (id) => {
     return axios
-        .get(API_URL+"/"+id)
-        .then((res)=> {
+        .get(API_URL + "/" + id)
+        .then((res) => {
             return res.data
         })
 }
 
 const deleteSession = (id) => {
     return axios
-        .delete(API_URL+"/"+id)
-        .then((res)=> {return res.data})
+        .delete(API_URL + "/" + id)
+        .then((res) => { return res.data })
 }
 
-const updateSession = (startHour, startMinute, seanceDuration, day, emploiId, teacherId, agentId, matiereId, salleId, id ) => {    
+const updateSession = (startHour, startMinute, seanceDuration, day, emploiId, teacherId, agentId, matiereId, salleId, id) => {
     return axios
-        .patch(API_URL+'/'+id, {
+        .patch(API_URL + '/' + id, {
             startHour,
             startMinute,
             seanceDuration,
@@ -62,12 +62,30 @@ const updateSession = (startHour, startMinute, seanceDuration, day, emploiId, te
         })
 }
 
+const getSessionsByEmploiId = (id) => {
+    return axios
+        .get(API_URL +'/getSeancesByEmploiId/'+id)
+        .then(res => {
+            return res.data
+        })
+}
+
+const getSessionsByTeacherId = (id) => {
+    return axios
+        .get(API_URL + '/getSeancesByTeacherId/' + id)
+        .then(res => {
+            return res.data
+        })
+}
+
 const sessionService = {
     getAllSessions,
     createSession,
     updateSession,
     deleteSession,
-    getSessionById
+    getSessionById,
+    getSessionsByEmploiId,
+    getSessionsByTeacherId
 };
 
 export default sessionService;

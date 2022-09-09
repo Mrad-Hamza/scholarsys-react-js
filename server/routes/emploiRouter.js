@@ -2,10 +2,12 @@ const express = require('express');
 const EmploiController = require('../controllers/emploi.controller');
 const router = express.Router();
 
-router.get('/generate', EmploiController.generateEmploi);
+router.get('/generate/teachers', EmploiController.generateEmploisTeachers);
+router.get('/generate/students', EmploiController.generateEmploisStudent);
 
 router.get('/', EmploiController.getAll);
 router.get('/:id', EmploiController.getOne);
+router.get('/classe/:id',EmploiController.getOneByClasseId)
 router.post('/', EmploiController.create);
 
 router.patch('/:id', EmploiController.update);

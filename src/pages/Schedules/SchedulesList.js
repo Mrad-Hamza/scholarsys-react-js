@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { allSchedules } from '../../slices/schedules';
 import { allAgents } from '../../slices/users';
@@ -7,6 +7,8 @@ import { allSessions } from '../../slices/sessions';
 import scheduleService from '../../services/schedule.service';
 import { useHistory } from 'react-router-dom'
 import userService from '../../services/user.service';
+import toast, { Toaster } from 'react-hot-toast';
+
 
 // Import Components
 import { Row, Col, Card, Media, ProgressBar } from "react-bootstrap";
@@ -38,6 +40,7 @@ function SchedulesList() {
     const sessions = useSelector((state) => state.sessions.sessions);
 
 
+
     const columns = [
         {
             name: 'Name',
@@ -56,9 +59,9 @@ function SchedulesList() {
         },
         {
             name: 'Download',
-            selector : row => row.id,
-            cell : (row) => <div>
-                <button className="btn btn-sm btn-outline-primary me-2"><FontAwesomeIcon icon={faPlus} /></button>
+            selector: row => row,
+            cell: (row) => <div>
+                <button className="btn btn-sm btn-outline-primary me-2" onClick={() => handleGenerateScheduleClick(row)}><FontAwesomeIcon icon={faPlus} /></button>
             </div>
         },
         {
@@ -66,25 +69,23 @@ function SchedulesList() {
             selector: row => row.id,
             sortable: true,
             cell: (row) => <div>
-                <button className="btn btn-sm bg-success-light me-2" onClick={() => history.push('/schedule/' + row.id)}><FontAwesomeIcon icon={faPencilAlt} /> </button> 
+                <button className="btn btn-sm bg-success-light me-2" onClick={() => history.push('/schedule/' + row.id)}><FontAwesomeIcon icon={faPencilAlt} /> </button>
                 <button className="btn btn-sm bg-danger-light" onClick={() => deleteSchedule(row)}> <FontAwesomeIcon icon={faTrash} /> </button>
-                </div>
+            </div>
         }
     ];
 
     useEffect(() => {
         setdata([])
-
         dispatch(allSchedules())
         dispatch(allClasses())
         dispatch(allAgents())
         dispatch(allSessions())
         setProgresBarValue(0)
         generateData()
-
         setTimeout(() => {
             setIsDisplayed(true)
-        }, 1000);
+        }, 2000);
     }, [isDisplayed])
 
     useEffect(() => {
@@ -117,11 +118,12 @@ function SchedulesList() {
         data,
     };
 
-    const generateData = () => {
+    const generateData = useCallback(() => {
         setdata([])
         schedulesList.forEach(async (element) => {
             let agent = await userService.getUser(element.agentId)
             let classeName
+            console.log(element)
             classesList.map(classe => {
                 if (classe.id === element.classeId) {
                     classeName = classe.designation
@@ -130,6 +132,11 @@ function SchedulesList() {
             let name = agent.data.firstname + " " + agent.data.lastname
             setdata((data) => [...data, { id: element.id, name: element.name, agentname: name, agentId: element.agentId, classeName: classeName, classeId: element.classeId }])
         });
+    }, [schedulesList]);
+
+    const handleGenerateScheduleClick = (row) => {
+        console.log(row)
+        window.open("http://localhost:8000/static/emploi/students/" + row.name + ".pdf")
     }
 
     const deleteSchedule = (row) => {
@@ -154,6 +161,12 @@ function SchedulesList() {
         return agent.data
     }
 
+    const handlePDF = async () => {
+        await scheduleService.generatePDF()
+        toast.success("Schedules are genereated successfully. They are available to download.")
+
+    }
+
 
     function DatatableView() {
         return (
@@ -172,6 +185,8 @@ function SchedulesList() {
 
     return (
         <div>
+            <Toaster position="top-right"
+                reverseOrder={false} />
             <div className="page-header">
                 <div className="page-header">
                     <Row>
@@ -183,6 +198,7 @@ function SchedulesList() {
                             </ul>
                         </Col>
                         <Col className="col-auto text-end float-right ms-auto">
+                            <button className="btn btn-primary" onClick={handlePDF}><FontAwesomeIcon icon={faPencilAlt} /></button> &nbsp; &nbsp;
                             <button className="btn btn-primary" onClick={addSchedule}><FontAwesomeIcon icon={faPlus} /></button>
                         </Col>
                     </Row>

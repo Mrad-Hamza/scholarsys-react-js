@@ -10,8 +10,17 @@ const getAllSubjects = () => {
         })
 }
 
+const getOne = (id) => {
+    return axios
+        .get(API_URL + "matiere/" + id)
+        .then((response) => {
+            return response.data
+        })
+}
+
 const subjectService = {
     getAllSubjects,
+    getOne
 };
 
 export default subjectService;

@@ -20,6 +20,7 @@ router.get('/test', async (req, res, next) => {
 
 router.get('/teachers', userController.getTeachers);
 router.get('/students', userController.getStudents);
+router.get('/studentsByClasseId/:id',userController.getStudentsByClasseId)
 router.get('/agents', userController.getAgents);
 router.get('/', userController.getAll);
 
@@ -43,5 +44,8 @@ router.patch('/addClass/:id', userController.addClassToUser);
 router.patch('/removeClass/:id', userController.removeClassToUser);
 
 router.delete('/:id', userController.delete);
+
+router.patch('/teacher/:id', userController.updateSalary);
+
 
 module.exports = router;

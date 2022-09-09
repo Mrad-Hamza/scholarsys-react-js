@@ -163,6 +163,7 @@ import SchedulesList from './pages/Schedules/SchedulesList';
 import AddSchedule from './pages/Schedules/AddSchedule';
 import ViewSchedule from './pages/Schedule/ViewSchedule';
 import ViewScheduleForTeacher from './pages/Schedule/ViewScheduleForTeacher';
+import Attendance from './pages/Attendance/Attendance';
 
 function App() {
   const { isLoggedIn } = useSelector((state) => state.auth);
@@ -193,13 +194,13 @@ function App() {
         history.push('/login')
       }
     }
-    /*  if (token) {
+     if (token) {
        const decodedJwt = parseJwt(token);
        if (decodedJwt.exp * 1000 < Date.now()) {
          dispatch(logout())
          history.push('/login')
        }
-     } */
+     }
 
   }, [location])
 
@@ -304,6 +305,9 @@ function App() {
                 <RouteAuthenticated path="/blank-page" component={BlankPage} />
 
                 <div>
+
+                  <Route path="/attendance/:id" component={Attendance} />
+
                   {/* Teacher Module */}
                   <PrivateAgentRoute exact path="/teachers" component={TeachersList} />
                   <PrivateAgentRoute exact path="/add-teacher" component={AddTeacher} />
@@ -316,7 +320,7 @@ function App() {
                   <PrivateAgentRoute exact path="/agents" component={AgentsList} />
 
                   {/* Department Module */}
-        
+
 
                   {/* Subject Module */}
                   <PrivateAgentRoute exact path="/add-subject" component={AddSubject} />

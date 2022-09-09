@@ -10,13 +10,20 @@ const aff = (req, res, next) => {
 		.then((response) => res.status(200).send(response))
 		.catch((err) => res.status(400).send(err));
 };
+const getOne = (req, res, next) => {
+	Matiere.findAll({
+		where: { id: req.params.id }
+	})
+		.then((response) => res.status(200).send(response))
+		.catch((err) => res.status(400).send(err));
+};
 const modifier = (req, res, next) => {
 	Matiere.update(
 		{
 			designation: req.body.designation,
-            coef:req.body.coef,
+			coef: req.body.coef,
 			nbr_heure: req.body.nbr_heure,
-			niveauId:req.body.niveauId
+			niveauId: req.body.niveauId
 		},
 		{ where: { id: req.params.id } }
 	)
@@ -32,5 +39,6 @@ module.exports = {
 	create,
 	aff,
 	modifier,
-	supprimer
+	supprimer,
+	getOne
 };

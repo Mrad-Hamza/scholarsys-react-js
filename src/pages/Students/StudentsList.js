@@ -68,10 +68,8 @@ function StudentsList() {
             selector: row => {
                 let data = JSON.parse(JSON.parse(row.specificData)) || {}
                 let classNames = ""
-                console.log(data.classeId)
                 classes.forEach(element => {
                     if (parseInt(data.classeId) === parseInt(element.id)) {
-                        console.log(element.designation)
                         classNames = element.designation 
                     } 
                 });
