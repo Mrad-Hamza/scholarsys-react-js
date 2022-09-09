@@ -236,6 +236,7 @@ function Schedules() {
             tooltipInstance.dispose();
             tooltipInstance = null;
         }
+        setevents([])
         dispatch(sessionsByEmploiId(emploiId.id))
         generateDataFromSessions()
         handleClose()

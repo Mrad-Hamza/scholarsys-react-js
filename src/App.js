@@ -342,11 +342,6 @@ function App() {
                   <Route path="/edit-class" component={EditClass} />
                   <Route path="/classes" component={ClassesList} />
 
-                  {/* Subject Module */}
-                  <Route path="/add-subject" component={AddSubject} />
-                  <Route path="/edit-subject" component={EditSubject} />
-                  <Route path="/subjects" component={SubjectsList} />
-
                   {/* Grade Module */}
                   <Route path="/add-grade" component={AddGrade} />
                   <Route path="/edit-grade" component={EditGrade} />

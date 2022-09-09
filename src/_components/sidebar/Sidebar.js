@@ -79,7 +79,9 @@ function Sidebar() {
 		return '';
 	} */
 
+
 	if (parseInt(currentUser.role) === 987) {
+
 		return (
 			<div className="sidebar" id="sidebar">
 
@@ -448,7 +450,9 @@ function Sidebar() {
 			</div >
 		)
 	}
+
 	else if (parseInt(currentUser.role) === 666) {
+
 		return (
 			<div className="sidebar" id="sidebar">
 

@@ -9,6 +9,7 @@ import 'react-data-table-component-extensions/dist/index.css';
 // Import Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDownload, faPencilAlt, faPlus, faTrash } from '@fortawesome/fontawesome-free-solid';
+import toast, { Toaster } from 'react-hot-toast';
 
 function LevelsList () {
     const [data,setData] = useState();
@@ -32,16 +33,15 @@ function LevelsList () {
         })
 
         if(childClasse === false && childSubject === false){
-            let confirm = window.confirm('Do you really want to delete '+level.designation+'?');
-            if(confirm === true){
+            toast.success('Level deleted')
                 const response = await fetch('http://localhost:8000/niveau/'+level.id, {
                     method: 'DELETE'
                     });
                 const data = await response.json();
                 console.log(data);
-            }
+                window.location.reload(false);
         }else{
-            alert("You cannot delete this one because it contains child(s)");
+            toast.error("You cannot delete this one because it contains child(s)");
         }
         
     }
@@ -81,7 +81,7 @@ function LevelsList () {
         {
             name: 'Designation',
             sortable: true,
-            selector: row=>row.designation
+            selector: row=>row.designation,
         },
         {
             name: 'Acronyme',
@@ -97,6 +97,7 @@ function LevelsList () {
             name: 'Action',
             selector: row=>row.action,
             sortable: true,
+            center:true,
             cell: (level) => <div><Link to={{pathname :`/edit-level/${level.id}` , state: {level} }}
             className="btn btn-sm bg-success-light me-2">
             <FontAwesomeIcon icon={faPencilAlt} /> </Link>  <a href="#" className="btn btn-sm bg-danger-light " onClick={() => {deleteLevel(level)}}> <FontAwesomeIcon icon={faTrash} /> </a></div>
@@ -109,6 +110,7 @@ function LevelsList () {
         };
         return (
             <div>
+                <Toaster position="top-right" reverseOrder={false} />
                 <div className="page-header">
                     <div className="page-header">
                         <Row>
@@ -120,7 +122,6 @@ function LevelsList () {
                                 </ul>
                             </Col>
                             <Col className="col-auto text-end float-end ms-auto">
-                                <a href="#" className="btn btn-outline-primary me-2"><FontAwesomeIcon icon={faDownload} /> Download</a>
                                 <a href="/add-level" className="btn btn-primary"><FontAwesomeIcon icon={faPlus} /></a>
                             </Col>
                         </Row>

@@ -68,11 +68,11 @@ const editUser = (id, firstname, lastname, email, password, birthDate, phoneNumb
     var formData = new FormData();
     formData.append("firstname", firstname);
     formData.append("lastname", lastname);
+    formData.append("password", password);
     formData.append("phoneNumber", phoneNumber);
     formData.append("birthDate", birthDate);
     
     formData.append("email", email);
-    formData.append("password", password);
     formData.append("salary", salary)
     return axios
         .patch(API_URL + "user/" + id, formData, {

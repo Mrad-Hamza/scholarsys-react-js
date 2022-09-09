@@ -12,6 +12,7 @@ const count = (req, res, next) => {
 			count: result
 		})
 	});
+
 }
 
 
@@ -34,6 +35,7 @@ const modifier = (req, res, next) => {
 			note_val: req.body.note_val,
 			matiereId: req.body.matiereId,
 			teacherId: req.body.teacherId
+
 
 		},
 		{ where: { id: req.params.id } }
@@ -71,6 +73,7 @@ const bonneMoy = (req, res, next) => {
 			count: result
 		})
 	});
+
 }
 
 module.exports = {
@@ -82,3 +85,4 @@ module.exports = {
 	MauvaiseMoy,
 	bonneMoy
 };
+

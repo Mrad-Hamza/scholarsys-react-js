@@ -16,11 +16,13 @@ import toast, { Toaster } from 'react-hot-toast';
 import userService from '../../services/user.service';
 import { useHistory } from 'react-router-dom';
 
+
 import { useDispatch } from 'react-redux';
 import { allSchedules } from '../../slices/schedules'
 import { update } from '../../slices/auth'
 
 import scheduleService from '../../services/schedule.service';
+
 
 function Profile() {
     const dispatch = useDispatch()
@@ -168,6 +170,7 @@ function Profile() {
 
     const handleSubmit = (e) => {
         e.preventDefault()
+        console.log(currentUser.password)
         let data = { id: currentUser.id, firstname:firstname, lastname:lastname, email:email, password:currentUser.password, birthDate:birthDate, phoneNumber:phoneNumber, salary:0 }
         dispatch(update(data))
         //userService.editUser(currentUser.id, firstname, lastname, email, currentUser.password, birthDate, phoneNumber, currentUser.salaire)

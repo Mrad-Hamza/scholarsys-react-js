@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { useHistory,useLocation } from 'react-router-dom';
 // Import Components
 import { Row, Col, Card, Form, Button } from "react-bootstrap";
+import toast, { Toaster } from 'react-hot-toast';
 
 function reactFormat(date){
     var format = new Date(date)
@@ -11,10 +12,9 @@ function reactFormat(date){
 function EditFormation() {
     let history = useHistory();
     const formation = useLocation().state.formation;
+    console.log(formation)
 
     const id = formation.id;
-
-    console.log(formation)
 
     const [name , setName] = useState(formation.nom);
     const [nameIsValid , setNameIsValid] = useState('form-control is-valid');
@@ -31,12 +31,8 @@ function EditFormation() {
     const [dtEch, setDtEch] = useState(reactFormat(formation.date_echeance));
     const [dtEchIsValid , setDtEchIsValid] = useState('form-control is-valid');
 
-    useEffect(()=>{
-        console.log(dtEch)
-    },[name,mtAnn,durAnn,durMens,dtEch])
-
     const handleName = (name) =>{
-        if (name.target.value !== undefined){
+        if (name.target.value !== undefined || name.target.value !== ''){
             if((name.target.value === '') || (name.target.value.length < 3) || (name.target.value.length > 20) ){
                 setName(null)
                 setNameIsValid('form-control is-invalid');
@@ -75,7 +71,7 @@ function EditFormation() {
     }
 
     const handleDurAnn = (durAnn) =>{
-        if(durAnn.target.value !== undefined){
+        if(durAnn.target.value !== undefined || durAnn.target.value !== ''){
             if(durAnn.target.value.match(/^(\d*\.{0,1}\d{0,2}$)/)){
                 if(durAnn.target.value == 0){
                     setDurAnn(null)
@@ -96,7 +92,7 @@ function EditFormation() {
     }
 
     const handleDurMens = (durMens)=>{
-        if(durMens.target.value !== undefined ){
+        if(durMens.target.value !== undefined || durMens.target.value !== ''){
             if(durMens.target.value.match(/^(\d*\.{0,1}\d{0,2}$)/)){
                 if(durMens.target.value == 0){
                     setDurMensIsValid('form-control is-invalid');
@@ -128,14 +124,13 @@ function EditFormation() {
     }
 
     const handleSubmit = async (formation) => {
+        formation.preventDefault();
         if((nameIsValid ==='form-control is-invalid')|| (mtAnnIsValid === 'form-control is-invalid') 
         || (durAnnIsValid === 'form-control is-invalid') || (durMens === 'form-control is-invalid') ||
         (dtEchIsValid === 'form-control is-invalid')){
-
+            toast.error('Form contains errors');
         }else{
-            let confirm = window.confirm('Do you really want to submit the form?');
-            if(confirm === true){
-                formation.preventDefault();
+                 toast.success('Form has been submitted')
                 const response = await fetch('http://localhost:8000/formation/'+id, {
                 method: 'PATCH',
                 body: JSON.stringify({
@@ -151,17 +146,13 @@ function EditFormation() {
                 });
                 const data = await response.json();
                 console.log(data);
-                alert("Form has been submitted");
                 history.push('/formations')
-            }
-            else{
-                return false;
-            }
         }
     }
 
         return (
             <div>
+                <Toaster position="top-center" reverseOrder={false} />
                 <div className="page-header">
                     <Row>
                         <Col sm={12}>
