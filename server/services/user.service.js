@@ -74,9 +74,13 @@ class UserService {
 			const user = await User.create(newUserData);
 
 			sampleFile.name = newImgName;
-
-			const uploadPath = path.join(__dirname, '..', '..', 'src', 'assets', 'user_images', sampleFile.name);
-
+			const uploadPath = path.join(
+				__dirname,
+				'..',
+				'public',
+				'users_images',
+				sampleFile.name
+			);
 			sampleFile.mv(uploadPath, function(err) {
 				if (err) ErrorResponse.internalError('error while uploading the file');
 			});
@@ -144,8 +148,7 @@ class UserService {
 		}
 
 		if (user.role === ROLES.TEACHER) {
-			const classes = await JSON.parse(JSON.parse(user.specificData));
-
+			const classes = await JSON.parse(user.specificData);
 			const exist = classes.classesId.find((existingId) => existingId === classeId);
 			if (exist) {
 				throw ErrorResponse.badRequest('this teacher alraedy have this classe');

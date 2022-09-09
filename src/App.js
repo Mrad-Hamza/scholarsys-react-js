@@ -414,8 +414,8 @@ function App() {
                   <PrivateAgentRoute exact path="/add-event" component={AddEvent} />
 
                   <PrivateAgentRoute exact path="/dashboard" component={Dashboard} />
-                  <PrivateAgentRoute exact path="/student-dashboard" component={StudentDashboard} />
-                  <PrivateAgentRoute exact path="/teacher-dashboard" component={TeacherDashboard} />
+                  <RouteAuthenticated exact path="/student-dashboard" component={StudentDashboard} />
+                  <PrivateTeacherRoute exact path="/teacher-dashboard" component={TeacherDashboard} />
 
                   {/* Student Module */}
                   <PrivateAgentRoute exact path="/students" component={StudentsList} />
