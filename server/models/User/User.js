@@ -115,13 +115,7 @@ Classe.belongsToMany(User, {
 	foreignKey: 'classeId'
 });
 
-User.hasMany(Matiere, {
-	foreignKey: 'teacherId'
-});
 
-Matiere.belongsTo(User, {
-	foreignKey: 'teacherId'
-});
 
 User.hasMany(Note, {
 	foreignKey: 'teacherId'

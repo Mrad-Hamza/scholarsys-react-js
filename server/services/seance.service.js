@@ -9,7 +9,6 @@ class SeanceService {
 		try {
 			await Seance.create(seance);
 		} catch (error) {
-
 			throw ErrorResponse.badRequest();
 		}
 	};

@@ -100,8 +100,7 @@ if (cluster.isMaster) {
 	app.listen(PORT, async () => {
 		try {
 			//await sequelize.sync({ force: true });
-			 await sequelize.sync();
-
+			// await sequelize.sync();
 		} catch (err) {
 			console.log(err);
 		}

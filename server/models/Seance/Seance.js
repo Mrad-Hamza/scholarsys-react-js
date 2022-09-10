@@ -48,8 +48,7 @@ const Seance = sequelize.define(
 			beforeCreate: async (record, options) => {
 				// console.table({ record });
 				// console.table({ options });
-				//const p = await sequelize.query('CALL test();');
-
+				const p = await sequelize.query('CALL test();');
 			}
 			// beforeUpdate: (record, options) => {
 			// 	record.dataValues.updatedAt = new Date()
