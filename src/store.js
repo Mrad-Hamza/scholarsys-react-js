@@ -7,6 +7,7 @@ import schedulesReducer from "./slices/schedules"
 import subjectsReducer from './slices/subject'
 import roomsReducer from './slices/room'
 import sessionsReducer from './slices/sessions'
+import attendancesReducer from './slices/attendance'
 
 const reducer = {
     auth: authReducer,
@@ -16,7 +17,8 @@ const reducer = {
     schedules : schedulesReducer,
     subjects : subjectsReducer,
     rooms : roomsReducer,
-    sessions : sessionsReducer
+    sessions : sessionsReducer,
+    attendances : attendancesReducer
 }
 
 const store = configureStore({

@@ -4,6 +4,9 @@ import { allTeachers, allUsers } from '../../slices/users';
 import { allClasses } from '../../slices/classes';
 import userService from '../../services/user.service';
 import { useHistory } from 'react-router-dom'
+import { Tooltip } from "bootstrap";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+
 // Import Components
 import { Row, Col, Card, Media, ProgressBar } from "react-bootstrap";
 //Import Data Table
@@ -12,8 +15,11 @@ import DataTableExtensions from 'react-data-table-component-extensions';
 import 'react-data-table-component-extensions/dist/index.css';
 // Import Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faDownload, faPencilAlt, faPlus, faTrash, faSchool } from '@fortawesome/fontawesome-free-solid';
+import { faDownload, faPencilAlt, faPlus, faTrash, faSchool, faTextHeight } from '@fortawesome/fontawesome-free-solid';
 import { useSelector } from 'react-redux';
+
+import Select from "react-select";
+
 
 import Img1 from '../../assets/img/profiles/avatar-01.jpg';
 import Img2 from '../../assets/img/profiles/avatar-02.jpg';
@@ -28,6 +34,9 @@ import Img10 from '../../assets/img/profiles/avatar-10.jpg';
 
 let data = [
 ];
+
+let tooltipInstance = null;
+
 
 function TeachersList() {
     const dispatch = useDispatch()
@@ -72,19 +81,20 @@ function TeachersList() {
         },
         {
             name: 'Classe',
-            selector: row => {
+            selector: row => row.id,
+            cell: row => {
                 let data = JSON.parse(JSON.parse(row.specificData)) || {}
                 let classNames = ""
-                console.log(data.classesId)
                 classes.forEach(element => {
                     if (data.classesId.includes(element.id)) {
-                        console.log(element.designation)
-                        classNames += element.designation + ", "
+                        classNames += ", " + element.designation 
                     }
                 });
-                return classNames
+                return classNames.substring(2)
+
             },
             sortable: false,
+
         },
         {
             name: 'Salaire',
@@ -140,6 +150,22 @@ function TeachersList() {
         columns,
         data,
     };
+
+    const handleMouseEnter = (classNames) => {
+        console.log("enter", classNames)
+        tooltipInstance = new Tooltip(classNames.el, {
+            title: "a"
+            ,
+            html: true,
+            placement: "top",
+            //trigger: "focus",
+            container: "body"
+        });
+
+        tooltipInstance.show();
+
+
+    }
 
     const deleteUser = (row) => {
         userService.deleteUser(row.id)

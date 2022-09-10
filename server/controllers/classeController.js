@@ -6,6 +6,18 @@ const create = (req, res, next) => {
 		.then((response) => res.status(200).send(response))
 		.catch((err) => res.status(400).send(err));
 };
+const getOne = async (req, res, next) => {
+	const id = req.params.id;
+	try {
+		let classe = await Classe.findByPk(id)
+		console.log(classe)
+		return res.status(200).json(classe);
+	} catch (err) {
+		next(err);
+	}
+};
+
+
 const aff = (req, res, next) => {
 	Classe.findAll()
 		.then((response) => res.status(200).send(response))
@@ -55,5 +67,6 @@ module.exports = {
 	aff,
 	modifier,
 	supprimer,
-	ClasseCount
+	ClasseCount,
+	getOne
 };

@@ -49,11 +49,11 @@ function Login() {
             .then(() => {
                 history.push("/profile")
             })
+            .catch((e)=>{
+                toast.error("There is an error. Please re-enter your information")
+            })
         console.log(message)
-        /* if ( !message.success) {
-            toast.error("There is an error. Please re-enter your information")
-        } */
-    };
+    }
 
     return (
         <div className="main-wrapper login-body">
@@ -84,22 +84,22 @@ function Login() {
                                 </form>
 
                                 <div className="text-center forgotpass"> <button onClick={() => history.push('/forgot-password')} style={{ outline: "none", border: "none" }} > Forgot Password? </button> </div>
-                            <div className="login-or">
-                                <span className="or-line"></span>
-                                <span className="span-or">or</span>
-                            </div>
+                                <div className="login-or">
+                                    <span className="or-line"></span>
+                                    <span className="span-or">or</span>
+                                </div>
 
-                            <div className="social-login">
-                                <span>Login with</span>
-                                <a href="#" className="facebook"><FontAwesomeIcon icon={faFacebookF} /></a><a href="#" className="google"><FontAwesomeIcon icon={faGoogle} /></a>
-                            </div>
+                                <div className="social-login">
+                                    <span>Login with</span>
+                                    <a href="#" className="facebook"><FontAwesomeIcon icon={faFacebookF} /></a><a href="#" className="google"><FontAwesomeIcon icon={faGoogle} /></a>
+                                </div>
 
-                            <div className="text-center dont-have">Don’t have an account? <a href="/register">Register</a></div>
+                                <div className="text-center dont-have">Don’t have an account? <a href="/register">Register</a></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
         </div >
     )
 }

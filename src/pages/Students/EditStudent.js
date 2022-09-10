@@ -6,10 +6,16 @@ import userService from '../../services/user.service';
 
 import { useHistory } from 'react-router-dom';
 
+import BootstrapSelect from 'react-bootstrap-select-dropdown';
+
+import { allClasses } from '../../slices/classes';
+import { useDispatch, useSelector } from 'react-redux';
+
 
 function EditStudent() {
 
     const history = useHistory()
+    const dispatch = useDispatch()
 
     const [firstNameClassName, setFirstNameClassName] = useState("form-control is-invalid")
     const [lastNameClassName, setLastNameClassName] = useState("form-control is-invalid")
@@ -29,11 +35,15 @@ function EditStudent() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [birthDate, setBirthDate] = useState(Date())
-    const [niveau, setNiveau] = useState("")
     const [classe, setClasse] = useState("")
-    const [etatPaiement, setEtatPaiement] = useState("")
+    const [image, setimage] = useState()
+    const [classePlaceHolder, setclassePlaceHolder] = useState("")
+
+
+    const classes = useSelector((state) => state.classes.classes)
 
     useEffect(() => {
+        dispatch(allClasses())
         getUser(userId.id)
     }, [])
 
@@ -44,7 +54,6 @@ function EditStudent() {
         else {
             setFirstNameClassName("form-control is-valid")
         }
-        console.log(firstname)
     }, [firstname])
 
     useEffect(() => {
@@ -53,30 +62,33 @@ function EditStudent() {
         } else {
             setPhoneNumberClass("form-control is-invalid")
         }
-        console.log(phoneNumber)
     }, [phoneNumber])
 
-    useEffect(() => {
+    /* useEffect(() => {
         if (niveau === "" || niveau === null || niveau === undefined) {
             setNiveauClassName("form-control is-invalid")
         }
         else {
             setNiveauClassName("form-control is-valid")
         }
-        console.log(niveau)
-    }, [niveau])
+    }, [niveau]) */
 
     useEffect(() => {
+        console.log(classe)
         if (classe === "" || classe === null || classe === undefined) {
             setClasseClassName("form-control is-invalid")
         }
         else {
             setClasseClassName("form-control is-valid")
         }
-        console.log(classe)
+        classes.map((c) => {
+            if (c.id === classe) {
+                setclassePlaceHolder(c.designation)
+            }
+        })
     }, [classe])
 
-    useEffect(() => {
+    /* useEffect(() => {
         if (etatPaiement === "" || etatPaiement === null || etatPaiement === undefined) {
             setEtatPaiementClassName("form-control is-invalid")
         }
@@ -84,7 +96,7 @@ function EditStudent() {
             setEtatPaiementClassName("form-control is-valid")
         }
         console.log(etatPaiement)
-    }, [etatPaiement])
+    }, [etatPaiement]) */
 
     useEffect(() => {
         if (lastname === "" || lastname === null || lastname === undefined || lastname.length < 3) {
@@ -93,7 +105,6 @@ function EditStudent() {
         else {
             setLastNameClassName("form-control is-valid")
         }
-        console.log(lastname)
     }, [lastname])
 
     useEffect(() => {
@@ -103,7 +114,6 @@ function EditStudent() {
         else {
             setBirthDateClassName("form-control is-valid")
         }
-        console.log(birthDate)
     }, [birthDate])
 
     useEffect(() => {
@@ -113,7 +123,6 @@ function EditStudent() {
         else {
             setEmailClassName("form-control is-valid")
         }
-        console.log(email)
     }, [email])
 
 
@@ -124,7 +133,6 @@ function EditStudent() {
         else {
             setPasswordClassName("form-control is-valid")
         }
-        console.log(password)
     }, [password])
 
     const handleFirstNameChange = (e) => {
@@ -148,20 +156,15 @@ function EditStudent() {
     }
 
     const handleClasseChange = (e) => {
-        setClasse(e.target.value)
+        setClasse(e.selectedKey[0])
     }
 
-    const handleNiveauChange = (e) => {
-        setNiveau(e.target.value)
-    }
 
     const handlephoneNumberChange = (e) => {
         setPhoneNumber(e.target.value)
     }
 
-    const handleEtatPaiementChange = (e) => {
-        setEtatPaiement(e.target.value)
-    }
+ 
 
     function isValidEmail(email) {
         return /\S+@\S+\.\S+/.test(email);
@@ -175,23 +178,35 @@ function EditStudent() {
         return /^[0-9]{8}$/.test(number)
     }
 
+    useEffect(() => {
+        console.log(classePlaceHolder)
+    }, [classePlaceHolder])
+
+
     async function getUser(id) {
         let user = await userService.getUser(id)
+        let specificData = JSON.parse(JSON.parse(user.data.specificData))
         setFirstName(user.data.firstname)
         setLastName(user.data.lastname)
         setEmail(user.data.email)
         setPassword(user.data.password)
         setBirthDate(user.data.birthDate)
         setPhoneNumber(user.data.phoneNumber)
+        setClasse(specificData.classeId)
     }
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        userService.editUser(userId.id, firstname, lastname, email, password, birthDate, phoneNumber)
+        userService.editUser(userId.id, firstname, lastname, email, password, birthDate, phoneNumber,1)
+        userService.addClass(userId.id, classe)
         setTimeout(() => {
             history.push('/students')
         }, 1200);
     }
+
+    const classesSelectList = classes.map((classe) => {
+        return { labelKey: classe.id, value: classe.designation }
+    });
 
     return (
         <div>
@@ -211,6 +226,7 @@ function EditStudent() {
                 <Col sm={12}>
                     <Card>
                         <Card.Body>
+
                             <Form>
                                 <Row>
                                     <Col sm={12}>
@@ -243,6 +259,12 @@ function EditStudent() {
                                     </Col>
                                     <Col xs={12} sm={6}>
                                         <Form.Group>
+                                            <Form.Label>Classe</Form.Label>
+                                            <BootstrapSelect options={classesSelectList} className="form-control is-valid" onChange={handleClasseChange} placeholder={classePlaceHolder} />
+                                        </Form.Group>
+                                    </Col>
+                                    <Col xs={12} sm={6}>
+                                        <Form.Group>
                                             <Form.Label>Phone Number</Form.Label>
                                             <Form.Control type="number" className={phoneNumberClass} value={phoneNumber} onChange={handlephoneNumberChange} />
                                         </Form.Group>
@@ -256,34 +278,11 @@ function EditStudent() {
                                     <Col xs={12} sm={6}>
                                         <Form.Group>
                                             <Form.Label>Password</Form.Label>
-                                            <Form.Control type="text" className={passwordClassName} defaultValue={password} onChange={handlePasswordChange} required />
+                                            <Form.Control type="text" className={passwordClassName}  onChange={handlePasswordChange} required />
                                         </Form.Group>
                                     </Col>
-                                    <Col xs={12} sm={6}>
-                                        <Form.Group>
-                                            <Form.Label>Niveau</Form.Label>
-                                            <Form.Control type="text" className={niveauClassName} defaultValue={niveau} onChange={handleNiveauChange} required />
-                                        </Form.Group>
-                                    </Col>
-                                    <Col xs={12} sm={6}>
-                                        <Form.Group>
-                                            <Form.Label>Classe</Form.Label>
-                                            <Form.Control type="text" className={classeClassName} defaultValue={classe} onChange={handleClasseChange} required />
-                                        </Form.Group>
-                                    </Col>
-                                    <Col xs={12} sm={6} >
-                                        <Form.Group>
-                                            <Form.Label>Etat Paiement</Form.Label>
-                                            <select className={etatPaiementClassName} onChange={handleEtatPaiementChange}>
-                                                <option>-- Select --</option>
-                                                <option>Annuelle</option>
-                                                <option>Semestrielle</option>
-                                                <option>Trimestrielle</option>
-                                                <option>Mensuelle</option>
-                                            </select>
-                                        </Form.Group>
-                                    </Col>
-                                  {/*   <Col xs={12} sm={6}>
+
+                                    {/*   <Col xs={12} sm={6}>
                                         <Form.Group>
                                             <Form.Label>Student Image</Form.Label>
                                             <Form.File className="form-control" />

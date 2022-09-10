@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { setMessage } from "./message";
-
+import userService from "../services/user.service";
 
 import AuthService from "../services/auth.service";
 
@@ -15,14 +15,14 @@ export const register = createAsyncThunk(
             thunkAPI.dispatch(setMessage(response.data.message));
             return response.data;
         } catch (error) {
-                const message =
+            const message =
                 (error.response &&
                     error.response.data &&
                     error.response.data.message) ||
                 error.message ||
                 error.toString();
             thunkAPI.dispatch(setMessage(message));
-            return thunkAPI.rejectWithValue(); 
+            return thunkAPI.rejectWithValue();
         }
     }
 );
@@ -50,8 +50,28 @@ export const logout = createAsyncThunk("auth/logout", async () => {
     await AuthService.logout();
 });
 
+export const update = createAsyncThunk(
+    "auth/update",
+    async (data, thunkAPI) => {
+        try {
+            const res = await userService.editUser(data.id, data.firstname, data.lastname, data.email, data.password, data.birthDate, data.phoneNumber, data.salary)
+            return res;
+        } catch (error) {
+            const message =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
+                console.log(error)
+            thunkAPI.dispatch(setMessage(error.response.data));
+            return thunkAPI.rejectWithValue();
+        }
+    }
+);
+
 const initialState = token
-    ? { isLoggedIn: true, user: JSON.parse(localStorage.getItem("user")) , accessToken:localStorage.getItem("token")}
+    ? { isLoggedIn: true, user: JSON.parse(localStorage.getItem("user")), accessToken: localStorage.getItem("token") }
     : { isLoggedIn: false, user: null, accessToken: null };
 
 const authSlice = createSlice({
@@ -79,6 +99,17 @@ const authSlice = createSlice({
             state.user = null;
             state.accessToken = null
         },
+        [update.fulfilled]: (state, action) => {
+            state.user.firstname = action.meta.arg.firstname
+            state.user.lastname = action.meta.arg.lastname
+            state.user.phoneNumber = action.meta.arg.phoneNumber
+            state.user.email = action.meta.arg.email
+            state.user.birthDate = action.meta.arg.birthDate
+        },
+        [update.rejected]: (state, action) => {
+            console.log(state, action)
+            console.log("nononononono")
+        }
     },
 });
 

@@ -37,7 +37,7 @@ const deleteUser = (id) => {
 //         });
 // }
 
-const register = (firstname, lastname, phoneNumber, birthDate, image, email, password,role,salaire) => {
+const register = (firstname, lastname, phoneNumber, birthDate, image, email, password, role, salaire, classe) => {
     var formData = new FormData();
     formData.append("firstname", firstname);
     formData.append("lastname", lastname);
@@ -47,9 +47,9 @@ const register = (firstname, lastname, phoneNumber, birthDate, image, email, pas
     formData.append("email", email);
     formData.append("password", password);
     formData.append("role", role);
-    formData.append("salary",salaire)
-
-
+    formData.append("salary", salaire)
+    formData.append("classeId", classe)
+    console.log(classe + " aaaaaaaaaaaaaaaaaaaaa")
     return axios
         .post(API_URL + "user/", formData, {
             headers: {
@@ -63,17 +63,22 @@ const register = (firstname, lastname, phoneNumber, birthDate, image, email, pas
 }
 
 
-const editUser = (id, firstname, lastname, email, password, birthDate, phoneNumber ,salaire) => {
-    console.log(id, firstname, lastname, email, password, phoneNumber, birthDate, salaire)
+const editUser = (id, firstname, lastname, email, password, birthDate, phoneNumber, salary) => {
+    console.log(id, firstname, lastname, email, password, phoneNumber, birthDate, salary)
+    var formData = new FormData();
+    formData.append("firstname", firstname);
+    formData.append("lastname", lastname);
+    formData.append("password", password);
+    formData.append("phoneNumber", phoneNumber);
+    formData.append("birthDate", birthDate);
+    
+    formData.append("email", email);
+    formData.append("salary", salary)
     return axios
-        .patch(API_URL + "user/" + id, {
-            firstname,
-            lastname,
-            email,
-            password,
-            phoneNumber,
-            birthDate,
-            salaire
+        .patch(API_URL + "user/" + id, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
         })
         .then((response) => {
             return response.data
@@ -95,6 +100,13 @@ const getStudents = () => {
     return axios.get(API_URL + "user/students", requestOptions);
 };
 
+const getStudentsByClasseId = (id) => {
+    return axios.get(API_URL + "user/studentsByClasseId/" + id)
+        .then(res => {
+            return res.data
+        })
+};
+
 const getAgents = () => {
     const requestOptions = {
         method: "GET",
@@ -102,7 +114,37 @@ const getAgents = () => {
     return axios.get(API_URL + "user/agents", requestOptions);
 };
 
+const addClass = (id, classeId) => {
+    return axios
+        .patch(API_URL + "user/addClass/" + id, {
+            classeId
+        })
+        .then((response) => {
+            return response.data
+        })
+}
 
+const removeClass = (id, classeId) => {
+    return axios
+        .patch(API_URL + "user/removeClass/" + id, {
+            classeId
+        })
+        .then((response) => {
+            return response.data
+        })
+}
+
+const updateSalary = (id,salary) => {
+    console.log(id,salary)
+    return axios
+        .patch(API_URL + "user/teacher/" + id,{
+            salary
+        })
+        .then((response) => {
+            return response.data
+        })
+
+}
 
 const userService = {
     register,
@@ -113,7 +155,11 @@ const userService = {
     getTeachers,
     getStudents,
     getAgents,
-    
+    getStudentsByClasseId,
+    addClass,
+    updateSalary,
+    removeClass
+
     // getUserByMail,
 };
 

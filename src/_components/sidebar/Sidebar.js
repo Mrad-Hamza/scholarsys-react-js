@@ -5,9 +5,7 @@ import { history } from "../_helpers";
 import { Link } from 'react-router-dom';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
-import { faThLarge, faUserGraduate, faChalkboardTeacher, faBuilding, faBook, faFile, faHockeyPuck, faDollarSign, faClipboard, faCalendar, faTable, faShieldAlt, faBaseballBall, faBus, faColumns, faCode, faLevelUpAlt, faGraduationCap, faMoneyBill, faUser, } from '@fortawesome/fontawesome-free-solid'
-
+import { faThLarge, faUserGraduate, faChalkboardTeacher, faBuilding, faBook, faFile, faHockeyPuck, faDollarSign, faClipboard, faCalendar, faTable, faShieldAlt, faBaseballBall, faBus, faColumns, faCode, faLevelUpAlt, faUser, faGraduationCap, faMoneyBill, faSchool } from '@fortawesome/fontawesome-free-solid'
 
 import { faSquarespace } from '@fortawesome/free-brands-svg-icons';
 
@@ -157,6 +155,22 @@ function Sidebar() {
 										</li>
 										<li className={pathnames.includes('/react/add-teacher') ? 'active' : ''}>
 											<Link to="/add-agent">Agent Add</Link>
+										</li>
+
+									</ul>
+								</li>
+
+								<li className={`submenu ${pathnames.includes('/schedules-list') ? 'active' : pathnames.includes('/react/agent-details') ? 'active' : pathnames.includes('/react/add-agent') ? 'active' : pathnames.includes('/react/edit-agent') ? 'active' : ''}`}>
+
+									<a href="#">
+										<FontAwesomeIcon icon={faSchool} /> <span> Schedules</span> <span className="menu-arrow"></span>
+									</a>
+									<ul>
+										<li className={pathnames.includes('/react/teacher-details') ? 'active' : ''}>
+											<Link to="/schedules-list">Schedules List</Link>
+										</li>
+										<li className={pathnames.includes('/react/add-teacher') ? 'active' : ''}>
+											<Link to="/add-schedule">Agent Add</Link>
 										</li>
 
 									</ul>

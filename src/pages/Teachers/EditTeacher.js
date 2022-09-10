@@ -5,11 +5,15 @@ import { Row, Col, Card, Form, Button } from "react-bootstrap";
 import userService from '../../services/user.service';
 
 import { useHistory } from 'react-router-dom';
-
+import Select from "react-select";
+import { allClasses } from '../../slices/classes';
+import { useDispatch, useSelector } from 'react-redux';
 
 function EditTeacher() {
 
     const history = useHistory()
+    const dispatch = useDispatch()
+
 
     const [firstNameClassName, setFirstNameClassName] = useState("form-control is-invalid")
     const [lastNameClassName, setLastNameClassName] = useState("form-control is-invalid")
@@ -31,13 +35,14 @@ function EditTeacher() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [birthDate, setBirthDate] = useState(Date())
-    const [niveau, setNiveau] = useState("")
     const [classe, setClasse] = useState("")
     const [salaire, setSalaire] = useState("")
-    const [matiere, setMatiere] = useState("")
+    const [classPlaceHolder, setclassPlaceHolder] = useState([])
+
+    const classes = useSelector((state) => state.classes.classes)
 
     useEffect(() => {
-        console.log( userId)
+        dispatch(allClasses())
         getUser(userId.id)
     }, [])
 
@@ -48,7 +53,6 @@ function EditTeacher() {
         else {
             setFirstNameClassName("form-control is-valid")
         }
-        console.log(firstname)
     }, [firstname])
 
     useEffect(() => {
@@ -57,18 +61,9 @@ function EditTeacher() {
         } else {
             setPhoneNumberClass("form-control is-invalid")
         }
-        console.log(phoneNumber)
     }, [phoneNumber])
 
-    useEffect(() => {
-        if (niveau === "" || niveau === null || niveau === undefined) {
-            setNiveauClassName("form-control is-invalid")
-        }
-        else {
-            setNiveauClassName("form-control is-valid")
-        }
-        console.log(niveau)
-    }, [niveau])
+
 
     useEffect(() => {
         if (classe === "" || classe === null || classe === undefined) {
@@ -77,18 +72,8 @@ function EditTeacher() {
         else {
             setClasseClassName("form-control is-valid")
         }
-        console.log(classe)
     }, [classe])
 
-    useEffect(() => {
-        if (matiere === "" || matiere === null || matiere === undefined) {
-            setMatiereClassName("form-control is-invalid")
-        }
-        else {
-            setMatiereClassName("form-control is-valid")
-        }
-        console.log(matiere)
-    }, [matiere])
 
     useEffect(() => {
         if (salaire === "" || salaire === null || salaire === undefined) {
@@ -97,7 +82,6 @@ function EditTeacher() {
         else {
             setSalaireClassName("form-control is-valid")
         }
-        console.log(salaire)
     }, [salaire])
 
     useEffect(() => {
@@ -107,7 +91,6 @@ function EditTeacher() {
         else {
             setLastNameClassName("form-control is-valid")
         }
-        console.log(lastname)
     }, [lastname])
 
     useEffect(() => {
@@ -117,7 +100,6 @@ function EditTeacher() {
         else {
             setBirthDateClassName("form-control is-valid")
         }
-        console.log(birthDate)
     }, [birthDate])
 
     useEffect(() => {
@@ -127,7 +109,6 @@ function EditTeacher() {
         else {
             setEmailClassName("form-control is-valid")
         }
-        console.log(email)
     }, [email])
 
 
@@ -138,7 +119,6 @@ function EditTeacher() {
         else {
             setPasswordClassName("form-control is-valid")
         }
-        console.log(password)
     }, [password])
 
     const handleFirstNameChange = (e) => {
@@ -166,19 +146,11 @@ function EditTeacher() {
     }
 
     const handleClasseChange = (e) => {
-        setClasse(e.target.value)
-    }
-
-    const handleNiveauChange = (e) => {
-        setNiveau(e.target.value)
+        setClasse(e.value)
     }
 
     const handleSalaireChange = (e) => {
         setSalaire(e.target.value)
-    }
-
-    const handleMatiereChange = (e) => {
-        setMatiere(e.target.value)
     }
 
     function isValidEmail(email) {
@@ -196,22 +168,54 @@ function EditTeacher() {
 
     async function getUser(id) {
         let user = await userService.getUser(id)
+        let specificData = JSON.parse(JSON.parse(user.data.specificData))
+        console.log(user.data)
         setFirstName(user.data.firstname)
         setLastName(user.data.lastname)
         setEmail(user.data.email)
         setPassword(user.data.password)
         setBirthDate(user.data.birthDate)
         setPhoneNumber(user.data.phoneNumber)
-        setSalaire(user.data.salaire)
+        setSalaire(specificData.salary)
+        setClasse(specificData.classesId)
     }
 
     const handleSubmit = (e) => {
         e.preventDefault()
         userService.editUser(userId.id, firstname, lastname, email, password, birthDate, phoneNumber, salaire)
+
         setTimeout(() => {
             history.push('/teachers')
         }, 1200);
     }
+
+    const handleSalaryUpdate = (e) => {
+        e.preventDefault()
+        userService.updateSalary(userId.id, salaire)
+        setTimeout(() => {
+            history.push('/teachers')
+        }, 1200);
+    }
+
+    const handleAddClass = (e) => {
+        e.preventDefault()
+        userService.addClass(userId.id, classe)
+        setTimeout(() => {
+            history.push('/teachers')
+        }, 1200);
+    }
+
+    const handleRemoveClass = (e) => {
+        e.preventDefault()
+        userService.removeClass(userId.id, classe)
+        setTimeout(() => {
+            history.push('/teachers')
+        }, 1200);
+    }
+
+    const classesSelectList = classes.map((c) => {
+        return { value: c.id, label: c.designation }
+    })
 
     return (
         <div>
@@ -276,31 +280,7 @@ function EditTeacher() {
                                     <Col xs={12} sm={6}>
                                         <Form.Group>
                                             <Form.Label>Password</Form.Label>
-                                            <Form.Control type="text" className={passwordClassName} defaultValue={password} onChange={handlePasswordChange} required />
-                                        </Form.Group>
-                                    </Col>
-                                    <Col xs={12} sm={6}>
-                                        <Form.Group>
-                                            <Form.Label>Niveau</Form.Label>
-                                            <Form.Control type="text" className={niveauClassName} defaultValue={niveau} onChange={handleNiveauChange} required />
-                                        </Form.Group>
-                                    </Col>
-                                    <Col xs={12} sm={6}>
-                                        <Form.Group>
-                                            <Form.Label>Classe</Form.Label>
-                                            <Form.Control type="text" className={classeClassName} defaultValue={classe} onChange={handleClasseChange} required />
-                                        </Form.Group>
-                                    </Col>
-                                    <Col xs={12} sm={6}>
-                                        <Form.Group>
-                                            <Form.Label>Matiere</Form.Label>
-                                            <Form.Control type="text" className={matiereClassName} defaultValue={matiere} onChange={handleMatiereChange} required />
-                                        </Form.Group>
-                                    </Col>
-                                    <Col xs={12} sm={6}>
-                                        <Form.Group>
-                                            <Form.Label>Salaire</Form.Label>
-                                            <Form.Control type="text" className={salaireClassName} defaultValue={salaire} onChange={handleSalaireChange} required />
+                                            <Form.Control type="text" className={passwordClassName} onChange={handlePasswordChange} required />
                                         </Form.Group>
                                     </Col>
                                     {/* <Col xs={12} sm={6}>
@@ -311,6 +291,93 @@ function EditTeacher() {
                                     </Col> */}
                                     <Col xs={12}>
                                         <Button variant="primary" type="submit" onClick={handleSubmit}>
+                                            Submit
+                                        </Button>
+                                    </Col>
+                                </Row>
+                            </Form>
+                        </Card.Body>
+                    </Card>
+                </Col>
+                <Col sm={12}>
+                    <Card>
+                        <Card.Body>
+                            <Form>
+                                <Row>
+                                    <Col sm={12}>
+                                        <h5 className="form-title"><span>Add Classes</span></h5>
+                                    </Col>
+
+                                    <Col xs={12} sm={6}>
+                                        <Form.Group>
+                                            <Select
+                                                placeholder="Select a subject ..."
+                                                options={classesSelectList}
+                                                onChange={handleClasseChange}
+                                                isSearchable={true}
+                                            />
+                                            {/*                                             <Form.Control type="text" className={classeClassName} defaultValue={classe} onChange={handleClasseChange} required />
+ */}                                        </Form.Group>
+                                    </Col>
+
+                                    <Col xs={12}>
+                                        <Button variant="primary" type="submit" onClick={handleAddClass}>
+                                            Submit
+                                        </Button>
+                                    </Col>
+                                </Row>
+                            </Form>
+                        </Card.Body>
+                    </Card>
+                </Col>
+                <Col sm={12}>
+                    <Card>
+                        <Card.Body>
+                            <Form>
+                                <Row>
+                                    <Col sm={12}>
+                                        <h5 className="form-title"><span>Remove Classe</span></h5>
+                                    </Col>
+
+                                    <Col xs={12} sm={6}>
+                                        <Form.Group>
+                                            <Select
+                                                placeholder="Select a Class ..."
+                                                options={classesSelectList}
+                                                onChange={handleClasseChange}
+                                                isSearchable={true}
+                                            />
+                                        </Form.Group>
+                                    </Col>
+
+                                    <Col xs={12}>
+                                        <Button variant="primary" type="submit" onClick={handleRemoveClass}>
+                                            Submit
+                                        </Button>
+                                    </Col>
+                                </Row>
+                            </Form>
+                        </Card.Body>
+                    </Card>
+                </Col>
+                <Col sm={12}>
+                    <Card>
+                        <Card.Body>
+                            <Form>
+                                <Row>
+                                    <Col sm={12}>
+                                        <h5 className="form-title"><span>Salary</span></h5>
+                                    </Col>
+
+                                    <Col xs={12} sm={6}>
+                                        <Form.Group>
+                                            <Form.Label>Salaire</Form.Label>
+                                            <Form.Control type="text" className={salaireClassName} defaultValue={salaire} onChange={handleSalaireChange} required />
+                                        </Form.Group>
+                                    </Col>
+
+                                    <Col xs={12}>
+                                        <Button variant="primary" type="submit" onClick={handleSalaryUpdate}>
                                             Submit
                                         </Button>
                                     </Col>

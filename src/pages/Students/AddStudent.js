@@ -5,12 +5,25 @@ import { Row, Col, Card, Form, Button } from "react-bootstrap";
 
 import toast, { Toaster } from 'react-hot-toast';
 
+// state management
+import { useDispatch, useSelector } from 'react-redux';
+import { allClasses } from '../../slices/classes';
+
 import { useHistory } from 'react-router-dom';
+
+import Select from "react-select";
+
+import BootstrapSelect from 'react-bootstrap-select-dropdown';
 
 
 
 function AddStudent() {
+
     const history = useHistory()
+    const dispatch = useDispatch()
+
+    const classes = useSelector((state) => state.classes.classes)
+
     const [firstNameClassName, setFirstNameClassName] = useState("form-control is-invalid")
     const [lastNameClassName, setLastNameClassName] = useState("form-control is-invalid")
     const [birthDateClassName, setBirthDateClassName] = useState("form-control is-invalid")
@@ -34,8 +47,8 @@ function AddStudent() {
     const [etatPaiement, setEtatPaiement] = useState("")
     const [image, setImage] = useState()
 
-
     useEffect(() => {
+        dispatch(allClasses())
     }, [])
 
     useEffect(() => {
@@ -45,7 +58,6 @@ function AddStudent() {
         else {
             setNiveauClassName("form-control is-valid")
         }
-        console.log(niveau)
     }, [niveau])
 
     useEffect(() => {
@@ -81,7 +93,6 @@ function AddStudent() {
         else {
             setEtatPaiementClassName("form-control is-valid")
         }
-        console.log(etatPaiement)
     }, [etatPaiement])
 
     useEffect(() => {
@@ -91,7 +102,6 @@ function AddStudent() {
         else {
             setFirstNameClassName("form-control is-valid")
         }
-        console.log(firstname)
     }, [firstname])
 
     useEffect(() => {
@@ -101,7 +111,6 @@ function AddStudent() {
         else {
             setLastNameClassName("form-control is-valid")
         }
-        console.log(lastname)
     }, [lastname])
 
     useEffect(() => {
@@ -111,7 +120,6 @@ function AddStudent() {
         else {
             setBirthDateClassName("form-control is-valid")
         }
-        console.log(birthDate)
     }, [birthDate])
 
     useEffect(() => {
@@ -121,9 +129,7 @@ function AddStudent() {
         else {
             setEmailClassName("form-control is-valid")
         }
-        console.log(email)
     }, [email])
-
 
     useEffect(() => {
         if (!isValidPassword(password)) {
@@ -132,7 +138,6 @@ function AddStudent() {
         else {
             setPasswordClassName("form-control is-valid")
         }
-        console.log(password)
     }, [password])
 
     const handleFirstNameChange = (e) => {
@@ -160,7 +165,7 @@ function AddStudent() {
     }
 
     const handleClasseChange = (e) => {
-        setClasse(e.target.value)
+        setClasse(e.selectedKey[0])
     }
 
     const handleNiveauChange = (e) => {
@@ -189,17 +194,23 @@ function AddStudent() {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        if (firstNameClassName === "form-control is-invalid" || emailClassName === "form-control is-invalid" || passwordClassName === 'form-control is-invalid' || lastNameClassName === "form-control is-invalid" || birthDateClassName === "form-control is-invalid" || phoneNumberClass === "form-control is-invalid" || imageClass === "form-control is-invalid") {
+        if (classeClassName === "form-control is-invalid" ||firstNameClassName === "form-control is-invalid" || emailClassName === "form-control is-invalid" || passwordClassName === 'form-control is-invalid' || lastNameClassName === "form-control is-invalid" || birthDateClassName === "form-control is-invalid" || phoneNumberClass === "form-control is-invalid" || imageClass === "form-control is-invalid") {
             toast.error("There is an error. Please re-enter your information")
-            console.log("a")
         } else {
             toast.success("Success. user must confirm his account via e-mail")
-            userService.register(firstname, lastname, phoneNumber, birthDate, image, email, password, 1)
+            console.log(classe)
+            userService.register(firstname, lastname, phoneNumber, birthDate, image, email, password, 1,0,classe)
             setTimeout(() => {
                 history.push("/students")
             }, 3000);
         }
     }
+
+    const classesSelectList = classes.map((classe) => {
+        return { labelKey: classe.id, value: classe.designation }
+    });
+
+
     return (
         <div>
             <Toaster position="top-right"
@@ -257,11 +268,24 @@ function AddStudent() {
                                             <Form.Control type="text" className={passwordClassName} defaultValue={password} onChange={handlePasswordChange} required />
                                         </Form.Group>
                                     </Col>
-                            
+
                                     <Col xs={12} sm={6}>
                                         <Form.Group>
                                             <Form.Label>Classe</Form.Label>
-                                            <Form.Control type="text" className={classeClassName} defaultValue={classe} onChange={handleClasseChange} required />
+                                            {/*                                             <Form.Control type="text" className={classeClassName} defaultValue={classe} onChange={handleClasseChange} required />
+ */}
+                                            {/*  <Select
+                                                    placeholder="Select a Class ..."
+                                                    options={classesSelectList}
+                                                    onChange={handleClasseChange}
+                                                    theme="danger"
+                                                    isSearchable={true}
+                                                /> */}
+
+                                            <BootstrapSelect options={classesSelectList} className={classeClassName} onChange={handleClasseChange} />
+
+
+
                                         </Form.Group>
                                     </Col>
                                     <Col xs={12} sm={6}>

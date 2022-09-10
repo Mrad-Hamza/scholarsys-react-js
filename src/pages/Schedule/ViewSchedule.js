@@ -1,12 +1,12 @@
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 
 import FullCalendar from '@fullcalendar/react' // must go before plugins
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { ProgressBar } from "react-bootstrap";
 
 import { useParams } from 'react-router-dom';
-import { allSessions } from '../../slices/sessions';
+import { sessionsByEmploiId } from '../../slices/sessions';
 import { Tooltip } from "bootstrap";
 
 import startOfISOWeek from 'date-fns/startOfISOWeek';
@@ -22,7 +22,9 @@ import fr from '@fullcalendar/core/locales/fr';
 import userService from '../../services/user.service';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faDownload} from '@fortawesome/fontawesome-free-solid';
+import { faDownload } from '@fortawesome/fontawesome-free-solid';
+import classeService from '../../services/classe.service';
+import scheduleService from '../../services/schedule.service';
 
 
 
@@ -36,28 +38,49 @@ let tooltipInstance = null;
 function ViewSchedule() {
     const dispatch = useDispatch()
 
-    const sessions = useSelector((state) => state.sessions.sessions);
+    const { seances: sessions } = useSelector((state) => state.sessions.sessions);
     const subjectsList = useSelector((state) => state.subjects.subjects)
     const roomsList = useSelector((state) => state.rooms.rooms)
+    const user = useSelector((state) => state.auth.user)
     //{title:"",defId:"",publicId:"",extendedProps:{agentId:"",day:"",emploiId:"",matiere:"",matiereId:"",room:"",roomId:"",teacher:"",teacherId:"",seance_duration:"",start_hour:"",start_minute:""}}
     //const [eventRow, setEventRow] = useState()
     const [events, setevents] = useState([])
     const [isDisplayed, setIsDisplayed] = useState(false);
-  
+    const [classe, setclasse] = useState({})
+    const [schedule, setschedule] = useState({})
     const [progresBarValue, setProgresBarValue] = useState(0)
     const emploiId = useParams()
 
     const calendarRef = React.useRef()
 
+    const { classeId: classeId } = JSON.parse(JSON.parse(user.specificData))
 
     useEffect(() => {
+        console.log(classe)
+        async function fetchData() {
+            setschedule(await scheduleService.getOne(classe.id))
+        }
+        fetchData()
+    }, [classe])
+
+    useEffect(() => {
+        console.log(schedule)
+    }, [schedule])
+
+
+    useEffect(() => {
+        async function fetchData() {
+            setclasse(await getClassById(classeId))
+        }
+        fetchData()
         setevents([])
-        dispatch(allSessions())
+        dispatch(sessionsByEmploiId(emploiId.id))
         dispatch(allTeachers())
         dispatch(allSubjects())
         dispatch(allRooms())
         setProgresBarValue(0)
 
+        console.log(sessions)
         generateDataFromSessions()
 
         setTimeout(() => {
@@ -66,6 +89,11 @@ function ViewSchedule() {
         //calendarRef.current.getApi().addEventSource(events)
         //FullCalendar.getApi().render();
     }, [isDisplayed])
+
+
+    const getClassById = async (id) => {
+        return await classeService.getById(id)
+    }
 
     useEffect(() => {
         if (!isDisplayed) {
@@ -85,13 +113,13 @@ function ViewSchedule() {
     }, [isDisplayed])
 
 
-    const generateDataFromSessions = () => {
+    const generateDataFromSessions = useCallback( () => {
         //sessions.filter(session => session.emploiId !== emploiId.id)
         const start = startOfISOWeek(new Date());
         scheduleEvents = []
         setevents([])
-        sessions.forEach(async (session) => {
-            if (session.emploiId === parseInt(emploiId.id)) {
+        if (sessions !== undefined) {
+            sessions.forEach(async (session) => {
                 let month = (new Date().getMonth() + 1).toLocaleString('en-US', {
                     minimumIntegerDigits: 2,
                     useGrouping: false
@@ -145,10 +173,17 @@ function ViewSchedule() {
                     }
                 })
                 let data = {}
-                data.start = new Date().getFullYear() + "-" + (month) + "-" + day
-                    + "T" + hour + ":" + minute + ":00"
-                data.end = new Date().getFullYear() + "-" + (month) + "-" + day
-                    + "T" + endHour + ":" + minute + ":00"
+                if (parseInt(day) >= 10) {
+                    data.start = new Date().getFullYear() + "-" + (month) + "-" + day
+                        + "T" + hour + ":" + minute + ":00+01:00"
+                    data.end = new Date().getFullYear() + "-" + (month) + "-" + day
+                        + "T" + endHour + ":" + minute + ":00+01:00"
+                } else {
+                    data.start = new Date().getFullYear() + "-" + (month) + "-0" + day
+                        + "T" + hour + ":" + minute + ":00+01:00"
+                    data.end = new Date().getFullYear() + "-" + (month) + "-0" + day
+                        + "T" + endHour + ":" + minute + ":00+01:00"
+                }
                 data.editable = true
                 data.allDay = false
                 data.title = subjectName
@@ -166,15 +201,16 @@ function ViewSchedule() {
                 data.matiereId = session.matiereId
                 data.matiere = subjectName
                 scheduleEvents.push(data)
-            }
-        })
-        setTimeout(() => {
-            scheduleEvents.map(event => {
-                setevents(events => [...events, event])
-            });
 
-        }, 500);
-    }
+            })
+            setTimeout(() => {
+                scheduleEvents.map(event => {
+                    setevents(events => [...events, event])
+                });
+
+            }, 500);
+        }
+    }, [sessions, roomsList, subjectsList])
 
     function handleMouseLeave() {
         if (tooltipInstance) {
@@ -199,9 +235,15 @@ function ViewSchedule() {
 
     }
 
+    const handleButtonClick = () => {
+        if (schedule.name !== undefined) {
+            window.open("http://localhost:8000/static/emploi/students/" + schedule.name + ".pdf")
+        }
+    }
+
     return (
         <>
-            <button href="#" className="btn btn-outline-primary me-2"><FontAwesomeIcon icon={faDownload} /> Download</button>
+            <button href="#" className="btn btn-outline-primary me-2" onClick={handleButtonClick}><FontAwesomeIcon icon={faDownload} /> Download</button>
             {isDisplayed ? <FullCalendar
                 id={"calendar"}
                 ref={calendarRef}

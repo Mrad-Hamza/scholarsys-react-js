@@ -12,7 +12,7 @@ const getAllClasses = () => {
 
 const getById = (id) => {
     return axios
-        .get(API_URL + "classes/"+id)
+        .get(API_URL + "classe/"+id)
         .then((response) => {
             return response.data
         })

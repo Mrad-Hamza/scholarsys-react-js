@@ -2,19 +2,22 @@ import React, { useState, useEffect } from 'react'
 import toast, { Toaster } from 'react-hot-toast';
 import Logo from '../../assets/img/logo-white.png';
 import { useHistory } from 'react-router-dom';
-
+import { useParams } from 'react-router-dom';
 import { Button } from "react-bootstrap";
 
+import authService from '../../services/auth.service';
 
 
 function ConfirmAccount() {
 
     const history = useHistory()
+    const param = useParams()
+
     const [buttonValue, setButtonValue] = useState("Confirming ...")
     const [spanClassName, setSpanClassName] = useState("spinner-border spinner-border-sm me-2")
 
     useEffect(() => {
-      
+        authService.confirmAccount(param.refreshToken)
         setTimeout(() => {
             setButtonValue("Confirmed !")
             setSpanClassName("")

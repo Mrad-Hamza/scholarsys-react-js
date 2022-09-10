@@ -19,14 +19,16 @@ import { useHistory } from 'react-router-dom';
 
 import { useDispatch } from 'react-redux';
 import { allSchedules } from '../../slices/schedules'
+import { update } from '../../slices/auth'
 
+import scheduleService from '../../services/schedule.service';
 
 
 function Profile() {
     const dispatch = useDispatch()
     const history = useHistory()
 
-    const schedules = useSelector((state)=> state.schedules.schedules)
+    const schedules = useSelector((state) => state.schedules.schedules)
 
     const { user: currentUser } = useSelector((state) => state.auth);
     const [userRole, setUserRole] = useState("")
@@ -46,21 +48,24 @@ function Profile() {
     const [schedule, setschedule] = useState({})
 
     useEffect(() => {
-      if (classId !== null) {
-          schedules.map((schedule) => {
-               if (schedule.classeId === classId) {
-                   setschedule(schedule)
-               }
-          })
-      }
+        console.log(classId)
+        async function fetchData() {
+            setschedule(await scheduleService.getOne(classId))
+        }
+        fetchData()
     }, [classId])
-    
+
+    useEffect(() => {
+        console.log(schedule)
+    }, [schedule])
+
+
 
     useEffect(() => {
         dispatch(allSchedules())
-        let {classeId :id} = JSON.parse(JSON.parse(currentUser.specificData)) || {}
+        let { classeId: id } = JSON.parse(JSON.parse(currentUser.specificData)) || {}
         setclassId(id)
-        
+
         switch (parseInt(currentUser.role)) {
             case 1:
                 setUserRole("Student")
@@ -165,16 +170,22 @@ function Profile() {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        userService.editUser(currentUser.id, firstname, lastname, email, currentUser.password, birthDate, phoneNumber, currentUser.salaire)
+        console.log(currentUser.password)
+        let data = { id: currentUser.id, firstname:firstname, lastname:lastname, email:email, password:currentUser.password, birthDate:birthDate, phoneNumber:phoneNumber, salary:0 }
+        dispatch(update(data))
+        //userService.editUser(currentUser.id, firstname, lastname, email, currentUser.password, birthDate, phoneNumber, currentUser.salaire)
+
         toast.success("Success. Your profile is Updated.")
     }
 
     const handleViewScheduleForTeacher = () => {
-        history.push('view-schedule-teacher/'+currentUser.id)
+        history.push('view-schedule-teacher/' + currentUser.id)
     }
 
     const handleViewScheduleForStudent = () => {
-        history.push('view-schedule/' + schedule.id)
+        if (schedule.id !== undefined) {
+            history.push('view-schedule/' + schedule.id)
+        }
     }
 
     return (

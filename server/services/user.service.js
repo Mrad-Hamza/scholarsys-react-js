@@ -5,7 +5,7 @@ const sendEmail = require('./email.service');
 const { createToken } = require('./Token.service');
 const path = require('path');
 const crypto = require('crypto');
-const { Console } = require('console');
+const { unlink } = require('fs');
 const ROLES = {
 	ADMIN: 1999,
 	TEACHER: 666,
@@ -14,35 +14,38 @@ const ROLES = {
 class UserService {
 	static async findAll(option) {
 		if (!option)
-			return await User.findAll({
-				attributes: { exclude: [ 'password' ] }
-			});
+			return await User.findAll();
 		if (option.teachers) {
 			return await User.findAll({
 				where: {
 					role: 666
-				},
-				attributes: { exclude: [ 'password' ] }
+				}
 			});
 		}
 		if (option.students) {
 			return await User.findAll({
 				where: {
 					role: 1
-				},
-				attributes: { exclude: [ 'password' ] }
+				}
 			});
 		}
 		if (option.agents) {
 			return await User.findAll({
 				where: {
 					role: 987
-				},
-				attributes: { exclude: [ 'password' ] }
+				}
 			});
 		}
 	}
-
+	static async findStudentsByClasseId(classeId) {
+		let classe = "{\"classeId\":"+classeId+"}"
+		return await User.findAll({
+			where: {
+				role: 1,
+				specificData: classe
+			}
+		});
+	}
 	static async create(newUser) {
 		// TODO : Sanitize data
 
@@ -66,22 +69,27 @@ class UserService {
 				image: newImgName
 			};
 			if (newUserData.role === 666) {
-				const specificData = { classesId: [], salary: newUserData.salary };
+				const specificData = { classesId: [newUser.classeId], salary: newUserData.salary };
 
 				newUserData.specificData = JSON.stringify(specificData);
+			}
+
+			if (newUserData.role === 1) {
+				const specificData = "{\"classeId\":"+newUser.classeId+"}"
+
+				newUserData.specificData = specificData
+				
+				//const newSpeceficData = JSON.stringify({ classeId });
+			
 			}
 
 			const user = await User.create(newUserData);
 
 			sampleFile.name = newImgName;
-			const uploadPath = path.join(
-				__dirname,
-				'..',
-				'public',
-				'users_images',
-				sampleFile.name
-			);
-			sampleFile.mv(uploadPath, function(err) {
+
+			const uploadPath = path.join(__dirname, '..', '..', 'src', 'assets', 'user_images', sampleFile.name);
+			sampleFile.mv(uploadPath, function (err) {
+
 				if (err) ErrorResponse.internalError('error while uploading the file');
 			});
 
@@ -91,8 +99,7 @@ class UserService {
 
 			const emailToken = createToken(user, { type: 'email' }); // throws error
 
-			const body = `<h3> ${user.email} </h3> to confirm your account please click this link ${process
-				.env.URL}/confirm/${emailToken}.<h1>This link will expire in 30m.</h1>`;
+			const body = `<h3> ${user.email} </h3> to confirm your account please click this link localhost:3000/confirm/${emailToken}.<h1>This link will expire in 30m.</h1>`;
 
 			await sendEmail(user.email, 'Confirm your account', body);
 		} catch (err) {
@@ -101,9 +108,7 @@ class UserService {
 	}
 	static async findOne(id) {
 		try {
-			const user = await User.findByPk(id, {
-				attributes: { exclude: [ 'password' ] }
-			});
+			const user = await User.findByPk(id);
 			user.image = `${process.env.URL}/static/users_images/${user.image}`;
 			return user;
 		} catch (err) {
@@ -114,19 +119,53 @@ class UserService {
 		// TODO : Sanitize data
 		// TODO: Sanitize data & make sure data is passed or keep old values
 		const hashedPassword = await bcrpyt.hash(updatedUser.password, 10);
-		updatedUser.password = hashedPassword;
+		//updatedUser.password = hashedPassword;
 
 		// TODO: handle image update
-		try {
-			return await User.update(updatedUser, {
-				where: {
-					id
+		if (updatedUser.image) {
+			const user = await User.findByPk(id);
+			const p = path.join(__dirname, '..', 'public', 'users_images', user.image);
+			unlink(p, (err) => {
+				if (err) {
+					console.log(err);
 				}
 			});
-		} catch (err) {
-			throw ErrorResponse.internalError('Could not update this user');
+			const random = crypto.randomBytes(20).toString('hex');
+			const arrayWithExtensions = updatedUser.image.name.split('.');
+
+			const ext = arrayWithExtensions[arrayWithExtensions.length - 1];
+
+			let newImgName = `IMG_${random}.${ext}`;
+
+			let sampleFile = updatedUser.image;
+
+			updatedUser.image = newImgName;
+
+			sampleFile.name = newImgName;
+
+			sampleFile.mv(
+				path.join(__dirname, '..', '..', 'src', 'assets', 'user_images', sampleFile.name),
+				function (err) {
+					if (err) ErrorResponse.internalError('error while uploading the file');
+				}
+			);
 		}
+
+		return await User.update(updatedUser, {
+			where: {
+				id
+			}
+		});
 	}
+
+	static async updateSalary(id, salary) {
+		const user = await User.findByPk(id);
+		const data = JSON.parse(JSON.parse(user.specificData));
+		data.salary = salary;
+		user.specificData = JSON.stringify(data);
+		await user.save();
+	}
+
 	static async deleteOne(id) {
 		try {
 			return await User.destroy({
@@ -170,7 +209,7 @@ class UserService {
 			await user.save();
 		}
 		if (user.role === ROLES.TEACHER) {
-			const classes = await JSON.parse(user.specificData);
+			const classes = await JSON.parse(JSON.parse(user.specificData));
 			if (classes.classesId.length === 0) {
 				throw ErrorResponse.badRequest('this teacher does not have any classes');
 			}
@@ -178,7 +217,7 @@ class UserService {
 
 			const newSpecificData = {
 				...JSON.parse(user.specificData),
-				classesId: [ ...newClassesId ]
+				classesId: [...newClassesId]
 			};
 
 			user.specificData = JSON.stringify(newSpecificData);
