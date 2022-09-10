@@ -32,7 +32,7 @@ class AuthService {
 		// logged in successful
 		const accessToken = Token.createToken(user, { type: 'access' });
 		const refreshToken = Token.createToken(user, { type: 'refresh' });
-		return [ accessToken, refreshToken ];
+		return [ accessToken, refreshToken, user ];
 	}
 	static async confirm(token) {
 		const payload = jwt.verify(token, process.env.EMAIL_SECRET);
@@ -56,7 +56,8 @@ class AuthService {
 		}
 		Token.revokeRefreshTokens(user.id); // could throw error
 		const token = Token.createToken(user, { type: 'email' }); // could throw error
-		const body = `click this link to reset your password this link expires in 30m.\nlocalhost:3000/reset_password/${token}`;
+		const body = `click this link to reset your password this link expires in 30m.\n${process
+			.env.URL}/reset_password/${token}`;
 		sendEmail(email, 'Reset Password', body); // could throw an error
 	}
 	static async changePassword(token, password) {

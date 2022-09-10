@@ -79,7 +79,7 @@ function Sidebar() {
 		return '';
 	} */
 
-
+	console.log(currentUser)
 	if (parseInt(currentUser.role) === 987) {
 
 		return (

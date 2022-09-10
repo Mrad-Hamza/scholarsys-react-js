@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import { Route, BrowserRouter as Router, Switch, Link } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
