@@ -1,4 +1,15 @@
 const Matiere = require('../models/matiere');
+const count = (req, res, next) => {
+	const MatiereCount =  Matiere.count((count)=>count)
+    if (! MatiereCount){
+        res.status(500).json({success:false})
+
+    }
+    
+	MatiereCount.then(function(result) { res.send({
+        count:result
+    })});
+}
 
 const create = (req, res, next) => {
 	Matiere.create(req.body)

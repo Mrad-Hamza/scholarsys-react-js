@@ -130,7 +130,7 @@ function FormationsList (){
                     >
                         <DataTable
                             noHeader
-                            defaultSortField="id"
+                            defaultSortField="Name"
                             defaultSortAsc={false}
                             pagination
                             highlightOnHover

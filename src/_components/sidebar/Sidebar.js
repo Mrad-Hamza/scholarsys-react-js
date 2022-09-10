@@ -367,6 +367,12 @@ function Sidebar() {
 									<span>Management</span>
 								</li>
 
+								<li className={pathnames.includes('/react/student-dashboard') ? 'active' : ''}>
+									<Link to="/student-dashboard">
+										<FontAwesomeIcon icon={faThLarge} /> <span>Dashboard</span>
+									</Link>
+								</li>
+								
 								<li className={`submenu ${pathnames.includes('/react/fees-collections') ? 'active' : pathnames.includes('/react/expenses') ? 'active' : pathnames.includes('/react/salary') ? 'active' : pathnames.includes('/react/add-fees-collections') ? 'active' : pathnames.includes('/react/add-expenses') ? 'active' : pathnames.includes('/react/add-salary') ? 'active' : ''}`}>
 
 									<a href="#">
@@ -463,6 +469,12 @@ function Sidebar() {
 
 								<li className="menu-title">
 									<span>Management</span>
+								</li>
+
+								<li className={pathnames.includes('/react/teacher-dashboard') ? 'active' : ''}>
+									<Link to="/teacher-dashboard">
+										<FontAwesomeIcon icon={faThLarge} /> <span>Dashboard</span>
+									</Link>
 								</li>
 
 								<li className={`submenu ${pathnames.includes('/react/fees-collections') ? 'active' : pathnames.includes('/react/expenses') ? 'active' : pathnames.includes('/react/salary') ? 'active' : pathnames.includes('/react/add-fees-collections') ? 'active' : pathnames.includes('/react/add-expenses') ? 'active' : pathnames.includes('/react/add-salary') ? 'active' : ''}`}>

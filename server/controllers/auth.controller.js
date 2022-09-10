@@ -5,12 +5,12 @@ class AuthController {
 		const { email, password } = req.body;
 		// TODO: validate email password with validator
 		try {
-			const [accessToken, refreshToken, user] = await AuthService.login(email, password);
+			const [ accessToken, refreshToken ] = await AuthService.login(email, password);
 			res.cookie('jid', refreshToken, {
 				httpOnly: true
 				//	secure: true,
 			});
-			return res.status(200).json({ accessToken, user });
+			return res.status(200).json({ accessToken });
 		} catch (err) {
 			next(err);
 		}

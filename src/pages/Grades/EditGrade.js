@@ -316,19 +316,19 @@ function EditGrade () {
         }
     })
 
-    const handleEtudiant = (etudiant) => {
-        if(etudiant !== undefined){
+    const handleEtudiant = (student) => {
+        if(student !== undefined){
             setEtudiantIsValid('form-control is-valid')
-            setEtudiant(etudiant)
+            setEtudiant(student)
         }else{
             setEtudiantIsValid('form-control is-invalid')
         }
     }
 
-    const handleProf = (prof) => {
-        if(prof !== undefined){
+    const handleProf = (teacher) => {
+        if(teacher !== undefined){
             setProfIsValid('form-control is-valid')
-            setProf(prof)
+            setProf(teacher)
         }else{
             setProfIsValid('form-control is-invalid')
         }
@@ -351,6 +351,7 @@ function EditGrade () {
             toast.error('Form contains errors');
         }
         else{
+            console.log(prof,etudiant)
             toast.success('Form has been submitted')
                 grade.preventDefault();
                 console.log(matiere)
@@ -360,7 +361,9 @@ function EditGrade () {
                         type: type,
                         date_passage_examen: dtPass,
                         matiereId : matiere.id,
-                        note_val: value
+                        note_val: value,
+                        teacherId: prof.value,
+                        studentId: etudiant.value
                     }),
                     headers: {
                         'Content-type': 'application/json; charset=UTF-8'
@@ -376,7 +379,7 @@ function EditGrade () {
         if(teachers !== undefined){
             teachers.map(teacher => {
                 if(teacher.id == grade.teacherId){
-                    setProf(teacher)
+                    setProf({value: teacher.id, label: teacher.firstname +' ' + teacher.lastname})
                 }
             })
         }
@@ -384,7 +387,7 @@ function EditGrade () {
         if(students !== undefined){
             students.map(student => {
                 if(student.id == grade.studentId){
-                    setEtudiant(student)
+                    setEtudiant({value: student.id, label: student.firstname +' ' + student.lastname})
                 }
             })
         }
@@ -397,13 +400,6 @@ function EditGrade () {
     const teachersList = teachers.map(teacher =>{
         return {value: teacher.id, label: teacher.firstname +' ' + teacher.lastname}
     })
-
-    const lastStudent = ()=> {
-        console.log(etudiant)
-        if(etudiant !== undefined){
-            return {value: etudiant.id, label: etudiant.firstname +' ' + etudiant.lastname}
-        }
-    }
     
         return (
             <div>
@@ -490,7 +486,7 @@ function EditGrade () {
                                                 <Form.Label>Etudiant</Form.Label>
                                                     <Select
                                                         options={studentList}
-                                                        value={lastStudent}
+                                                        value={etudiant}
                                                         onChange={handleEtudiant}
                                                         isSearchable={true}
                                                         //className={etudiantIsValid}
@@ -506,6 +502,7 @@ function EditGrade () {
                                                     value={prof}
                                                     onChange={handleProf}
                                                     isSearchable={true}
+                                                    //className={profIsValid}
                                                     />
                                             </Form.Group>
                                         </Col>
