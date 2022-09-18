@@ -90,7 +90,8 @@ function Register() {
 			toast.error("There is an error. Please re-enter your information")
 		} else {
 			toast.success("Success. Please Check your e-mail to confirm your registration")
-			userService.register(firstName, lastName, phoneNumber, birthDate, image, email, password, "1")
+			userService.register(firstName, lastName, phoneNumber, birthDate, image, email, password, 1,0,1)
+
 			history.push('/login')
 			//window.location.reload(true)
 		}

@@ -1,3 +1,4 @@
+
 const Seance = require('../models/Seance/Seance');
 const ErrorResponse = require('../util/helpers/ErrorResponse');
 class SeanceService {

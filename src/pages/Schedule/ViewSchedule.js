@@ -58,7 +58,7 @@ function ViewSchedule() {
     useEffect(() => {
         console.log(classe)
         async function fetchData() {
-            setschedule(await scheduleService.getOne(classe.id))
+            setschedule(await scheduleService.getScheduleByClassId(classe.id))
         }
         fetchData()
     }, [classe])
@@ -236,8 +236,9 @@ function ViewSchedule() {
     }
 
     const handleButtonClick = () => {
-        if (schedule.name !== undefined) {
-            window.open("http://localhost:8000/static/emploi/students/" + schedule.name + ".pdf")
+        console.log(schedule)
+        if (schedule[0].name !== undefined) {
+            window.open("http://localhost:8000/static/emploi/students/" + schedule[0].name + ".pdf")
         }
     }
 

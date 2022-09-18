@@ -14,6 +14,7 @@ import PrivateStudentRoute from './_components/_helpers/PrivateStudentRoute';
 import PrivateTeacherRoute from './_components/_helpers/PrivateTeacherRoute';
 import RouteAuthenticated from './_components/_helpers/RouteAuthenticated';
 import RouteUnauthenticated from './_components/_helpers/RouteUnauthenticated';
+import PrivateAdminRoute from './_components/_helpers/PrivateAdminRoute';
 
 import Home from './pages/Home/Home';
 
@@ -212,7 +213,7 @@ function App() {
         <RouteUnauthenticated path="/register" component={Register} />
         <RouteUnauthenticated path="/forgot-password" component={ForgotPassword} />
         <RouteUnauthenticated path="/error" component={Error} />
-        <RouteUnauthenticated path="/reset_password/:refreshToken" component={ResetPassword} />
+        <Route path="/reset_password/:refreshToken" component={ResetPassword} />
         <RouteUnauthenticated path="/confirm/:refreshToken" component={ConfirmAccount} />
       </div>
     )
@@ -229,9 +230,8 @@ function App() {
             <div className="page-wrapper">
               <div className="content container-fluid">
 
-                <PrivateAgentRoute path="/schedule/:id" component={Schedules} />
-                <PrivateAgentRoute path="/schedules-list" component={SchedulesList} />
-                <PrivateAgentRoute path="/add-schedule" component={AddSchedule} />
+               
+
                 <RouteAuthenticated path="/view-schedule/:id" component={ViewSchedule} />
                 <RouteAuthenticated path="/view-schedule-teacher/:id" component={ViewScheduleForTeacher} />
 
@@ -287,7 +287,8 @@ function App() {
                 <RouteAuthenticated path="/transport" component={TransportsList} />
                 <RouteAuthenticated path="/add-transport" component={AddTransport} />
                 <RouteAuthenticated path="/edit-transport" component={EditTransport} />
-
+{/*                 <Route path="/reset_password/:refreshToken" component={ResetPassword} />
+ */}
 
 
                 {/* Inbox Module */}
@@ -304,27 +305,31 @@ function App() {
                 <RouteAuthenticated path="/blank-page" component={BlankPage} />
 
                 <div>
+                  {/* Grade Module */}
+                  <Route path="/add-grade" component={AddGrade} />
+                  <Route path="/edit-grade" component={EditGrade} />
+                  <Route path="/grades" component={GradesList} />
 
                   <Route path="/attendance/:id" component={Attendance} />
 
                   {/* Teacher Module */}
-                  <PrivateAgentRoute exact path="/teachers" component={TeachersList} />
-                  <PrivateAgentRoute exact path="/add-teacher" component={AddTeacher} />
-                  <PrivateAgentRoute exact path="/edit-teacher/:id" component={EditTeacher} />
-                  <PrivateAgentRoute exact path="/teacher-details" component={TeacherDetails} />
+                  <Route exact path="/teachers" component={TeachersList} />
+                  <Route exact path="/add-teacher" component={AddTeacher} />
+                  <Route exact path="/edit-teacher/:id" component={EditTeacher} />
+                  <Route exact path="/teacher-details" component={TeacherDetails} />
 
                   {/* Users Module */}
-                  <PrivateAgentRoute exact path="/add-agent" component={AddAgent} />
-                  <PrivateAgentRoute exact path="/edit-agent/:id" component={EditAgent} />
-                  <PrivateAgentRoute exact path="/agents" component={AgentsList} />
+                  <Route exact path="/add-agent" component={AddAgent} />
+                  <Route exact path="/edit-agent/:id" component={EditAgent} />
+                  <Route exact path="/agents" component={AgentsList} />
 
                   {/* Department Module */}
 
 
                   {/* Subject Module */}
-                  <PrivateAgentRoute exact path="/add-subject" component={AddSubject} />
-                  <PrivateAgentRoute exact path="/edit-subject" component={EditSubject} />
-                  <PrivateAgentRoute exact path="/subjects" component={SubjectsList} />
+                  <Route exact path="/add-subject" component={AddSubject} />
+                  <Route exact path="/edit-subject" component={EditSubject} />
+                  <Route exact path="/subjects" component={SubjectsList} />
 
                   {/* Formation Module */}
                   <Route path="/add-formation" component={AddFormation} />
@@ -341,10 +346,7 @@ function App() {
                   <Route path="/edit-class" component={EditClass} />
                   <Route path="/classes" component={ClassesList} />
 
-                  {/* Grade Module */}
-                  <Route path="/add-grade" component={AddGrade} />
-                  <Route path="/edit-grade" component={EditGrade} />
-                  <Route path="/grades" component={GradesList} />
+                
 
                   {/* Charge Module */}
                   <Route path="/add-charge" component={AddCharge} />
@@ -352,21 +354,21 @@ function App() {
                   <Route path="/charges" component={ChargesList} />
 
                   {/* Accounts Module */}
-                  <Route path="/fees-collections" component={FeesCollections} />
+                {/*   <Route path="/fees-collections" component={FeesCollections} />
                   <Route path="/expenses" component={Expenses} />
                   <Route path="/salary" component={Salary} />
                   <Route path="/add-fees-collections" component={AddFeesCollections} />
                   <Route path="/add-expenses" component={AddExpenses} />
-                  <Route path="/add-salary" component={AddSalary} />
+                  <Route path="/add-salary" component={AddSalary} /> */}
 
                   {/* Holiday Module */}
-                  <Route path="/holiday" component={Holiday} />
-                  <Route path="/add-holiday" component={AddHoliday} />
+            {/*       <Route path="/holiday" component={Holiday} />
+                  <Route path="/add-holiday" component={AddHoliday} /> */}
 
                   {/* Fees Module */}
-                  <Route path="/fees" component={Fees} />
+              {/*     <Route path="/fees" component={Fees} />
                   <Route path="/add-fees" component={AddFees} />
-                  <Route path="/edit-fees" component={EditFees} />
+                  <Route path="/edit-fees" component={EditFees} /> */}
 
                   {/* Exam Module */}
                   <Route path="/exam" component={Exam} />
@@ -374,59 +376,63 @@ function App() {
                   <Route path="/edit-exam" component={EditExam} />
 
                   {/* Time Table Module */}
-                  <Route path="/time-table" component={TimeTable} />
+                {/*   <Route path="/time-table" component={TimeTable} />
                   <Route path="/add-time-table" component={AddTimeTable} />
-                  <Route path="/edit-time-table" component={EditTimeTable} />
+                  <Route path="/edit-time-table" component={EditTimeTable} /> */}
 
                   {/* Library Module */}
-                  <Route path="/library" component={Library} />
+               {/*    <Route path="/library" component={Library} />
                   <Route path="/add-book" component={AddBook} />
-                  <Route path="/edit-book" component={EditBook} />
+                  <Route path="/edit-book" component={EditBook} /> */}
 
 
                   {/* Sports Module */}
-                  <Route path="/sports" component={SportsList} />
+              {/*     <Route path="/sports" component={SportsList} />
                   <Route path="/add-sport" component={AddSport} />
-                  <Route path="/edit-sport" component={EditSport} />
+                  <Route path="/edit-sport" component={EditSport} /> */}
 
                   {/* Hostel Module */}
-                  <Route path="/hostel" component={HostelList} />
+                 {/*  <Route path="/hostel" component={HostelList} />
                   <Route path="/add-room" component={AddRoom} />
-                  <Route path="/edit-room" component={EditRoom} />
+                  <Route path="/edit-room" component={EditRoom} /> */}
 
                   {/* Transport Module */}
-                  <Route path="/transport" component={TransportsList} />
+            {/*       <Route path="/transport" component={TransportsList} />
                   <Route path="/add-transport" component={AddTransport} />
-                  <Route path="/edit-transport" component={EditTransport} />
+                  <Route path="/edit-transport" component={EditTransport} /> */}
 
                   {/* Components Module */}
-                  <PrivateAgentRoute exact path="/components" component={Components} />
+                  <Route exact path="/components" component={Components} />
 
                   {/* Forms Module */}
-                  <PrivateAgentRoute exact path="/form-basic-inputs" component={FormBasicInput} />
+                 {/*  <PrivateAgentRoute exact path="/form-basic-inputs" component={FormBasicInput} />
                   <PrivateAgentRoute exact path="/form-horizontal" component={FormHorizontal} />
                   <PrivateAgentRoute exact path="/form-input-groups" component={FormInputGroups} />
                   <PrivateAgentRoute exact path="/form-mask" component={FormMask} />
                   <PrivateAgentRoute exact path="/form-validation" component={FormValidation} />
-                  <PrivateAgentRoute exact path="/form-vertical" component={FormVertical} />
+                  <PrivateAgentRoute exact path="/form-vertical" component={FormVertical} /> */}
 
                   {/* Tables Module */}
-                  <PrivateAgentRoute exact path="/tables-basic" component={TablesBasic} />
-                  <PrivateAgentRoute exact path="/data-tables" component={DataTables} />
+                  <Route exact path="/tables-basic" component={TablesBasic} />
+                  <Route exact path="/data-tables" component={DataTables} />
 
                   {/* Events Module */}
-                  <PrivateAgentRoute exact path="/event" component={Event} />
-                  <PrivateAgentRoute exact path="/add-event" component={AddEvent} />
+                  <Route exact path="/event" component={Event} />
+                  <Route exact path="/add-event" component={AddEvent} />
 
-                  <PrivateAgentRoute exact path="/dashboard" component={Dashboard} />
-                  <RouteAuthenticated exact path="/student-dashboard" component={StudentDashboard} />
-                  <PrivateTeacherRoute exact path="/teacher-dashboard" component={TeacherDashboard} />
+                  <Route exact path="/dashboard" component={Dashboard} />
+                  <Route exact path="/student-dashboard" component={StudentDashboard} />
+                  <Route exact path="/teacher-dashboard" component={TeacherDashboard} />
 
                   {/* Student Module */}
-                  <PrivateAgentRoute exact path="/students" component={StudentsList} />
-                  <PrivateAgentRoute exact path="/add-student" component={AddStudent} />
-                  <PrivateAgentRoute exact path="/edit-student/:id" component={EditStudent} />
-                  <PrivateAgentRoute exact path="/student-details" component={StudentDetails} />
+                  <Route exact path="/students" component={StudentsList} />
+                  <Route exact path="/add-student" component={AddStudent} />
+                  <Route exact path="/edit-student/:id" component={EditStudent} />
+                  <Route exact path="/student-details" component={StudentDetails} />
+
+                  <Route path="/schedule/:id" component={Schedules} />
+                  <Route path="/schedules-list" component={SchedulesList} />
+                  <Route path="/add-schedule" component={AddSchedule} />
                 </div>
 
               </div>

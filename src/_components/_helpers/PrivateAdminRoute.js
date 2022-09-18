@@ -3,7 +3,7 @@ import { Redirect, Route } from 'react-router-dom';
 import { RouteProps } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-const PrivateTeacherRoute = ({ component: Component, path }: RouteProps) => {
+const PrivateAdminRoute = ({ component: Component, path }: RouteProps) => {
     const { user: currentUser } = useSelector((state) => state.auth);
     const { isLoggedIn } = useSelector((state) => state.auth);
 
@@ -12,10 +12,10 @@ const PrivateTeacherRoute = ({ component: Component, path }: RouteProps) => {
         return <Redirect to="/login" />;
     }
     if (parseInt(currentUser.role) !== 1999) {
-        return <Redirect to="/unauthorized" />;
+        return <Redirect to="/unauthorizedadmin" />;
     }
 
     return <Route component={Component} path={path} />;
 };
 
-export default PrivateTeacherRoute;
+export default PrivateAdminRoute;

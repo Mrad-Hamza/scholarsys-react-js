@@ -12,7 +12,7 @@ const PrivateAgentRoute = ({ component: Component, path }: RouteProps) => {
         return <Redirect to="/login" />;
     }
     if (parseInt(currentUser.role) === 1 || parseInt(currentUser.role) === 666 ) {
-        return <Redirect to="/unauthorized" />;
+        return <Redirect to="/unauthorizedagent" />;
     }
     
     return <Route component={Component} path={path} />;

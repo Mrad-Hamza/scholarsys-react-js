@@ -7,14 +7,13 @@ const PrivateTeacherRoute = ({ component: Component, path }: RouteProps) => {
     const { user: currentUser } = useSelector((state) => state.auth);
     const { isLoggedIn } = useSelector((state) => state.auth);
 
-
     if (!isLoggedIn) {
         return <Redirect to="/login" />;
     }
-    if (parseInt(currentUser.role) !== 666) {
-        return <Redirect to="/unauthorized" />;
+    if (parseInt(currentUser.role) === 1 ) {
+        return <Redirect to="/unauthorizedddddd" />;
     }
-   
+   console.log(path)
     return <Route component={Component} path={path} />;
 };
 

@@ -14,7 +14,7 @@ import authService from '../../services/auth.service';
 import toast, { Toaster } from 'react-hot-toast';
 
 import userService from '../../services/user.service';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Redirect } from 'react-router-dom';
 
 
 import { useDispatch } from 'react-redux';
@@ -27,6 +27,9 @@ import scheduleService from '../../services/schedule.service';
 function Profile() {
     const dispatch = useDispatch()
     const history = useHistory()
+    const { isLoggedIn } = useSelector((state) => state.auth);
+
+   
 
     const schedules = useSelector((state) => state.schedules.schedules)
 
@@ -47,12 +50,15 @@ function Profile() {
     const [classId, setclassId] = useState(null)
     const [schedule, setschedule] = useState({})
 
+
+    
     useEffect(() => {
         console.log(classId)
         async function fetchData() {
-            setschedule(await scheduleService.getOne(classId))
+            setschedule(await scheduleService.getScheduleByClassId(classId))
         }
         fetchData()
+        console.log("aaa")
     }, [classId])
 
     useEffect(() => {
@@ -89,11 +95,14 @@ function Profile() {
         setPhoneNumber(currentUser.phoneNumber)
     }, [])
 
+    
     const handleResetPassword = (e) => {
         e.preventDefault()
         authService.forgotPassword(currentUser.email)
         toast.success("Success. Please Check your e-mail to rest your password.")
-
+        authService.logout()
+        history.push('/login')
+        window.location.reload()
     }
 
     useEffect(() => {
@@ -140,6 +149,10 @@ function Profile() {
         }
     }, [email])
 
+    if (!isLoggedIn) {
+        return <Redirect to="/login" />;
+    }
+
     const handleFirstNameChange = (e) => {
         setFirstName(e.target.value)
     }
@@ -183,8 +196,9 @@ function Profile() {
     }
 
     const handleViewScheduleForStudent = () => {
-        if (schedule.id !== undefined) {
-            history.push('view-schedule/' + schedule.id)
+        console.log(schedule)
+        if (schedule[0].id !== undefined) {
+            history.push('view-schedule/' + schedule[0].id)
         }
     }
 

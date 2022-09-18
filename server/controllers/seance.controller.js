@@ -64,6 +64,7 @@ class SeanceController {
 				message: `Seance has been created.`
 			});
 		} catch (err) {
+			console.log(err)
 			next(err);
 		}
 	};
@@ -86,7 +87,7 @@ class SeanceController {
 			next(error);
 		}
 	};
-	
+
 	static update = async (req, res, next) => {
 		const {
 			startHour,
